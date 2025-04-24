@@ -160,15 +160,12 @@ export class UsuarioComponent implements OnInit {
     }
   }
 
-  // Nuevo método: Cargar proyectos asociados a un usuario
   cargarProyectosDeUsuario(usuarioId: number) {
-    // Se espera que el servicio de proyectos cuente con este método
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
       this.proyectosDelUsuario = proyectos;
     });
   }
 
-  // Nuevo método: Asociar un proyecto al usuario seleccionado
   asociarProyecto() {
     if (!this.usuarioSeleccionado || !this.proyectoIdParaAsociar) {
       alert("Debes seleccionar un usuario y proporcionar un ID de proyecto válido.");
@@ -179,7 +176,6 @@ export class UsuarioComponent implements OnInit {
       .subscribe({
         next: (res) => {
           alert("Proyecto asociado correctamente");
-          // Actualiza la lista de proyectos asociados al usuario
           this.cargarProyectosDeUsuario(this.usuarioSeleccionado.uid_number);
           this.proyectoIdParaAsociar = null;
         },
@@ -190,7 +186,25 @@ export class UsuarioComponent implements OnInit {
       });
   }
 
-  // Nuevo método: Permite seleccionar un usuario para ver sus proyectos (si no se está editando)
+  eliminarProyectoDelUsuario(proyectoId: number) {
+    if (!this.usuarioSeleccionado) {
+      alert("No hay usuario seleccionado.");
+      return;
+    }
+  
+    this.proyectoService.eliminarUsuarioDeProyecto(proyectoId, this.usuarioSeleccionado.uid_number)
+      .subscribe({
+        next: () => {
+          alert("Proyecto eliminado correctamente.");
+          this.cargarProyectosDeUsuario(this.usuarioSeleccionado.uid_number);
+        },
+        error: (err) => {
+          console.error("Error al eliminar el proyecto:", err);
+          alert("Error al eliminar el proyecto.");
+        }
+      });
+  }  
+
   verProyectos(usuario: any) {
     this.usuarioSeleccionado = usuario;
     this.cargarProyectosDeUsuario(usuario.uid_number);

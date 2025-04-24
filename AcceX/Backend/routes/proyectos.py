@@ -5,13 +5,11 @@ from models.usuario import Usuario
 
 proyectos_bp = Blueprint('proyectos', __name__)
 
-# Obtener todos los proyectos
 @proyectos_bp.route('/proyectos', methods=['GET'])
 def obtener_proyectos():
     proyectos = Proyecto.query.all()
     return jsonify([p.to_dict() for p in proyectos])
 
-# Obtener un proyecto por ID
 @proyectos_bp.route('/proyectos/<int:id>', methods=['GET'])
 def obtener_proyecto(id):
     proyecto = Proyecto.query.get(id)
@@ -19,7 +17,6 @@ def obtener_proyecto(id):
         return jsonify({'mensaje': 'Proyecto no encontrado'}), 404
     return jsonify(proyecto.to_dict())
 
-# Crear un nuevo proyecto
 @proyectos_bp.route('/proyectos', methods=['POST'])
 def crear_proyecto():
     data = request.json
@@ -42,7 +39,6 @@ def crear_proyecto():
     db.session.commit()
     return jsonify({'mensaje': 'Proyecto creado', 'proyecto': nuevo_proyecto.to_dict()}), 201
 
-# Actualizar un proyecto
 @proyectos_bp.route('/proyectos/<int:id>', methods=['PUT'])
 def actualizar_proyecto(id):
     data = request.json
@@ -61,7 +57,6 @@ def actualizar_proyecto(id):
     db.session.commit()
     return jsonify({'mensaje': 'Proyecto actualizado'})
 
-# Eliminar un proyecto
 @proyectos_bp.route('/proyectos/<int:id>', methods=['DELETE'])
 def eliminar_proyecto(id):
     proyecto = Proyecto.query.get(id)
@@ -82,7 +77,6 @@ def obtener_usuarios_por_proyecto(pid):
         for u in usuarios
     ])
 
-# Asociar un usuario a un proyecto
 @proyectos_bp.route('/proyectos/<int:pid>/usuarios', methods=['POST'])
 def asociar_usuario_a_proyecto(pid):
     data = request.get_json()
@@ -97,18 +91,16 @@ def asociar_usuario_a_proyecto(pid):
     if not usuario:
         return jsonify({"error": "El usuario no existe"}), 404
 
-    # Inserta la relación
-    insert_stmt = usuarios_proyectos.insert().values(usuario_id=usuario_id, proyecto_id=pid)
+    insert_stmt = usuarios_proyectos.insert().values(usuario_id=usuario_id, proyectos_id=pid)
     db.session.execute(insert_stmt)
     db.session.commit()
     return jsonify({"mensaje": "Usuario asociado al proyecto correctamente"})
 
-# Eliminar un usuario de un proyecto
 @proyectos_bp.route('/proyectos/<int:pid>/usuarios/<int:uid>', methods=['DELETE'])
 def eliminar_usuario_de_proyecto(pid, uid):
     delete_query = usuarios_proyectos.delete().where(
         usuarios_proyectos.c.usuario_id == uid,
-        usuarios_proyectos.c.proyecto_id == pid
+        usuarios_proyectos.c.proyectos_id == pid
     )
     result = db.session.execute(delete_query)
     db.session.commit()
@@ -116,11 +108,10 @@ def eliminar_usuario_de_proyecto(pid, uid):
         return jsonify({"error": "Relación no encontrada"}), 404
     return jsonify({"mensaje": "Usuario eliminado del proyecto correctamente"})
 
-# Obtener proyectos asociados a un usuario
 @proyectos_bp.route('/usuarios/<int:usuario_id>/proyectos', methods=['GET'])
 def obtener_proyectos_por_usuario(usuario_id):
     proyectos = db.session.query(Proyecto) \
-        .join(usuarios_proyectos, Proyecto.pid_number == usuarios_proyectos.c.proyecto_id) \
+        .join(usuarios_proyectos, Proyecto.pid_number == usuarios_proyectos.c.proyectos_id) \
         .filter(usuarios_proyectos.c.usuario_id == usuario_id) \
         .all()
     return jsonify([p.to_dict() for p in proyectos])

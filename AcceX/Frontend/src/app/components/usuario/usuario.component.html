@@ -58,7 +58,8 @@
           <ul>
             <li *ngFor="let proyecto of proyectosDelUsuario">
               {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
-            </li>
+              <button (click)="eliminarProyectoDelUsuario(proyecto.pid_number)">❌ Eliminar</button>
+              </li>
           </ul>
           <div>
             <input type="number" 
