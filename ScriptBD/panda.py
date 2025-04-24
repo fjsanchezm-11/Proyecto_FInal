@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import mysql.connector
 from datetime import datetime
@@ -410,8 +411,11 @@ def insert_usuarios_grupos(connection, usuarios_data):
         cursor.close()
 
 def main():
-    excel_data = pd.read_excel('Resumen_usuarios_Lusitania_Asier.xlsx', 
+    ruta_excel = os.path.join(os.path.dirname(__file__), 'Resumen_usuarios_Lusitania_Asier.xlsx')
+    
+    excel_data = pd.read_excel(ruta_excel, 
         sheet_name=["Usuarios", "Proyectos de investigación", "Publicaciones"])
+    
     connection = create_connection()
     
     insert_grupos(connection, excel_data['Usuarios'])
