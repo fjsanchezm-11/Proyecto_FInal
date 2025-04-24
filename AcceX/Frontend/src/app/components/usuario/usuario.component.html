@@ -4,7 +4,6 @@
 
 <button (click)="mostrarFormulario($event)">➕ Añadir Usuario</button>
 
-<!-- Formulario para crear un nuevo usuario -->
 <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
   <h2>Nuevo Usuario</h2>
   <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
@@ -28,16 +27,12 @@
   </form>
 </div>
 
-<!-- Lista de usuarios -->
 <ul>
   <li *ngFor="let usuario of usuariosFiltrados">
     {{ usuario.uid_number }} - {{ usuario.nombre_usuario }} - {{ usuario.contacto }}
     <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
     <button (click)="editarUsuario(usuario, $event)">✏️ Editar</button>
-    <!-- Botón para ver proyectos asociados -->
-    <button (click)="verProyectos(usuario)">Ver Proyectos</button>
 
-    <!-- Formulario de edición del usuario -->
     <div *ngIf="mostrarForm && editando && usuario.uid_number === usuarioSeleccionado?.uid_number" class="popup-form" (click)="onFormClick($event)">
       <h2>Editar Usuario</h2>
       <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
@@ -58,24 +53,24 @@
         <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
         <p>RES: <input formControlName="res" placeholder="RES"></p>
         <button type="submit">Actualizar</button>
+        <div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
+          <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
+          <ul>
+            <li *ngFor="let proyecto of proyectosDelUsuario">
+              {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
+            </li>
+          </ul>
+          <div>
+            <input type="number" 
+                   name="proyectoIdParaAsociar" 
+                   placeholder="ID del proyecto a asociar" 
+                   [(ngModel)]="proyectoIdParaAsociar">
+            <button (click)="asociarProyecto()">Asociar Proyecto</button>
+          </div>
+        </div>
       </form>
     </div>
   </li>
 </ul>
 
-<!-- Sección para ver y asociar proyectos al usuario seleccionado -->
-<div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
-  <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
-  <ul>
-    <li *ngFor="let proyecto of proyectosDelUsuario">
-      {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
-    </li>
-  </ul>
-  <div>
-    <input type="number" 
-           name="proyectoIdParaAsociar" 
-           placeholder="ID del proyecto a asociar" 
-           [(ngModel)]="proyectoIdParaAsociar">
-    <button (click)="asociarProyecto()">Asociar Proyecto</button>
-  </div>
-</div>
+

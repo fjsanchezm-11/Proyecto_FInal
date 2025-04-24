@@ -16,10 +16,10 @@ def clean_value(value):
     if pd.isna(value) or value in ["Ya tenía", "", "-", " ", "nan", None]:
         return None
 
-    if isinstance(value, datetime):  
+    if isinstance(value, datetime):
         return value.strftime("%Y-%m-%d")
 
-    if isinstance(value, (int, float)):  
+    if isinstance(value, (int, float)):
         return int(value)
 
     if isinstance(value, str):
@@ -28,14 +28,15 @@ def clean_value(value):
         if value.lower() in ['no', 'si', 'sí']:
             return 1 if value.lower() in ['si', 'sí'] else 0
 
-        if value.isdigit():  
+        if value.isdigit():
             return int(value)
 
-        try:
-            datetime_value = datetime.strptime(value, "%d/%m/%Y")
-            return datetime_value.strftime("%Y-%m-%d")
-        except ValueError:
-            pass 
+        for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
+            try:
+                datetime_value = datetime.strptime(value, fmt)
+                return datetime_value.strftime("%Y-%m-%d")
+            except ValueError:
+                continue
 
     return value if value != "" else None
 

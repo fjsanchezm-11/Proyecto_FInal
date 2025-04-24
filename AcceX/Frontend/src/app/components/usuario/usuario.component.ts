@@ -22,7 +22,6 @@ export class UsuarioComponent implements OnInit {
   bloquearCierre = false;
   busqueda: string = '';
 
-  // Nuevas propiedades para asociar proyectos
   proyectosDelUsuario: any[] = [];
   proyectoIdParaAsociar: number | null = null;
 
@@ -88,12 +87,11 @@ export class UsuarioComponent implements OnInit {
     this.editando = true;
     this.usuarioSeleccionado = usuario;
 
-    // Formateo de fechas, en caso de que se tengan fechas de inicio/fin
-    const fechaFormateada1 = usuario.fecha_inicio 
-      ? new Date(usuario.fecha_inicio).toISOString().split('T')[0] 
-      : '';
-    const fechaFormateada2 = usuario.fecha_fin 
-      ? new Date(usuario.fecha_fin).toISOString().split('T')[0] 
+    const fechaFormateada1 = usuario.fecha_alta 
+    ? new Date(usuario.fecha_alta).toISOString().split('T')[0] 
+    : '';
+    const fechaFormateada2 = usuario.fecha_baja 
+      ? new Date(usuario.fecha_baja).toISOString().split('T')[0] 
       : '';
     
     this.usuarioForm.patchValue({
@@ -116,7 +114,6 @@ export class UsuarioComponent implements OnInit {
     this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
     this.posicionFormulario.left = `${rect.left}px`;
 
-    // Opcional: si queremos ver también los proyectos asociados al editar, podemos cargarlos aquí.
     this.cargarProyectosDeUsuario(usuario.uid_number);
 
     setTimeout(() => this.bloquearCierre = false, 100);
