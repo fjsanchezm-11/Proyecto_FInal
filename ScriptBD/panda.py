@@ -71,36 +71,45 @@ def insert_grupos(connection, data):
 def insert_usuarios(connection, data):
     cursor = connection.cursor()
 
-    # Buscar el mayor uid_number actual en la tabla usuarios para evitar colisiones
+    # Buscar el mayor uid_number actual
     cursor.execute("SELECT MAX(uid_number) FROM usuarios")
     result = cursor.fetchone()
-    next_uid = max(15855, (result[0] or 0) + 1)  # Asegura empezar en 15855 o más
+    next_uid = max(15855, (result[0] or 0) + 1)
 
     for index, row in data.iterrows():
         try:
             gid = clean_value(row['GidNumber'])
             uid = clean_value(row['uidNumber'])
+            nombre_usuario = clean_value(row['Nombre Usuario'])
 
-            # Si el uid está vacío o no es número, generar uno automáticamente
+            # Revisión por nombre repetido
+            cursor.execute("SELECT 1 FROM usuarios WHERE nombre_usuario = %s", (nombre_usuario,))
+            nombre_repetido = cursor.fetchone() is not None
+
+            # Verificar si el uid es válido y único
             if str(uid).isdigit():
                 uid = int(uid)
+                cursor.execute("SELECT 1 FROM usuarios WHERE uid_number = %s", (uid,))
+                uid_repetido = cursor.fetchone() is not None
+                if uid_repetido or nombre_repetido:
+                    print(f"⚠️ Usuario o uid_number ya existe. Asignando nuevo uid_number a '{nombre_usuario}'")
+                    uid = next_uid
+                    next_uid += 1
             else:
                 uid = next_uid
-                next_uid += 1  # Incrementar para el siguiente
+                next_uid += 1
 
-            if gid is None:
-                print(f" gid_number es NULL. Se insertará el usuario sin grupo.")
-            else:
+            # Verificar grupo
+            if gid is not None:
                 cursor.execute("SELECT 1 FROM grupos WHERE gid_number = %s", (gid,))
                 if not cursor.fetchone():
-                    print(f"⚠️ gid_number {gid} no existe. Se creará un nuevo grupo.")
+                    print(f"⚠️ gid_number {gid} no existe. Se creará.")
                     cursor.execute("INSERT INTO grupos (gid_number, nombre) VALUES (%s, NULL)", (gid,))
                     connection.commit()
-                    cursor.execute("SELECT 1 FROM grupos WHERE gid_number = %s", (gid,))
-                    if not cursor.fetchone():
-                        print(f"❌ Error crítico: No se pudo insertar el grupo con gid_number {gid}.")
-                        continue
+            else:
+                print(f"ℹ️ gid_number es NULL para '{nombre_usuario}'")
 
+            # Insertar usuario
             sql = """
                 INSERT INTO usuarios (
                     uid_number, nombre_usuario, fecha_alta, fecha_baja, 
@@ -111,7 +120,7 @@ def insert_usuarios(connection, data):
             """
             values = (
                 uid, 
-                clean_value(row['Nombre Usuario']), 
+                nombre_usuario, 
                 clean_value(row['Fecha de creación']),
                 clean_value(row['Fecha de baja']),
                 clean_value(row['Activo']),
@@ -122,13 +131,13 @@ def insert_usuarios(connection, data):
                 clean_value(row['WOS']),
                 clean_value(row['Scopus']),
                 clean_value(row['Usuario RES']),
-                gid if gid is not None else None  
+                gid
             )
             cursor.execute(sql, values)
             connection.commit()
 
         except Exception as e:
-            print(f"❌ Error en fila {index}: {e}\n")
+            print(f"❌ Error en fila {index} ({nombre_usuario}): {e}")
             connection.rollback()
 
 def insert_proyectos(connection, data):
