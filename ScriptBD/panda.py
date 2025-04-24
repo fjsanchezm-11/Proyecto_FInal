@@ -70,12 +70,22 @@ def insert_grupos(connection, data):
 def insert_usuarios(connection, data):
     cursor = connection.cursor()
 
+    # Buscar el mayor uid_number actual en la tabla usuarios para evitar colisiones
+    cursor.execute("SELECT MAX(uid_number) FROM usuarios")
+    result = cursor.fetchone()
+    next_uid = max(15855, (result[0] or 0) + 1)  # Asegura empezar en 15855 o más
+
     for index, row in data.iterrows():
         try:
             gid = clean_value(row['GidNumber'])
             uid = clean_value(row['uidNumber'])
 
-            uid = int(uid) if str(uid).isdigit() else None  
+            # Si el uid está vacío o no es número, generar uno automáticamente
+            if str(uid).isdigit():
+                uid = int(uid)
+            else:
+                uid = next_uid
+                next_uid += 1  # Incrementar para el siguiente
 
             if gid is None:
                 print(f" gid_number es NULL. Se insertará el usuario sin grupo.")
@@ -119,7 +129,6 @@ def insert_usuarios(connection, data):
         except Exception as e:
             print(f"❌ Error en fila {index}: {e}\n")
             connection.rollback()
-
 
 def insert_proyectos(connection, data):
     cursor = connection.cursor()
