@@ -16,7 +16,7 @@ def clean_value(value):
     if pd.isna(value) or value in ["Ya tenía", "", "-", " ", "nan", None]:
         return None
 
-    if isinstance(value, datetime):  # ✅ Añadir esto
+    if isinstance(value, datetime):  
         return value.strftime("%Y-%m-%d")
 
     if isinstance(value, (int, float)):  
