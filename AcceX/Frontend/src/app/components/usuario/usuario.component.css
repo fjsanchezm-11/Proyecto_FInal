@@ -1,0 +1,9 @@
+.activo-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.activo-checkbox input {
+  width: auto;
+}

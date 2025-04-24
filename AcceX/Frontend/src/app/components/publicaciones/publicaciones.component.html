@@ -1,0 +1,37 @@
+<h1>Gestión de Publicaciones</h1> 
+<input
+type="text"
+placeholder="Buscar por descripción"
+[(ngModel)]="busqueda"
+class="buscador"
+/>
+
+<button (click)="mostrarFormulario($event)">➕ Añadir Publicación</button>
+
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+    <h2>Nueva Publicación</h2>
+    <form [formGroup]="publicacionForm" (ngSubmit)="guardarPublicacion()">
+        <p>Descripción: <input formControlName="result_description" placeholder="Descripción"></p>
+        <p>Fecha de publicación: <input type="date" formControlName="fecha_publicacion"></p>
+        <p>DOI: <input formControlName="doi" placeholder="DOI"></p>
+        <button type="submit">Guardar</button>
+    </form>
+</div>
+
+<ul>
+    <li *ngFor="let publicacion of publicacionesFiltradas">
+        {{ publicacion.result_code }} - {{ publicacion.result_description }} - {{ publicacion.doi }}
+        <button (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
+        <button (click)="editarPublicacion(publicacion, $event)">✏️ Editar</button>
+
+        <div *ngIf="mostrarForm && editando && publicacion.result_code === publicacionSeleccionada?.result_code" class="popup-form" (click)="onFormClick($event)">
+            <h2>Editar Publicación</h2>
+            <form [formGroup]="publicacionForm" (ngSubmit)="guardarPublicacion()">
+                <p>Descripción: <input formControlName="result_description" placeholder="Descripción"></p>
+                <p>Fecha de publicación: <input type="date" formControlName="fecha_publicacion"></p>
+                <p>DOI: <input formControlName="doi" placeholder="DOI"></p>
+                <button type="submit">Actualizar</button>
+            </form>
+        </div>
+    </li>
+</ul>

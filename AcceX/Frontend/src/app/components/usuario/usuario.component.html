@@ -1,0 +1,81 @@
+<h1>Gestión de Usuarios</h1>
+
+<input type="text" placeholder="Búsqueda por nombre" [(ngModel)]="busqueda" class="buscador" />
+
+<button (click)="mostrarFormulario($event)">➕ Añadir Usuario</button>
+
+<!-- Formulario para crear un nuevo usuario -->
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+  <h2>Nuevo Usuario</h2>
+  <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
+    <p>ID del grupo: <input formControlName="gid_number" placeholder="ID del grupo"></p>
+    <p>Nombre: <input formControlName="nombre_usuario" placeholder="Nombre"></p>
+    <p>Fecha de alta: <input formControlName="fecha_alta" type="date" placeholder="Fecha de alta"></p>
+    <p>Fecha de baja: <input formControlName="fecha_baja" type="date" placeholder="Fecha de baja"></p>
+    <p class="activo-checkbox">
+      <label>
+        <input type="checkbox" formControlName="activo"> Activo
+      </label>
+    </p>
+    <p>Correo: <input formControlName="contacto" type="email" placeholder="Correo"></p>
+    <p>Teléfono: <input formControlName="telefono" placeholder="Teléfono"></p>
+    <p>ORCID: <input formControlName="orcid" placeholder="ORCID"></p>
+    <p>Scholar: <input formControlName="scholar" placeholder="Scholar"></p>
+    <p>WOS: <input formControlName="wos" placeholder="WOS"></p>
+    <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
+    <p>RES: <input formControlName="res" placeholder="RES"></p>
+    <button type="submit">Guardar</button>
+  </form>
+</div>
+
+<!-- Lista de usuarios -->
+<ul>
+  <li *ngFor="let usuario of usuariosFiltrados">
+    {{ usuario.uid_number }} - {{ usuario.nombre_usuario }} - {{ usuario.contacto }}
+    <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
+    <button (click)="editarUsuario(usuario, $event)">✏️ Editar</button>
+    <!-- Botón para ver proyectos asociados -->
+    <button (click)="verProyectos(usuario)">Ver Proyectos</button>
+
+    <!-- Formulario de edición del usuario -->
+    <div *ngIf="mostrarForm && editando && usuario.uid_number === usuarioSeleccionado?.uid_number" class="popup-form" (click)="onFormClick($event)">
+      <h2>Editar Usuario</h2>
+      <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
+        <p>ID del grupo: <input formControlName="gid_number" placeholder="ID del grupo"></p>
+        <p>Nombre: <input formControlName="nombre_usuario" placeholder="Nombre"></p>
+        <p>Fecha de alta: <input formControlName="fecha_alta" type="date" placeholder="Fecha de alta"></p>
+        <p>Fecha de baja: <input formControlName="fecha_baja" type="date" placeholder="Fecha de baja"></p>
+        <p class="activo-checkbox">
+          <label>
+            <input type="checkbox" formControlName="activo"> Activo
+          </label>
+        </p>
+        <p>Correo: <input formControlName="contacto" type="email" placeholder="Correo"></p>
+        <p>Teléfono: <input formControlName="telefono" placeholder="Teléfono"></p>
+        <p>ORCID: <input formControlName="orcid" placeholder="ORCID"></p>
+        <p>Scholar: <input formControlName="scholar" placeholder="Scholar"></p>
+        <p>WOS: <input formControlName="wos" placeholder="WOS"></p>
+        <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
+        <p>RES: <input formControlName="res" placeholder="RES"></p>
+        <button type="submit">Actualizar</button>
+      </form>
+    </div>
+  </li>
+</ul>
+
+<!-- Sección para ver y asociar proyectos al usuario seleccionado -->
+<div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
+  <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
+  <ul>
+    <li *ngFor="let proyecto of proyectosDelUsuario">
+      {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
+    </li>
+  </ul>
+  <div>
+    <input type="number" 
+           name="proyectoIdParaAsociar" 
+           placeholder="ID del proyecto a asociar" 
+           [(ngModel)]="proyectoIdParaAsociar">
+    <button (click)="asociarProyecto()">Asociar Proyecto</button>
+  </div>
+</div>

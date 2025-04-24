@@ -1,0 +1,220 @@
+import { Component, OnInit, HostListener, inject } from '@angular/core';
+import { UsuarioService } from '../../services/usuario.service';
+import { ProyectoService } from '../../services/proyectos.service';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-usuario',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: './usuario.component.html',
+  styleUrls: ['./usuario.component.css']
+})
+export class UsuarioComponent implements OnInit {
+  usuarios: any[] = [];
+  usuarioForm: FormGroup;
+  mostrarForm = false;
+  editando = false;
+  usuarioSeleccionado: any = null;
+  posicionFormulario = { top: '0px', left: '0px' };
+  bloquearCierre = false;
+  busqueda: string = '';
+
+  // Nuevas propiedades para asociar proyectos
+  proyectosDelUsuario: any[] = [];
+  proyectoIdParaAsociar: number | null = null;
+
+  private usuarioService = inject(UsuarioService);
+  private proyectoService = inject(ProyectoService);
+  private fb = inject(FormBuilder);
+
+  constructor(private router: Router) {
+    this.usuarioForm = this.fb.group({
+      gid_number: [''],
+      nombre_usuario: [''],
+      fecha_alta: [''],
+      fecha_baja: [''],
+      activo: [false],
+      contacto: [''],
+      telefono: [''],
+      orcid: [''],
+      scholar: [''],
+      wos: [''],
+      scopus: [''],
+      res: ['']
+    });
+  }
+
+  ngOnInit(): void {
+    this.cargarUsuarios();
+  }
+
+  cargarUsuarios() {
+    this.usuarioService.obtenerUsuarios().subscribe(data => {
+      this.usuarios = data;
+    });
+  }
+
+  eliminarUsuario(id: number) {
+    this.usuarioService.eliminarUsuario(id).subscribe(() => {
+      this.cargarUsuarios();
+      this.mostrarForm = false;
+      this.usuarioSeleccionado = null;
+      this.editando = false;
+    });
+  }
+
+  mostrarFormulario(event: MouseEvent) {
+    this.bloquearCierre = true;
+    this.mostrarForm = true;
+    this.editando = false;
+    this.usuarioSeleccionado = null;
+    this.usuarioForm.reset();
+
+    const buttonElement = event.target as HTMLButtonElement;
+    const rect = buttonElement.getBoundingClientRect();
+    this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
+    this.posicionFormulario.left = `${rect.left}px`;
+
+    setTimeout(() => this.bloquearCierre = false, 100);
+  }
+
+  editarUsuario(usuario: any, event: MouseEvent) {
+    event.stopPropagation();
+    this.bloquearCierre = true;
+    this.mostrarForm = true;
+    this.editando = true;
+    this.usuarioSeleccionado = usuario;
+
+    // Formateo de fechas, en caso de que se tengan fechas de inicio/fin
+    const fechaFormateada1 = usuario.fecha_inicio 
+      ? new Date(usuario.fecha_inicio).toISOString().split('T')[0] 
+      : '';
+    const fechaFormateada2 = usuario.fecha_fin 
+      ? new Date(usuario.fecha_fin).toISOString().split('T')[0] 
+      : '';
+    
+    this.usuarioForm.patchValue({
+      gid_number: usuario.gid_number,
+      nombre_usuario: usuario.nombre_usuario,
+      fecha_alta: fechaFormateada1 ?? '',
+      fecha_baja: fechaFormateada2 ?? '',
+      activo: usuario.activo === 1 || usuario.activo === true,
+      contacto: usuario.contacto ?? '',
+      telefono: usuario.telefono ?? '',
+      orcid: usuario.orcid ?? '',
+      scholar: usuario.scholar ?? '',
+      wos: usuario.wos ?? '',
+      scopus: usuario.scopus ?? '',
+      res: usuario.res ?? ''
+    });
+
+    const buttonElement = event.target as HTMLButtonElement;
+    const rect = buttonElement.getBoundingClientRect();
+    this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
+    this.posicionFormulario.left = `${rect.left}px`;
+
+    // Opcional: si queremos ver también los proyectos asociados al editar, podemos cargarlos aquí.
+    this.cargarProyectosDeUsuario(usuario.uid_number);
+
+    setTimeout(() => this.bloquearCierre = false, 100);
+  }
+
+  guardarUsuario() {
+    const usuarioData = this.usuarioForm.value;
+  
+    if (this.editando) {
+      this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
+        .subscribe({
+          next: () => {
+            alert("✅ Usuario actualizado correctamente");
+            this.mostrarForm = false;
+            this.usuarioForm.reset();
+            this.cargarUsuarios();
+          },
+          error: (err) => {
+            console.error("❌ Error al actualizar:", err);
+            if (err.error && err.error.error === 'El grupo especificado no existe') {
+              alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
+            } else {
+              alert("❌ Error al actualizar el usuario.");
+            }
+          }
+        });
+    } else {
+      this.usuarioService.crearUsuario(usuarioData).subscribe({
+        next: () => {
+          alert("✅ Usuario creado correctamente");
+          this.mostrarForm = false;
+          this.usuarioForm.reset();
+          this.cargarUsuarios();
+        },
+        error: (err) => {
+          console.error("❌ Error al crear:", err);
+          if (err.error && err.error.error === 'El grupo especificado no existe') {
+            alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
+          } else {
+            alert("❌ Error al crear el usuario.");
+          }
+        }
+      });
+    }
+  }
+
+  // Nuevo método: Cargar proyectos asociados a un usuario
+  cargarProyectosDeUsuario(usuarioId: number) {
+    // Se espera que el servicio de proyectos cuente con este método
+    this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
+      this.proyectosDelUsuario = proyectos;
+    });
+  }
+
+  // Nuevo método: Asociar un proyecto al usuario seleccionado
+  asociarProyecto() {
+    if (!this.usuarioSeleccionado || !this.proyectoIdParaAsociar) {
+      alert("Debes seleccionar un usuario y proporcionar un ID de proyecto válido.");
+      return;
+    }
+    this.proyectoService
+      .asociarUsuarioAProyecto(this.proyectoIdParaAsociar, this.usuarioSeleccionado.uid_number)
+      .subscribe({
+        next: (res) => {
+          alert("Proyecto asociado correctamente");
+          // Actualiza la lista de proyectos asociados al usuario
+          this.cargarProyectosDeUsuario(this.usuarioSeleccionado.uid_number);
+          this.proyectoIdParaAsociar = null;
+        },
+        error: (err) => {
+          console.error("❌ Error al asociar proyecto:", err);
+          alert("Error al asociar proyecto");
+        }
+      });
+  }
+
+  // Nuevo método: Permite seleccionar un usuario para ver sus proyectos (si no se está editando)
+  verProyectos(usuario: any) {
+    this.usuarioSeleccionado = usuario;
+    this.cargarProyectosDeUsuario(usuario.uid_number);
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.bloquearCierre) return;
+    const formElement = document.querySelector('.popup-form');
+    if (this.mostrarForm && formElement && !formElement.contains(event.target as Node)) {
+      this.mostrarForm = false;
+    }
+  }
+
+  onFormClick(event: MouseEvent): void {
+    event.stopPropagation();
+  }
+
+  get usuariosFiltrados() {
+    return this.usuarios.filter(usuario =>
+      (usuario.nombre_usuario || '').toLowerCase().includes(this.busqueda.toLowerCase())
+    );
+  }
+}

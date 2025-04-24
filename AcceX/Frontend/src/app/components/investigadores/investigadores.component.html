@@ -1,0 +1,31 @@
+<h1>Gestión de Investigadores</h1> 
+
+<input type="text" placeholder="Buscar por nombre" [(ngModel)]="busqueda" class="buscador" />
+
+<button (click)="mostrarFormulario($event)">➕ Añadir Investigador</button>
+
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+  <h2>Nuevo Investigador</h2>
+  <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
+    <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
+    <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
+    <button type="submit">Guardar</button>
+  </form>
+</div>
+
+<ul>
+  <li *ngFor="let investigador of investigadoresFiltrados">
+    {{ investigador.iid_number }} - {{ investigador.nombre_investigador }} - {{ investigador.correo }}
+    <button (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
+    <button (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
+    
+    <div *ngIf="mostrarForm && editando && investigador.iid_number === investigadorSeleccionado?.iid_number" class="popup-form" (click)="onFormClick($event)">
+      <h2>Editar Investigador</h2>
+      <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
+        <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
+        <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
+        <button type="submit">Actualizar</button>
+      </form>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,38 @@
+<h1>Gestión de Grupos</h1> 
+
+<input type="text" placeholder="Buscar por ID de grupo" [(ngModel)]="busqueda" class="buscador" />
+
+<button (click)="mostrarFormulario($event)">➕ Añadir Grupo</button>
+
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+  <h2>Nuevo Grupo</h2>
+  <form [formGroup]="grupoForm" (ngSubmit)="guardarGrupo()">
+    <p>Nombre: <input formControlName="nombre" placeholder="Nombre del grupo"></p>
+    <button type="submit">Guardar</button>
+  </form>
+</div>
+
+<ul>
+  <li *ngFor="let grupo of gruposFiltrados">
+    {{ grupo.gid_number }} - {{ grupo.nombre }}
+    <button (click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
+    <button (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
+
+    <div *ngIf="mostrarForm && editando && grupo.gid_number === grupoSeleccionado?.gid_number" class="popup-form" (click)="onFormClick($event)">
+      <h2>Editar Grupo</h2>
+      <form [formGroup]="grupoForm" (ngSubmit)="guardarGrupo()">
+        <p>Nombre: <input formControlName="nombre" placeholder="Nombre del grupo"></p>
+        <div *ngIf="usuariosDelGrupo.length > 0">
+          <h3>Usuarios en este grupo:</h3>
+          <ul>
+            <li *ngFor="let usuario of usuariosDelGrupo">
+              {{ usuario.nombre_usuario }}
+              <button (click)="eliminarUsuario(usuario.uid_number)">❌</button>
+            </li>
+          </ul>
+        </div>    
+        <button type="submit">Actualizar</button>
+      </form>
+    </div>
+  </li>
+</ul>

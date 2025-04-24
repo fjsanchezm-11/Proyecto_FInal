@@ -1,0 +1,98 @@
+/* styles.css o styles.scss */
+
+/* Variables de color */
+:root {
+    --color-primario: #2C3E50; /* Azul oscuro */
+    --color-secundario: #3498DB; /* Azul medio */
+    --color-fondo: #ECF0F1; /* Gris claro */
+    --color-texto: #2C3E50; /* Azul oscuro */
+    --color-blanco: #FFFFFF; /* Blanco */
+  }
+  
+  /* Estilo general del cuerpo */
+  body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Encabezados */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-primario);
+  }
+  
+  /* Enlaces */
+  a {
+    color: var(--color-secundario);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Botones */
+  button {
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: darken(var(--color-secundario), 10%);
+  }
+  
+  /* Formularios */
+  input, textarea {
+    border: 1px solid var(--color-primario);
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-secundario);
+    box-shadow: 0 0 5px var(--color-secundario);
+  }
+  
+  /* Tarjetas o contenedores */
+  .card {
+    background-color: var(--color-blanco);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  /* Navegación */
+  nav {
+    background-color: var(--color-primario);
+    padding: 10px 0;
+  }
+  
+  nav a {
+    color: var(--color-blanco);
+    margin: 0 15px;
+  }
+  
+  nav a:hover {
+    color: var(--color-secundario);
+  }
+  
+  /* Pie de página */
+  footer {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+  }
+  
