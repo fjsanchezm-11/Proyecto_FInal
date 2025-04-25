@@ -42,7 +42,8 @@ export class UsuarioComponent implements OnInit {
       scholar: [''],
       wos: [''],
       scopus: [''],
-      res: ['']
+      res: [''],
+      proyectoIdParaAsociar: [null]
     });
   }
 
@@ -86,14 +87,17 @@ export class UsuarioComponent implements OnInit {
     this.mostrarForm = true;
     this.editando = true;
     this.usuarioSeleccionado = usuario;
-
-    const fechaFormateada1 = usuario.fecha_alta 
-    ? new Date(usuario.fecha_alta).toISOString().split('T')[0] 
-    : '';
-    const fechaFormateada2 = usuario.fecha_baja 
-      ? new Date(usuario.fecha_baja).toISOString().split('T')[0] 
+  
+    console.log("Usuario seleccionado:", this.usuarioSeleccionado); // 🐞 Debug
+    this.cargarProyectosDeUsuario(usuario.uid_number);
+  
+    const fechaFormateada1 = usuario.fecha_alta
+      ? new Date(usuario.fecha_alta).toISOString().split('T')[0]
       : '';
-    
+    const fechaFormateada2 = usuario.fecha_baja
+      ? new Date(usuario.fecha_baja).toISOString().split('T')[0]
+      : '';
+  
     this.usuarioForm.patchValue({
       gid_number: usuario.gid_number,
       nombre_usuario: usuario.nombre_usuario,
@@ -106,18 +110,17 @@ export class UsuarioComponent implements OnInit {
       scholar: usuario.scholar ?? '',
       wos: usuario.wos ?? '',
       scopus: usuario.scopus ?? '',
-      res: usuario.res ?? ''
+      res: usuario.res ?? '',
+      proyectoIdParaAsociar: null
     });
-
+  
     const buttonElement = event.target as HTMLButtonElement;
     const rect = buttonElement.getBoundingClientRect();
     this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
     this.posicionFormulario.left = `${rect.left}px`;
-
-    this.cargarProyectosDeUsuario(usuario.uid_number);
-
+  
     setTimeout(() => this.bloquearCierre = false, 100);
-  }
+  }  
 
   guardarUsuario() {
     const usuarioData = this.usuarioForm.value;
@@ -167,25 +170,28 @@ export class UsuarioComponent implements OnInit {
   }
 
   asociarProyecto() {
-    if (!this.usuarioSeleccionado || !this.proyectoIdParaAsociar) {
+    const proyectoId = this.usuarioForm.get('proyectoIdParaAsociar')?.value;
+  
+    if (!this.usuarioSeleccionado || !proyectoId) {
       alert("Debes seleccionar un usuario y proporcionar un ID de proyecto válido.");
       return;
     }
+  
     this.proyectoService
-      .asociarUsuarioAProyecto(this.proyectoIdParaAsociar, this.usuarioSeleccionado.uid_number)
+      .asociarUsuarioAProyecto(proyectoId, this.usuarioSeleccionado.uid_number)
       .subscribe({
-        next: (res) => {
-          alert("Proyecto asociado correctamente");
+        next: () => {
+          alert("Proyecto asociado correctamente.");
           this.cargarProyectosDeUsuario(this.usuarioSeleccionado.uid_number);
-          this.proyectoIdParaAsociar = null;
+          this.usuarioForm.patchValue({ proyectoIdParaAsociar: null });
         },
         error: (err) => {
-          console.error("❌ Error al asociar proyecto:", err);
-          alert("Error al asociar proyecto");
+          console.error("Error al asociar proyecto:", err);
+          alert("Error al asociar proyecto.");
         }
       });
   }
-
+    
   eliminarProyectoDelUsuario(proyectoId: number) {
     if (!this.usuarioSeleccionado) {
       alert("No hay usuario seleccionado.");

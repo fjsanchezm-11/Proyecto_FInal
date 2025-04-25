@@ -62,11 +62,8 @@
               </li>
           </ul>
           <div>
-            <input type="number" 
-                   name="proyectoIdParaAsociar" 
-                   placeholder="ID del proyecto a asociar" 
-                   [(ngModel)]="proyectoIdParaAsociar">
-            <button (click)="asociarProyecto()">Asociar Proyecto</button>
+            <input type="number" placeholder="ID del proyecto" formControlName="proyectoIdParaAsociar">
+            <button (click)="asociarProyecto()">Añadir Proyecto</button>
           </div>
         </div>
       </form>
