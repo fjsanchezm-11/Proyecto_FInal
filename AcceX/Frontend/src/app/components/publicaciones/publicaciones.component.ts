@@ -72,9 +72,16 @@ export class PublicacionesComponent implements OnInit {
     this.editando = true;
     this.publicacionSeleccionada = publicacion;
 
-    const fechaFormateada = publicacion.fecha_publicacion
-    ? new Date(publicacion.fecha_publicacion).toISOString().split('T')[0]
-    : '';
+    let fechaFormateada = '';
+    try {
+      const fecha = new Date(publicacion.fecha_publicacion);
+      if (!isNaN(fecha.getTime())) {
+        fechaFormateada = fecha.toISOString().split('T')[0];
+      }
+    } catch (e) {
+      console.error('Error al convertir la fecha:', publicacion.fecha_publicacion);
+    }
+
 
     this.publicacionForm.patchValue({
       result_description: publicacion.result_description,
