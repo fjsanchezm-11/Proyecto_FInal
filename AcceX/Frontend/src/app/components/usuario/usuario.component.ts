@@ -88,7 +88,7 @@ export class UsuarioComponent implements OnInit {
     this.editando = true;
     this.usuarioSeleccionado = usuario;
   
-    console.log("Usuario seleccionado:", this.usuarioSeleccionado); // 🐞 Debug
+    console.log("Usuario seleccionado:", this.usuarioSeleccionado); 
     this.cargarProyectosDeUsuario(usuario.uid_number);
   
     const fechaFormateada1 = usuario.fecha_alta
@@ -181,7 +181,6 @@ export class UsuarioComponent implements OnInit {
       .asociarUsuarioAProyecto(proyectoId, this.usuarioSeleccionado.uid_number)
       .subscribe({
         next: () => {
-          alert("Proyecto asociado correctamente.");
           this.cargarProyectosDeUsuario(this.usuarioSeleccionado.uid_number);
           this.usuarioForm.patchValue({ proyectoIdParaAsociar: null });
         },
