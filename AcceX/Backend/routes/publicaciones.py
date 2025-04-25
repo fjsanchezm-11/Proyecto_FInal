@@ -50,7 +50,9 @@ def actualizar_publicacion(id):
         return jsonify({'mensaje': 'Publicación no encontrada'}), 404
 
     # Parseamos la fecha si se proporciona una válida
-    publicacion.fecha_publicacion = parse_fecha(data.get('fecha_publicacion', publicacion.fecha_publicacion))
+    if 'fecha_publicacion' in data:
+        publicacion.fecha_publicacion = parse_fecha(data['fecha_publicacion'])
+        
     publicacion.result_description = data.get('result_description', publicacion.result_description)
     publicacion.doi = data.get('doi', publicacion.doi)
 
