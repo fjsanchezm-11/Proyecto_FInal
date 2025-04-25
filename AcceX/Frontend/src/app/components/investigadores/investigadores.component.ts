@@ -19,6 +19,8 @@ export class InvestigadoresComponent implements OnInit {
   posicionFormulario = { top: '0px', left: '0px' }; 
   bloquearCierre = false; 
   busqueda: string = '';
+  publicacionesDelInvestigador: any[] = [];
+  publicacionIdParaAsociar: number | null = null;
 
   private investigadorService = inject(InvestigadoresService);
   private fb = inject(FormBuilder);
@@ -26,7 +28,8 @@ export class InvestigadoresComponent implements OnInit {
   constructor() {
     this.investigadorForm = this.fb.group({
       nombre_investigador: [''],
-      correo: ['']
+      correo: [''],
+      publicacionIdParaAsociar: [null]
     });
   }
 
@@ -68,6 +71,8 @@ export class InvestigadoresComponent implements OnInit {
     this.editando = true;
     this.investigadorSeleccionado = investigador;
 
+    this.cargarPublicacionesDelInvestigador(investigador.iid_number);
+
     this.investigadorForm.patchValue({
       nombre_investigador: investigador.nombre_investigador,
       correo: investigador.correo
@@ -96,6 +101,54 @@ export class InvestigadoresComponent implements OnInit {
       });
     }
   }
+
+  cargarPublicacionesDelInvestigador(investigadorId: number) {
+    this.investigadorService.getPublicacionesPorInvestigador(investigadorId).subscribe(publicaciones => {
+      this.publicacionesDelInvestigador = publicaciones;
+    });
+  }
+
+  asociarPublicacion() {
+    const publicacionId = this.investigadorForm.get('publicacionIdParaAsociar')?.value;
+    console.log("Investigador seleccionado:", this.investigadorSeleccionado);
+    console.log("ID de publicación:", publicacionId); 
+  
+    if (!this.investigadorSeleccionado || !publicacionId) {
+      alert("Debes seleccionar un investigador y proporcionar un ID de publicación válido.");
+      return;
+    }
+  
+    this.investigadorService.asociarPublicacionAInvestigador(this.investigadorSeleccionado.iid_number, publicacionId)
+      .subscribe({
+        next: () => {
+          this.cargarPublicacionesDelInvestigador(this.investigadorSeleccionado.iid_number);
+          this.investigadorForm.patchValue({ publicacionIdParaAsociar: null }); 
+        },
+        error: (err) => {
+          console.error("Error al asociar publicación:", err);
+          alert("Error al asociar la publicación.");
+        }
+      });
+  }
+  
+
+  eliminarPublicacion(publicacionId: number) {
+    if (!this.investigadorSeleccionado) {
+      alert("No hay investigador seleccionado.");
+      return;
+    }
+  
+    this.investigadorService.eliminarPublicacionDeInvestigador(this.investigadorSeleccionado.iid_number, publicacionId)
+      .subscribe({
+        next: () => {
+          this.cargarPublicacionesDelInvestigador(this.investigadorSeleccionado.iid_number);
+        },
+        error: (err) => {
+          console.error("Error al eliminar la publicación:", err);
+          alert("Error al eliminar la publicación.");
+        }
+      });
+  }  
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

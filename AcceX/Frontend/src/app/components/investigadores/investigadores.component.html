@@ -25,6 +25,19 @@
         <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
         <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
         <button type="submit">Actualizar</button>
+        <div *ngIf="investigadorSeleccionado">
+          <h3>Publicaciones Asociadas</h3>
+          <ul>
+            <li *ngFor="let publicacion of publicacionesDelInvestigador">
+              {{ publicacion.titulo }} (ID: {{ publicacion.result_code }})
+              <button (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
+            </li>
+          </ul>
+          <div>
+            <input type="number" placeholder="ID de la publicación" formControlName="publicacionIdParaAsociar">
+            <button (click)="asociarPublicacion()">➕ Asociar Publicación</button>
+          </div>
+        </div>        
       </form>
     </div>
   </li>

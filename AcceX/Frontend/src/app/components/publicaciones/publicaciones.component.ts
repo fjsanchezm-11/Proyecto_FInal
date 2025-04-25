@@ -30,7 +30,8 @@ export class PublicacionesComponent implements OnInit {
     this.publicacionForm = this.fb.group({
       result_description: [''],
       fecha_publicacion: [''],
-      doi: ['']
+      doi: [''],
+      nuevoInvestigadorId: [null]
     });
   }
 
@@ -72,6 +73,8 @@ export class PublicacionesComponent implements OnInit {
     this.editando = true;
     this.publicacionSeleccionada = publicacion;
 
+    this.cargarInvestigadoresDePublicacion(publicacion.result_code);
+
     let fechaFormateada = '';
     try {
       const fecha = new Date(publicacion.fecha_publicacion);
@@ -81,7 +84,6 @@ export class PublicacionesComponent implements OnInit {
     } catch (e) {
       console.error('Error al convertir la fecha:', publicacion.fecha_publicacion);
     }
-
 
     this.publicacionForm.patchValue({
       result_description: publicacion.result_description,
@@ -114,6 +116,51 @@ export class PublicacionesComponent implements OnInit {
       });
     }
   }
+
+  cargarInvestigadoresDePublicacion(publicacionId: number) {
+    this.publicacionesService.getInvestigadoresPorPublicacion(publicacionId).subscribe(investigadores => {
+      this.investigadoresDePublicacion = investigadores;
+    });
+  }
+
+  asociarInvestigador() {
+    const investigadorId = this.publicacionForm.get('nuevoInvestigadorId')?.value; // Obtén el ID del investigador del formulario
+  
+    if (!this.publicacionSeleccionada || !investigadorId) {
+      alert("Debes seleccionar una publicación y proporcionar un ID de investigador válido.");
+      return;
+    }
+  
+    this.publicacionesService.asociarInvestigadorAPublicacion(this.publicacionSeleccionada.result_code, investigadorId)
+      .subscribe({
+        next: () => {
+          this.cargarInvestigadoresDePublicacion(this.publicacionSeleccionada.result_code);
+          this.publicacionForm.patchValue({ nuevoInvestigadorId: null }); 
+        },
+        error: (err) => {
+          console.error("Error al asociar investigador:", err);
+          alert("Error al asociar el investigador.");
+        }
+      });
+  }
+
+  eliminarInvestigador(investigadorId: number) {
+    if (!this.publicacionSeleccionada) {
+      alert("No hay publicación seleccionada.");
+      return;
+    }
+  
+    this.publicacionesService.eliminarInvestigadorDePublicacion(this.publicacionSeleccionada.result_code, investigadorId)
+      .subscribe({
+        next: () => {
+          this.cargarInvestigadoresDePublicacion(this.publicacionSeleccionada.result_code);
+        },
+        error: (err) => {
+          console.error("Error al eliminar investigador:", err);
+          alert("Error al eliminar el investigador.");
+        }
+      });
+  }  
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

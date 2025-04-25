@@ -31,6 +31,19 @@ class="buscador"
                 <p>Fecha de publicación: <input type="date" formControlName="fecha_publicacion"></p>
                 <p>DOI: <input formControlName="doi" placeholder="DOI"></p>
                 <button type="submit">Actualizar</button>
+                <div *ngIf="publicacionSeleccionada">
+                    <h3>Investigadores Asociados</h3>
+                    <ul>
+                      <li *ngFor="let investigador of investigadoresDePublicacion">
+                        {{ investigador.nombre_investigador }} (ID: {{ investigador.iid_number }})
+                        <button (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
+                      </li>
+                    </ul>
+                    <div>
+                      <input type="number" placeholder="ID del investigador" formControlName="nuevoInvestigadorId">
+                      <button (click)="asociarInvestigador()">➕ Asociar Investigador</button>
+                    </div>
+                  </div>                  
             </form>
         </div>
     </li>

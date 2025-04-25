@@ -28,4 +28,16 @@ export class InvestigadoresService {
   eliminarInvestigador(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  getPublicacionesPorInvestigador(investigadorId: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://127.0.0.1:5000/api/investigadores/${investigadorId}/publicaciones`);
+  }
+  
+  asociarPublicacionAInvestigador(investigadorId: number, publicacionId: number): Observable<any> {
+    return this.http.post<any>(`http://127.0.0.1:5000/api/investigadores/${investigadorId}/publicaciones`, { publicacion_id: publicacionId });
+  }
+  
+  eliminarPublicacionDeInvestigador(investigadorId: number, publicacionId: number): Observable<any> {
+    return this.http.delete<any>(`http://127.0.0.1:5000/api/investigadores/${investigadorId}/publicaciones/${publicacionId}`);
+  }  
 }
