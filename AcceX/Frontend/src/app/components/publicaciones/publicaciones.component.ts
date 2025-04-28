@@ -72,32 +72,35 @@ export class PublicacionesComponent implements OnInit {
     this.mostrarForm = true;
     this.editando = true;
     this.publicacionSeleccionada = publicacion;
-
+  
     this.cargarInvestigadoresDePublicacion(publicacion.result_code);
-
+  
     let fechaFormateada = '';
-    try {
-      const fecha = new Date(publicacion.fecha_publicacion);
-      if (!isNaN(fecha.getTime())) {
-        fechaFormateada = fecha.toISOString().split('T')[0];
+    if (publicacion.fecha_publicacion) { 
+      try {
+        const fecha = new Date(publicacion.fecha_publicacion);
+        if (!isNaN(fecha.getTime())) { 
+          fechaFormateada = fecha.toISOString().split('T')[0];
+        }
+      } catch (e) {
+        console.error('Error al convertir la fecha:', publicacion.fecha_publicacion);
       }
-    } catch (e) {
-      console.error('Error al convertir la fecha:', publicacion.fecha_publicacion);
     }
-
+  
     this.publicacionForm.patchValue({
       result_description: publicacion.result_description,
-      fecha_publicacion: fechaFormateada,
+      fecha_publicacion: fechaFormateada, 
       doi: publicacion.doi
     });
-
+  
     const buttonElement = event.target as HTMLButtonElement;
     const rect = buttonElement.getBoundingClientRect();
     this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
     this.posicionFormulario.left = `${rect.left}px`;
-
+  
     setTimeout(() => this.bloquearCierre = false, 100);
   }
+  
 
   guardarPublicacion() {
     if (this.editando) {
