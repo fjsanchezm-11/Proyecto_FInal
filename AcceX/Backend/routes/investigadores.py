@@ -1,14 +1,34 @@
 from flask import Blueprint, request, jsonify
 from models.investigador import Investigador
-from models.database import db, investigadores_publicaciones
+from models.database import db, investigadores_publicaciones, investigadores_usuarios, usuarios_grupos
 from models.publicacion import Publicacion
+from models.grupo import Grupo
+from models.usuario import Usuario
 
 investigadores_bp = Blueprint('investigadores', __name__)
 
 @investigadores_bp.route('/investigadores', methods=['GET'])
 def obtener_investigadores():
     investigadores = Investigador.query.all()
-    return jsonify([investigador.to_dict() for investigador in investigadores])
+    resultado = []
+
+    for investigador in investigadores:
+        relacion = db.session.execute(
+            investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id == investigador.iid_number)
+        ).first()
+
+        nombre_usuario = None
+        if relacion:
+            usuario = Usuario.query.get(relacion.usuario_id)
+            if usuario:
+                nombre_usuario = usuario.nombre_usuario
+
+        datos_investigador = investigador.to_dict() 
+        datos_investigador['nombre_usuario'] = nombre_usuario
+        resultado.append(datos_investigador)
+
+    return jsonify(resultado)
+
 
 @investigadores_bp.route('/investigadores/<int:id>', methods=['GET'])
 def obtener_investigador(id):
@@ -20,13 +40,57 @@ def obtener_investigador(id):
 @investigadores_bp.route('/investigadores', methods=['POST'])
 def crear_investigador():
     data = request.json
-    nuevo_investigador = Investigador(
-        nombre_investigador=data.get('nombre_investigador'),
-        correo=data.get('correo')
-    )
-    db.session.add(nuevo_investigador)
-    db.session.commit()
-    return jsonify({'mensaje': 'Investigador creado'}), 201
+    try:
+        nuevo_investigador = Investigador(
+            nombre_investigador=data.get('nombre_investigador'),
+            correo=data.get('correo')
+        )
+        db.session.add(nuevo_investigador)
+
+        crear_usuario = data.get('crear_usuario', False)
+        if crear_usuario:
+            gid_number = data.get('gid_number')
+            grupo = Grupo.query.get(gid_number)
+            if not grupo:
+                return jsonify({'error': f'El grupo con gid_number {gid_number} no existe'}), 400
+
+            nuevo_usuario = Usuario(
+                gid_number=gid_number,
+                nombre_usuario=data.get('nombre_usuario'),
+                fecha_alta=data.get('fecha_alta'),
+                fecha_baja=data.get('fecha_baja'),
+                activo=data.get('activo', True),
+                contacto=data.get('correo'), 
+                telefono=data.get('telefono'),
+                orcid=data.get('orcid'),
+                scholar=data.get('scholar'),
+                wos=data.get('wos'),
+                scopus=data.get('scopus'),
+                res=data.get('res')
+            )
+            db.session.add(nuevo_usuario)
+
+            db.session.flush()
+
+            db.session.execute(investigadores_usuarios.insert().values(
+                usuario_id=nuevo_usuario.uid_number,
+                investigador_id=nuevo_investigador.iid_number
+            ))
+
+            db.session.execute(usuarios_grupos.insert().values(
+                usuario_id=nuevo_usuario.uid_number,
+                grupo_id=gid_number
+            ))
+        else:
+            db.session.flush()
+
+        db.session.commit()
+        return jsonify({'mensaje': 'Investigador (y usuario si corresponde) creado correctamente'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print("❌ Error al crear investigador y usuario:", str(e))
+        return jsonify({'error': 'Error al crear investigador', 'detalle': str(e)}), 500
 
 @investigadores_bp.route('/investigadores/<int:id>', methods=['PUT'])
 def actualizar_investigador(id):
@@ -46,10 +110,24 @@ def eliminar_investigador(id):
     investigador = Investigador.query.get(id)
     if not investigador:
         return jsonify({'mensaje': 'Investigador no encontrado'}), 404
-    
+
+    relacion = db.session.execute(
+        investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id == id)
+    ).first()
+
+    if relacion:
+        db.session.execute(
+            investigadores_usuarios.delete().where(investigadores_usuarios.c.investigador_id == id)
+        )
+
+        usuario = Usuario.query.get(relacion.usuario_id)
+        if usuario:
+            db.session.delete(usuario)
+
     db.session.delete(investigador)
     db.session.commit()
-    return jsonify({'mensaje': 'Investigador eliminado'})
+
+    return jsonify({'mensaje': 'Investigador y usuario asociados eliminados'}), 200
 
 @investigadores_bp.route('/investigadores/<int:investigador_id>/publicaciones', methods=['GET'])
 def obtener_publicaciones_por_investigador(investigador_id):

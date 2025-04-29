@@ -43,7 +43,8 @@ export class UsuarioComponent implements OnInit {
       wos: [''],
       scopus: [''],
       res: [''],
-      proyectoIdParaAsociar: [null]
+      proyectoIdParaAsociar: [null],
+      nombre_investigador: ['']
     });
   }
 
@@ -123,7 +124,12 @@ export class UsuarioComponent implements OnInit {
   }  
 
   guardarUsuario() {
-    const usuarioData = this.usuarioForm.value;
+    const usuarioData = {
+      ...this.usuarioForm.value,
+      correo: this.usuarioForm.get('contacto')?.value 
+    };
+
+    console.log('Datos que se envían al backend:', usuarioData);
   
     if (this.editando) {
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
@@ -136,32 +142,23 @@ export class UsuarioComponent implements OnInit {
           },
           error: (err) => {
             console.error("❌ Error al actualizar:", err);
-            if (err.error && err.error.error === 'El grupo especificado no existe') {
-              alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
-            } else {
-              alert("❌ Error al actualizar el usuario.");
-            }
           }
         });
     } else {
-      this.usuarioService.crearUsuario(usuarioData).subscribe({
-        next: () => {
-          alert("✅ Usuario creado correctamente");
-          this.mostrarForm = false;
-          this.usuarioForm.reset();
-          this.cargarUsuarios();
-        },
-        error: (err) => {
-          console.error("❌ Error al crear:", err);
-          if (err.error && err.error.error === 'El grupo especificado no existe') {
-            alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
-          } else {
-            alert("❌ Error al crear el usuario.");
+      this.usuarioService.crearUsuario(usuarioData)
+        .subscribe({
+          next: () => {
+            alert("✅ Usuario e Investigador creados correctamente");
+            this.mostrarForm = false;
+            this.usuarioForm.reset();
+            this.cargarUsuarios();
+          },
+          error: (err) => {
+            console.error("❌ Error al crear:", err);
           }
-        }
-      });
+        });
     }
-  }
+  }  
 
   cargarProyectosDeUsuario(usuarioId: number) {
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {

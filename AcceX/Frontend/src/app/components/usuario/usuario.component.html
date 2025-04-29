@@ -23,6 +23,8 @@
     <p>WOS: <input formControlName="wos" placeholder="WOS"></p>
     <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
     <p>RES: <input formControlName="res" placeholder="RES"></p>
+    <h3>Información del Investigador</h3>
+    <p>Nombre del Investigador: <input formControlName="nombre_investigador" placeholder="Nombre del Investigador"></p>
     <button type="submit">Guardar</button>
   </form>
 </div>
@@ -38,6 +40,7 @@
       <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
         <p>ID del grupo: <input formControlName="gid_number" placeholder="ID del grupo"></p>
         <p>Nombre: <input formControlName="nombre_usuario" placeholder="Nombre"></p>
+        <p>Investigador Asociado:  <input [value]="usuario.nombre_investigador" readonly></p>
         <p>Fecha de alta: <input formControlName="fecha_alta" type="date" placeholder="Fecha de alta"></p>
         <p>Fecha de baja: <input formControlName="fecha_baja" type="date" placeholder="Fecha de baja"></p>
         <p class="activo-checkbox">

@@ -7,11 +7,25 @@
 <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
   <h2>Nuevo Investigador</h2>
   <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
-    <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
-    <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
+    <p>Nombre del Investigador: <input formControlName="nombre_investigador" placeholder="Nombre del Investigador"></p>
+    <p>Correo del Investigador: <input formControlName="correo" type="email" placeholder="Correo"></p>
+
+    <hr>
+    <h3>Datos del Usuario</h3>
+
+    <p>Nombre de Usuario: <input formControlName="nombre_usuario" placeholder="Nombre de Usuario"></p>
+    <p>Grupo (GID): <input formControlName="gid_number" type="number" placeholder="ID del Grupo"></p>
+    <p>Teléfono: <input formControlName="telefono" placeholder="Teléfono"></p>
+    <p>ORCID: <input formControlName="orcid" placeholder="ORCID"></p>
+    <p>Scholar: <input formControlName="scholar" placeholder="Google Scholar"></p>
+    <p>WOS: <input formControlName="wos" placeholder="Web of Science"></p>
+    <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
+    <p>RES: <input formControlName="res" placeholder="RES (Supercomputación)"></p>
+
     <button type="submit">Guardar</button>
   </form>
 </div>
+
 
 <ul>
   <li *ngFor="let investigador of investigadoresFiltrados">
@@ -24,6 +38,8 @@
       <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
         <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
         <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
+        <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
+        <p>Usuario Asociado:  <input [value]="investigador.nombre_usuario" readonly></p>
         <button type="submit">Actualizar</button>
         <div *ngIf="investigadorSeleccionado">
           <h3>Publicaciones Asociadas</h3>

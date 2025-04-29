@@ -29,8 +29,19 @@ export class InvestigadoresComponent implements OnInit {
     this.investigadorForm = this.fb.group({
       nombre_investigador: [''],
       correo: [''],
+      crear_usuario: [false],
+      nombre_usuario: [''],
+      gid_number: [null],
+      fecha_alta: [''],
+      contacto: [''],
+      telefono: [''],
+      orcid: [''],
+      scholar: [''],
+      wos: [''],
+      scopus: [''],
+      res: [''],
       publicacionIdParaAsociar: [null]
-    });
+    });    
   }
 
   ngOnInit(): void {
@@ -87,21 +98,51 @@ export class InvestigadoresComponent implements OnInit {
   }
 
   guardarInvestigador() {
+    const formValue = this.investigadorForm.value;
+  
+    const datos = {
+      nombre_investigador: formValue.nombre_investigador,
+      correo: formValue.correo,
+      crear_usuario: true,
+      nombre_usuario: formValue.nombre_usuario,
+      gid_number: formValue.gid_number,
+      contacto: formValue.contacto,
+      telefono: formValue.telefono,
+      orcid: formValue.orcid,
+      scholar: formValue.scholar,
+      wos: formValue.wos,
+      scopus: formValue.scopus,
+      res: formValue.res
+    };
+  
+    console.log("Datos que se envían al backend:", datos);
+  
     if (this.editando) {
-      this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, this.investigadorForm.value).subscribe(() => {
-        alert("Investigador actualizado correctamente");
-        this.mostrarForm = false;
-        this.cargarInvestigadores();
+      this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, datos).subscribe({
+        next: () => {
+          alert("✅ Investigador actualizado correctamente");
+          this.mostrarForm = false;
+          this.cargarInvestigadores();
+        },
+        error: (err) => {
+          console.error("❌ Error al actualizar:", err);
+        }
       });
     } else {
-      this.investigadorService.crearInvestigador(this.investigadorForm.value).subscribe(() => {
-        alert("Investigador creado correctamente");
-        this.mostrarForm = false;
-        this.cargarInvestigadores();
+      this.investigadorService.crearInvestigador(datos).subscribe({
+        next: () => {
+          alert("✅ Investigador y usuario creados correctamente");
+          this.mostrarForm = false;
+          this.investigadorForm.reset();
+          this.cargarInvestigadores();
+        },
+        error: (err) => {
+          console.error("❌ Error al crear:", err);
+        }
       });
     }
   }
-
+  
   cargarPublicacionesDelInvestigador(investigadorId: number) {
     this.investigadorService.getPublicacionesPorInvestigador(investigadorId).subscribe(publicaciones => {
       this.publicacionesDelInvestigador = publicaciones;
