@@ -4,35 +4,66 @@
 
 <button (click)="mostrarFormulario($event)">➕ Añadir Grupo</button>
 
-<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
-  <h2>Nuevo Grupo</h2>
-  <form [formGroup]="grupoForm" (ngSubmit)="guardarGrupo()">
-    <p>Nombre: <input formControlName="nombre" placeholder="Nombre del grupo"></p>
-    <button type="submit">Guardar</button>
-  </form>
+<table class="grupos-table">
+  <thead>
+    <tr>
+      <th>Acciones</th>
+      <th>ID de Grupo</th>
+      <th>Nombre</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let grupo of gruposFiltrados">
+      <td>
+        <button (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
+        <button (click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
+      </td>
+      <td (click)="mostrarDetalles(grupo)">
+        {{ grupo.gid_number }}
+      </td>
+      <td (click)="mostrarDetalles(grupo)">
+        {{ grupo.nombre }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- FORMULARIO DE EDICIÓN EMERGENTE -->
+<div *ngIf="mostrarForm && editando && grupoSeleccionado && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
+  <div class="popup-content">
+    <h2>Editar Grupo</h2>
+    <form [formGroup]="grupoForm" (ngSubmit)="guardarGrupo()">
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input formControlName="nombre" placeholder="Nombre del grupo">
+      </div>
+      <div *ngIf="usuariosDelGrupo.length > 0">
+        <h3>Usuarios en este grupo:</h3>
+        <ul>
+          <li *ngFor="let usuario of usuariosDelGrupo">
+            {{ usuario.nombre_usuario }}
+            <button (click)="eliminarUsuario(usuario.uid_number)">❌</button>
+          </li>
+        </ul>
+      </div>    
+      <button type="submit">Actualizar</button>
+      <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+    </form>
+  </div>
 </div>
 
-<ul>
-  <li *ngFor="let grupo of gruposFiltrados">
-    {{ grupo.gid_number }} - {{ grupo.nombre }}
-    <button (click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
-    <button (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
-
-    <div *ngIf="mostrarForm && editando && grupo.gid_number === grupoSeleccionado?.gid_number" class="popup-form" (click)="onFormClick($event)">
-      <h2>Editar Grupo</h2>
-      <form [formGroup]="grupoForm" (ngSubmit)="guardarGrupo()">
-        <p>Nombre: <input formControlName="nombre" placeholder="Nombre del grupo"></p>
-        <div *ngIf="usuariosDelGrupo.length > 0">
-          <h3>Usuarios en este grupo:</h3>
-          <ul>
-            <li *ngFor="let usuario of usuariosDelGrupo">
-              {{ usuario.nombre_usuario }}
-              <button (click)="eliminarUsuario(usuario.uid_number)">❌</button>
-            </li>
-          </ul>
-        </div>    
-        <button type="submit">Actualizar</button>
-      </form>
-    </div>
-  </li>
-</ul>
+<!-- VENTANA EMERGENTE DE INFORMACIÓN SOLO AL PULSAR EL NOMBRE DEL GRUPO -->
+<div *ngIf="grupoSeleccionado && mostrandoDetalles" class="popup-form" (click)="cerrarDetalles()">
+  <div class="popup-content">
+    <h2>Información del Grupo</h2>
+    <p><strong>ID:</strong> {{ grupoSeleccionado.gid_number }}</p>
+    <p><strong>Nombre:</strong> {{ grupoSeleccionado.nombre }}</p>
+    <h3>Usuarios en este grupo:</h3>
+    <ul>
+      <li *ngFor="let usuario of usuariosDelGrupo">
+        {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
+      </li>
+    </ul>
+    <button class="back-button" (click)="cerrarDetalles()">⬅️ Volver atrás</button>
+  </div>
+</div>

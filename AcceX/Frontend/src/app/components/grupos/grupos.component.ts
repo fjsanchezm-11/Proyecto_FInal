@@ -16,6 +16,7 @@ export class GruposComponent implements OnInit {
   mostrarForm = false;
   editando = false;
   grupoSeleccionado: any = null;
+  mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' };
   bloquearCierre = false;
   busqueda: string = '';
@@ -67,7 +68,7 @@ export class GruposComponent implements OnInit {
     this.mostrarForm = true;
     this.editando = true;
     this.grupoSeleccionado = grupo;
-  
+    this.mostrandoDetalles = false;
     this.grupoForm.patchValue({ nombre: grupo.nombre });
   
     const buttonElement = event.target as HTMLButtonElement;
@@ -125,4 +126,22 @@ export class GruposComponent implements OnInit {
       grupo.gid_number.toString().includes(this.busqueda)
     );
   }
+
+  mostrarDetalles(grupo: any) {
+    this.grupoSeleccionado = grupo;
+    this.mostrandoDetalles = true;
+    this.mostrarForm = false; 
+  }
+
+  cerrarDetalles() {
+    this.grupoSeleccionado = null;
+    this.mostrandoDetalles = false;
+  }
+
+  cerrarFormulario() {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.grupoSeleccionado = null;
+  }
+
 }
