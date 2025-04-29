@@ -18,9 +18,11 @@ export class UsuarioComponent implements OnInit {
   mostrarForm = false;
   editando = false;
   usuarioSeleccionado: any = null;
+  mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' };
   bloquearCierre = false;
   busqueda: string = '';
+
 
   proyectosDelUsuario: any[] = [];
   proyectoIdParaAsociar: number | null = null;
@@ -43,10 +45,25 @@ export class UsuarioComponent implements OnInit {
       wos: [''],
       scopus: [''],
       res: [''],
-      proyectoIdParaAsociar: [null],
-      nombre_investigador: ['']
+      proyectoIdParaAsociar: [null]
     });
   }
+
+
+
+/* Muestra los detalles del usuario seleccionado */
+mostrarDetalles(usuario: any) {
+  this.usuarioSeleccionado = usuario;
+  this.mostrandoDetalles = true;
+  this.mostrarForm = false;
+}
+
+/* Cierra la ventana de detalles */
+cerrarDetalles() {
+  this.usuarioSeleccionado = null;
+  this.mostrandoDetalles = false;
+}
+
 
   ngOnInit(): void {
     this.cargarUsuarios();
@@ -88,6 +105,7 @@ export class UsuarioComponent implements OnInit {
     this.mostrarForm = true;
     this.editando = true;
     this.usuarioSeleccionado = usuario;
+    this.mostrandoDetalles = false;
   
     console.log("Usuario seleccionado:", this.usuarioSeleccionado); 
     this.cargarProyectosDeUsuario(usuario.uid_number);
@@ -124,12 +142,7 @@ export class UsuarioComponent implements OnInit {
   }  
 
   guardarUsuario() {
-    const usuarioData = {
-      ...this.usuarioForm.value,
-      correo: this.usuarioForm.get('contacto')?.value 
-    };
-
-    console.log('Datos que se envían al backend:', usuarioData);
+    const usuarioData = this.usuarioForm.value;
   
     if (this.editando) {
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
@@ -142,23 +155,32 @@ export class UsuarioComponent implements OnInit {
           },
           error: (err) => {
             console.error("❌ Error al actualizar:", err);
+            if (err.error && err.error.error === 'El grupo especificado no existe') {
+              alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
+            } else {
+              alert("❌ Error al actualizar el usuario.");
+            }
           }
         });
     } else {
-      this.usuarioService.crearUsuario(usuarioData)
-        .subscribe({
-          next: () => {
-            alert("✅ Usuario e Investigador creados correctamente");
-            this.mostrarForm = false;
-            this.usuarioForm.reset();
-            this.cargarUsuarios();
-          },
-          error: (err) => {
-            console.error("❌ Error al crear:", err);
+      this.usuarioService.crearUsuario(usuarioData).subscribe({
+        next: () => {
+          alert("✅ Usuario creado correctamente");
+          this.mostrarForm = false;
+          this.usuarioForm.reset();
+          this.cargarUsuarios();
+        },
+        error: (err) => {
+          console.error("❌ Error al crear:", err);
+          if (err.error && err.error.error === 'El grupo especificado no existe') {
+            alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
+          } else {
+            alert("❌ Error al crear el usuario.");
           }
-        });
+        }
+      });
     }
-  }  
+  }
 
   cargarProyectosDeUsuario(usuarioId: number) {
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
@@ -229,5 +251,11 @@ export class UsuarioComponent implements OnInit {
     return this.usuarios.filter(usuario =>
       (usuario.nombre_usuario || '').toLowerCase().includes(this.busqueda.toLowerCase())
     );
+  }
+
+  cerrarFormulario() {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.usuarioSeleccionado = null;
   }
 }

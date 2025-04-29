@@ -29,49 +29,82 @@
   </form>
 </div>
 
-<ul>
-  <li *ngFor="let usuario of usuariosFiltrados">
-    {{ usuario.uid_number }} - {{ usuario.nombre_usuario }} - {{ usuario.contacto }}
-    <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
-    <button (click)="editarUsuario(usuario, $event)">✏️ Editar</button>
+<table class="usuarios-table">
+  <thead>
+    <tr>
+      <th>Acciones</th>
+      <th>Nombre</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let usuario of usuariosFiltrados">
+      <td>
+        <button (click)="editarUsuario(usuario, $event)">✏️ Editar</button>
+        <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
+      </td>
+      <td (click)="mostrarDetalles(usuario)">
+        {{ usuario.nombre_usuario }}
+      </td>
+      
+    </tr>
+  </tbody>
+</table>
 
-    <div *ngIf="mostrarForm && editando && usuario.uid_number === usuarioSeleccionado?.uid_number" class="popup-form" (click)="onFormClick($event)">
-      <h2>Editar Usuario</h2>
-      <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
-        <p>ID del grupo: <input formControlName="gid_number" placeholder="ID del grupo"></p>
-        <p>Nombre: <input formControlName="nombre_usuario" placeholder="Nombre"></p>
-        <p>Investigador Asociado:  <input [value]="usuario.nombre_investigador" readonly></p>
-        <p>Fecha de alta: <input formControlName="fecha_alta" type="date" placeholder="Fecha de alta"></p>
-        <p>Fecha de baja: <input formControlName="fecha_baja" type="date" placeholder="Fecha de baja"></p>
-        <p class="activo-checkbox">
-          <label>
-            <input type="checkbox" formControlName="activo"> Activo
-          </label>
-        </p>
-        <p>Correo: <input formControlName="contacto" type="email" placeholder="Correo"></p>
-        <p>Teléfono: <input formControlName="telefono" placeholder="Teléfono"></p>
-        <p>ORCID: <input formControlName="orcid" placeholder="ORCID"></p>
-        <p>Scholar: <input formControlName="scholar" placeholder="Scholar"></p>
-        <p>WOS: <input formControlName="wos" placeholder="WOS"></p>
-        <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
-        <p>RES: <input formControlName="res" placeholder="RES"></p>
-        <button type="submit">Actualizar</button>
-        <div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
-          <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
-          <ul>
-            <li *ngFor="let proyecto of proyectosDelUsuario">
-              {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
-              <button (click)="eliminarProyectoDelUsuario(proyecto.pid_number)">❌ Eliminar</button>
-              </li>
-          </ul>
-          <div>
-            <input type="number" placeholder="ID del proyecto" formControlName="proyectoIdParaAsociar">
-            <button (click)="asociarProyecto()">Añadir Proyecto</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </li>
-</ul>
+<!-- FORMULARIO DE EDICIÓN EMERGENTE -->
+<div *ngIf="mostrarForm && editando && usuarioSeleccionado && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
+  <div class="popup-content">
+    <h2>Editar Usuario</h2>
+    <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
+      <div class="form-group">
+        <label>ID del grupo:</label>
+        <input formControlName="gid_number" placeholder="ID del grupo">
+      </div>
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input formControlName="nombre_usuario" placeholder="Nombre">
+      </div>
+      <div class="form-group">
+        <label>Investigador Asociado:  </label>
+        <input [value]="usuarioSeleccionado.nombre_investigador" readonly>
+      </div>
+      <div class="form-group">
+        <label>Fecha de alta:</label>
+        <input formControlName="fecha_alta" type="date">
+      </div>
+      <div class="form-group">
+        <label>Fecha de baja:</label>
+        <input formControlName="fecha_baja" type="date">
+      </div>
+      <div class="form-group activo-checkbox">
+        <label><input type="checkbox" formControlName="activo"> Activo</label>
+      </div>
+      <div class="form-group">
+        <label>Correo:</label>
+        <input formControlName="contacto" type="email">
+      </div>
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input formControlName="telefono">
+      </div>
+      <button type="submit">Actualizar</button>
+      <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+    </form>
+  </div>
+</div>
 
+<div *ngIf="usuarioSeleccionado && mostrandoDetalles" class="popup-form" (click)="cerrarDetalles()">
+  <div class="popup-content">
+    <h2>Información de {{ usuarioSeleccionado.nombre_usuario }}</h2>
+    <p><strong>ID:</strong> {{ usuarioSeleccionado.uid_number }}</p>
+    <p><strong>Nombre:</strong> {{ usuarioSeleccionado.nombre_usuario }}</p>
+    <p><strong>Fecha de alta:</strong> {{ usuarioSeleccionado.fecha_alta | date }}</p>
+    <p><strong>Fecha de baja:</strong> {{ usuarioSeleccionado.fecha_baja | date }}</p>
+    <p><strong>Grupo:</strong> {{ usuarioSeleccionado.gid_number }}</p>
+    <p><strong>Correo:</strong> {{ usuarioSeleccionado.contacto }}</p>
+    <p><strong>Teléfono:</strong> {{ usuarioSeleccionado.telefono }}</p>
+    <p><strong>Activo:</strong> {{ usuarioSeleccionado.activo ? '✅ Sí' : '❌ No' }}</p>
+    <p><strong>Investigador:</strong> {{ usuarioSeleccionado.nombre_investigador}}</p>
+    <button class="back-button" (click)="cerrarDetalles()">⬅️ Volver atrás</button>
+  </div>
+</div>
 
