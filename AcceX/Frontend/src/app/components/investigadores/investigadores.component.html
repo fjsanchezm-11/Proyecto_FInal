@@ -4,41 +4,69 @@
 
 <button (click)="mostrarFormulario($event)">➕ Añadir Investigador</button>
 
-<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
-  <h2>Nuevo Investigador</h2>
-  <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
-    <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
-    <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
-    <button type="submit">Guardar</button>
-  </form>
+<table class="investigadores-table">
+  <thead>
+    <tr>
+      <th>Acciones</th>
+      <th>Nombre</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let investigador of investigadoresFiltrados">
+      <td>
+        <button (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
+        <button (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
+      </td>
+      <td (click)="mostrarDetalles(investigador)">{{ investigador.nombre_investigador }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- FORMULARIO EMERGENTE PARA EDITAR INVESTIGADOR -->
+<div *ngIf="mostrarForm && editando && investigadorSeleccionado" class="popup-form" (click)="onFormClick($event)">
+  <div class="popup-content">
+    <h2>Editar Investigador</h2>
+    <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input formControlName="nombre_investigador" placeholder="Nombre">
+      </div>
+      <div class="form-group">
+        <label>Correo:</label>
+        <input formControlName="correo" type="email" placeholder="Correo">
+      </div>
+      <button type="submit">Actualizar</button>
+      <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+      
+      <!-- PUBLICACIONES ASOCIADAS -->
+      <div *ngIf="investigadorSeleccionado">
+        <h3>Publicaciones Asociadas</h3>
+        <ul>
+          <li *ngFor="let publicacion of publicacionesDelInvestigador">
+            {{ publicacion.titulo }} (ID: {{ publicacion.result_code }})
+            <button (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
+          </li>
+        </ul>
+        <div>
+          <input type="number" placeholder="ID de la publicación" formControlName="publicacionIdParaAsociar">
+          <button (click)="asociarPublicacion()">➕ Asociar Publicación</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
-<ul>
-  <li *ngFor="let investigador of investigadoresFiltrados">
-    {{ investigador.iid_number }} - {{ investigador.nombre_investigador }} - {{ investigador.correo }}
-    <button (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
-    <button (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
-    
-    <div *ngIf="mostrarForm && editando && investigador.iid_number === investigadorSeleccionado?.iid_number" class="popup-form" (click)="onFormClick($event)">
-      <h2>Editar Investigador</h2>
-      <form [formGroup]="investigadorForm" (ngSubmit)="guardarInvestigador()">
-        <p>Nombre: <input formControlName="nombre_investigador" placeholder="Nombre"></p>
-        <p>Correo: <input formControlName="correo" type="email" placeholder="Correo"></p>
-        <button type="submit">Actualizar</button>
-        <div *ngIf="investigadorSeleccionado">
-          <h3>Publicaciones Asociadas</h3>
-          <ul>
-            <li *ngFor="let publicacion of publicacionesDelInvestigador">
-              {{ publicacion.titulo }} (ID: {{ publicacion.result_code }})
-              <button (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
-            </li>
-          </ul>
-          <div>
-            <input type="number" placeholder="ID de la publicación" formControlName="publicacionIdParaAsociar">
-            <button (click)="asociarPublicacion()">➕ Asociar Publicación</button>
-          </div>
-        </div>        
-      </form>
-    </div>
-  </li>
-</ul>
+<div *ngIf="investigadorSeleccionado && mostrandoDetalles" class="popup-form" (click)="cerrarDetalles()">
+  <div class="popup-content">
+    <h2>Información de {{ investigadorSeleccionado.nombre_investigador }}</h2>
+    <p><strong>ID:</strong> {{ investigadorSeleccionado.iid_number }}</p>
+    <p><strong>Correo:</strong> {{ investigadorSeleccionado.correo }}</p>
+    <p><strong>Publicaciones Asociadas:</strong></p>
+    <ul>
+      <li *ngFor="let publicacion of publicacionesDelInvestigador">
+        {{ publicacion.titulo }} (ID: {{ publicacion.result_code }})
+      </li>
+    </ul>
+    <button class="back-button" (click)="cerrarDetalles()">Volver</button>
+  </div>
+</div>

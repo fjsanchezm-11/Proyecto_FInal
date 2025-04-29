@@ -16,6 +16,7 @@ export class InvestigadoresComponent implements OnInit {
   mostrarForm = false;
   editando = false;
   investigadorSeleccionado: any = null;
+  mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' }; 
   bloquearCierre = false; 
   busqueda: string = '';
@@ -66,10 +67,11 @@ export class InvestigadoresComponent implements OnInit {
 
   editarInvestigador(investigador: any, event: MouseEvent) {
     event.stopPropagation();
+    this.investigadorSeleccionado = investigador;
     this.bloquearCierre = true;
     this.mostrarForm = true;
     this.editando = true;
-    this.investigadorSeleccionado = investigador;
+    this.mostrandoDetalles = false;
 
     this.cargarPublicacionesDelInvestigador(investigador.iid_number);
 
@@ -168,4 +170,23 @@ export class InvestigadoresComponent implements OnInit {
       inv.nombre_investigador?.toLowerCase().includes(this.busqueda.toLowerCase())
     );
   }
+
+  /* Muestra los detalles del investigador */
+mostrarDetalles(investigador: any) {
+  this.investigadorSeleccionado = investigador;
+  this.mostrandoDetalles = true;
+  this.mostrarForm = false;
+}
+
+/* Cierra la ventana emergente */
+cerrarDetalles() {
+  this.investigadorSeleccionado = null;
+  this.mostrandoDetalles = false;
+}
+/* Cierra el formulario de edición */
+cerrarFormulario() {
+  this.mostrarForm = false;
+  this.editando = false;
+  this.investigadorSeleccionado = null;
+}
 }

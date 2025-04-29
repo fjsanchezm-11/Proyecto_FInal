@@ -1,3 +1,4 @@
+import { bootstrapApplication } from '@angular/platform-browser';
 import { Routes } from '@angular/router';
 import { UsuarioComponent } from './components/usuario/usuario.component';
 import { ProyectosComponent } from './components/proyectos/proyectos.component';
@@ -10,12 +11,18 @@ import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
-  { path: 'proyectos', component: ProyectosComponent, canActivate: [AuthGuard] },
-  { path: 'investigadores', component: InvestigadoresComponent, canActivate: [AuthGuard] },
-  { path: 'publicaciones', component: PublicacionesComponent, canActivate: [AuthGuard] },
-  { path: 'main', component: MainComponent, canActivate: [AuthGuard] },
-  { path: 'grupos', component: GruposComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '' }
+  { path: '', redirectTo: '/main/usuario', pathMatch: 'full' },
+  { 
+    path: 'main', 
+    component: MainComponent, 
+    canActivate: [AuthGuard], 
+    children: [
+      { path: 'usuario', component: UsuarioComponent },
+      { path: 'proyectos', component: ProyectosComponent },
+      { path: 'investigadores', component: InvestigadoresComponent },
+      { path: 'publicaciones', component: PublicacionesComponent },
+      { path: 'grupos', component: GruposComponent }
+    ]
+  },
+  { path: '**', redirectTo: 'login' }
 ];

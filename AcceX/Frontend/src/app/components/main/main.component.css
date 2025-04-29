@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    height: 100vh; /* que ocupe toda la pantalla */
+    overflow: hidden; /* sin scroll general */
+}
+
+h1{
+    color:white;
+    text-decoration: underline;
+}
+
+.sidebar {
+    width: 250px; /* o lo que quieras */
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Si hay muchos botones, que haga scroll */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 10px 0;
+}
+
+.sidebar button {
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    width: 80%;
+    background-color: white;
+}

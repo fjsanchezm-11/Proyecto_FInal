@@ -18,6 +18,7 @@ export class ProyectosComponent implements OnInit {
   mostrarForm = false;
   editando = false;
   proyectoSeleccionado: any = null;
+  mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' };
   bloquearCierre = false;
   busqueda: string = '';
@@ -77,6 +78,7 @@ export class ProyectosComponent implements OnInit {
     this.mostrarForm = true;
     this.editando = true;
     this.proyectoSeleccionado = proyecto;
+    this.mostrandoDetalles = false;
 
     this.proyectoForm.patchValue({
       titulo: proyecto.titulo || '',
@@ -165,6 +167,23 @@ export class ProyectosComponent implements OnInit {
         alert("El proyecto no existe.");
       }
     });
+  }
+
+  mostrarDetalles(proyecto: any) {
+    this.proyectoSeleccionado = proyecto;
+    this.mostrandoDetalles = true;
+    this.mostrarForm = false; // Cerramos el formulario de edición si estaba abierto
+  }
+
+  cerrarDetalles() {
+    this.proyectoSeleccionado = null;
+    this.mostrandoDetalles = false;
+  }
+
+  cerrarFormulario() {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.proyectoSeleccionado = null;
   }
   
 }

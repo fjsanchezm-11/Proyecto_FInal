@@ -16,6 +16,7 @@ export class PublicacionesComponent implements OnInit {
   mostrarForm = false;
   editando = false;
   publicacionSeleccionada: any = null;
+  mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' };
   bloquearCierre = false;
   busqueda: string = '';
@@ -72,6 +73,7 @@ export class PublicacionesComponent implements OnInit {
     this.mostrarForm = true;
     this.editando = true;
     this.publicacionSeleccionada = publicacion;
+    this.mostrandoDetalles = false;
   
     this.cargarInvestigadoresDePublicacion(publicacion.result_code);
   
@@ -184,4 +186,21 @@ export class PublicacionesComponent implements OnInit {
     );
   }  
   
+  mostrarDetalles(publicacion: any) {
+    this.publicacionSeleccionada = publicacion;
+    this.mostrandoDetalles = true;
+    this.mostrarForm = false;
+  }
+
+  cerrarDetalles() {
+    this.publicacionSeleccionada = null;
+    this.mostrandoDetalles = false;
+  }
+
+  cerrarFormulario() {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.publicacionSeleccionada = null;
+  }
+
 }
