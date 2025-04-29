@@ -4,52 +4,66 @@
 
 <button (click)="mostrarFormulario($event)">➕ Añadir Proyecto</button>
 
-<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)" [ngStyle]="posicionFormulario">
-    <h2>Nuevo Proyecto</h2>
-    <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
-        <p><label for="titulo">Título:</label> <input id="titulo" formControlName="titulo" placeholder="Título"></p>
-        <p><label for="fecha_inicio">Fecha de inicio:</label> <input id="fecha_inicio" formControlName="fecha_inicio" type="date"></p>
-        <p><label for="fecha_fin">Fecha de fin:</label> <input id="fecha_fin" formControlName="fecha_fin" type="date"></p>
-        <p><label for="email">Email:</label> <input id="email" formControlName="email" placeholder="Email"></p>
-        <p><label for="gid_number">ID del grupo:</label> <input id="gid_number" formControlName="gid_number"></p>
-        <p><label for="institucion">Institución:</label> <input id="institucion" formControlName="institucion"></p>
-        <p><label for="procedencia">Procedencia:</label> <input id="procedencia" formControlName="procedencia"></p>
-        <p><label for="categoria">Categoría:</label> <input id="categoria" formControlName="categoria"></p>
-        <button type="submit">Guardar</button>
-    </form>
-</div>
-
-<ul>
-    <li *ngFor="let proyecto of proyectosFiltrados">
-        {{ proyecto.pid_number }} - {{ proyecto.titulo }} - {{ proyecto.institucion }}
-        <button (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
-        <button (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
-
-        <div *ngIf="mostrarForm && editando && proyecto.pid_number === proyectoSeleccionado?.pid_number"
-     class="popup-form" (click)="onFormClick($event)" [ngStyle]="posicionFormulario">
-    <h2>Editar Proyecto</h2>
-    <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
-        <p><label for="titulo">Título:</label> <input id="titulo" formControlName="titulo" placeholder="Título"></p>
-        <p><label for="fecha_inicio">Fecha de inicio:</label> <input id="fecha_inicio" formControlName="fecha_inicio" type="date"></p>
-        <p><label for="fecha_fin">Fecha de fin:</label> <input id="fecha_fin" formControlName="fecha_fin" type="date"></p>
-        <p><label for="email">Email:</label> <input id="email" formControlName="email" placeholder="Email"></p>
-        <p><label for="gid_number">ID del grupo:</label> <input id="gid_number" formControlName="gid_number"></p>
-        <p><label for="institucion">Institución:</label> <input id="institucion" formControlName="institucion"></p>
-        <p><label for="procedencia">Procedencia:</label> <input id="procedencia" formControlName="procedencia"></p>
-        <p><label for="categoria">Categoría:</label> <input id="categoria" formControlName="categoria"></p>
+<table class="proyectos-table">
+    <thead>
+      <tr>
+        <th>Acciones</th>
+        <th>Título</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let proyecto of proyectosFiltrados">
+        <td>
+          <button (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
+          <button (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
+        </td>
+        <td (click)="mostrarDetalles(proyecto)">
+          {{ proyecto.titulo }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <!-- FORMULARIO DE EDICIÓN EMERGENTE -->
+  <div *ngIf="mostrarForm && editando && proyectoSeleccionado && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
+    <div class="popup-content">
+      <h2>Editar Proyecto</h2>
+      <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
+        <div class="form-group">
+          <label>Título:</label>
+          <input formControlName="titulo" placeholder="Título">
+        </div>
+        <div class="form-group">
+          <label>Fecha de inicio:</label>
+          <input formControlName="fecha_inicio" type="date">
+        </div>
+        <div class="form-group">
+          <label>Fecha de fin:</label>
+          <input formControlName="fecha_fin" type="date">
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input formControlName="email">
+        </div>
+        <div class="form-group">
+          <label>Institución:</label>
+          <input formControlName="institucion">
+        </div>
         <button type="submit">Actualizar</button>
-    </form>
-
-    <hr>
-    <h3>Usuarios asociados</h3>
-    <ul>
-        <li *ngFor="let usuario of usuariosDelProyecto">
-            {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
-            <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
-        </li>
-    </ul>
-
-</div>
-
-    </li>
-</ul>
+        <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- VENTANA EMERGENTE DE INFORMACIÓN SOLO AL PULSAR EL TÍTULO -->
+  <div *ngIf="proyectoSeleccionado && mostrandoDetalles" class="popup-form" (click)="cerrarDetalles()">
+    <div class="popup-content">
+      <h2>Información del Proyecto</h2>
+      <p><strong>ID:</strong> {{ proyectoSeleccionado.pid_number }}</p>
+      <p><strong>Título:</strong> {{ proyectoSeleccionado.titulo }}</p>
+      <p><strong>Fecha de inicio:</strong> {{ proyectoSeleccionado.fecha_inicio | date }}</p>
+      <p><strong>Fecha de fin:</strong> {{ proyectoSeleccionado.fecha_fin | date }}</p>
+      <p><strong>Institución:</strong> {{ proyectoSeleccionado.institucion }}</p>
+      <button class="back-button" (click)="cerrarDetalles()">⬅️ Volver atrás</button>
+    </div>
+  </div>
