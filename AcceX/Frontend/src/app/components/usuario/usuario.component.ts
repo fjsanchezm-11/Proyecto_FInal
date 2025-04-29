@@ -45,7 +45,8 @@ export class UsuarioComponent implements OnInit {
       wos: [''],
       scopus: [''],
       res: [''],
-      proyectoIdParaAsociar: [null]
+      proyectoIdParaAsociar: [null],
+      nombre_investigador: ['']
     });
   }
 

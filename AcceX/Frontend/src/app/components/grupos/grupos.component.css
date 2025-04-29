@@ -74,14 +74,27 @@
 /* Contenido dentro de la ventana */
 .popup-content {
     background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    width: 350px;
-    max-width: 85%;
-    overflow: auto;
+    width: 500px; /* Tamaño fijo de ancho */
+    height: 400px; /* Tamaño fijo de altura */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow-y: auto; /* Agrega desplazamiento vertical si hay demasiado contenido */
 }
 
+.barra{
+    width: 97.5%;
+}
+
+.popup-contentm {
+    background: white;
+    width: 550px; /* Tamaño fijo de ancho */
+    height: 250; /* Tamaño fijo de altura */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow-y: auto; /* Agrega desplazamiento vertical si hay demasiado contenido */
+}
 /* Organización de los campos del formulario */
 .form-group {
     display: flex;

@@ -28,6 +28,17 @@
   </tbody>
 </table>
 
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+  <div class="popup-contentm">
+    <h2>Nuevo Grupo</h2>
+    <form [formGroup]="grupoForm" (ngSubmit)="guardarGrupo()">
+      <p>Nombre: <input formControlName="nombre" placeholder="Nombre del grupo" class="barra"></p>
+      <button type="submit">Guardar</button>
+      <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+    </form>
+  </div>
+</div>
+
 <!-- FORMULARIO DE EDICIÓN EMERGENTE -->
 <div *ngIf="mostrarForm && editando && grupoSeleccionado && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
   <div class="popup-content">

@@ -4,31 +4,6 @@
 
 <button (click)="mostrarFormulario($event)">➕ Añadir Usuario</button>
 
-<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
-  <h2>Nuevo Usuario</h2>
-  <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
-    <p>ID del grupo: <input formControlName="gid_number" placeholder="ID del grupo"></p>
-    <p>Nombre: <input formControlName="nombre_usuario" placeholder="Nombre"></p>
-    <p>Fecha de alta: <input formControlName="fecha_alta" type="date" placeholder="Fecha de alta"></p>
-    <p>Fecha de baja: <input formControlName="fecha_baja" type="date" placeholder="Fecha de baja"></p>
-    <p class="activo-checkbox">
-      <label>
-        <input type="checkbox" formControlName="activo"> Activo
-      </label>
-    </p>
-    <p>Correo: <input formControlName="contacto" type="email" placeholder="Correo"></p>
-    <p>Teléfono: <input formControlName="telefono" placeholder="Teléfono"></p>
-    <p>ORCID: <input formControlName="orcid" placeholder="ORCID"></p>
-    <p>Scholar: <input formControlName="scholar" placeholder="Scholar"></p>
-    <p>WOS: <input formControlName="wos" placeholder="WOS"></p>
-    <p>Scopus: <input formControlName="scopus" placeholder="Scopus"></p>
-    <p>RES: <input formControlName="res" placeholder="RES"></p>
-    <h3>Información del Investigador</h3>
-    <p>Nombre del Investigador: <input formControlName="nombre_investigador" placeholder="Nombre del Investigador"></p>
-    <button type="submit">Guardar</button>
-  </form>
-</div>
-
 <table class="usuarios-table">
   <thead>
     <tr>
@@ -49,6 +24,75 @@
     </tr>
   </tbody>
 </table>
+
+
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+  <div class="popup-contentm">
+    <h2>Nuevo Usuario</h2>
+    <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
+      <div class="form-group">
+        <label>ID del grupo:</label>
+        <input formControlName="gid_number" placeholder="ID del grupo">
+      </div>
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input formControlName="nombre_usuario" placeholder="Nombre">
+      </div>
+      <div class="form-group">
+        <label>Fecha de alta:</label>
+        <input formControlName="fecha_alta" type="date" placeholder="Fecha de alta">
+      </div>
+      <div class="form-group">
+        <label>Fecha de baja:</label>
+        <input formControlName="fecha_baja" type="date" placeholder="Fecha de baja">
+      </div>
+      <div class="form-group activo-checkbox">
+        <p class="activo-checkbox">
+          <label>
+            <input type="checkbox" formControlName="activo"> Activo
+          </label>
+        </p>
+      </div>
+      <div class="form-group">
+        <label>Correo:</label>
+        <input formControlName="contacto" type="email" placeholder="Correo">
+      </div>
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input formControlName="telefono" placeholder="Teléfono">
+      </div>
+      <div class="form-group">
+        <label>ORCID:</label>
+        <input formControlName="orcid" placeholder="ORCID">
+      </div>
+      <div class="form-group">
+        <label>Scholar:</label>
+        <input formControlName="scholar" placeholder="Scholar">
+      </div>
+      <div class="form-group">
+        <label>WOS:</label>
+        <input formControlName="wos" placeholder="WOS">
+      </div>
+      <div class="form-group">
+        <label>Scopus:</label>
+        <input formControlName="scopus" placeholder="Scopus">
+      </div>
+      <div class="form-group">
+        <label>RES:</label>
+        <input formControlName="res" placeholder="RES">
+      </div>
+      <h3>Información del Investigador</h3>
+      <div class="form-group">
+        <label>Nombre del Investigador:</label>
+        <input formControlName="nombre_investigador" placeholder="Nombre del Investigador">
+      </div>
+      <button type="submit">Guardar</button>
+      <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+    </form>
+  </div>
+</div>
+      
+
 
 <!-- FORMULARIO DE EDICIÓN EMERGENTE -->
 <div *ngIf="mostrarForm && editando && usuarioSeleccionado && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
