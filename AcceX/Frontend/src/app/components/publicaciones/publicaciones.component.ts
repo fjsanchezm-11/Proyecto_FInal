@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject } from '@angular/core';
+import { Component, OnInit, HostListener, inject, } from '@angular/core';
 import { PublicacionesService } from '../../services/publicaciones.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angul
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './publicaciones.component.html',
-  styleUrls: ['./publicaciones.component.css']
+  styleUrls: ['./publicaciones.component.css'],
 })
 export class PublicacionesComponent implements OnInit {
   publicaciones: any[] = [];

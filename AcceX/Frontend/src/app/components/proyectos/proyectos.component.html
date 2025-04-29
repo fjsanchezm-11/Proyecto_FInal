@@ -23,7 +23,46 @@
       </tr>
     </tbody>
   </table>
-  
+
+
+  <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)" [ngStyle]="posicionFormulario">
+    <div class="popup-content">
+      <h2>Nuevo Proyecto</h2>
+      <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
+        <div class="form-group">
+          <label>Título:</label>
+          <input formControlName="titulo" placeholder="Título">
+        </div>
+        <div class="form-group">
+          <label>Fecha de inicio:</label>
+          <input formControlName="fecha_inicio" type="date">
+        </div>
+        <div class="form-group">
+          <label>Fecha de fin:</label>
+          <input formControlName="fecha_fin" type="date">
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input formControlName="email">
+        </div>
+        <div class="form-group">
+          <label>Institución:</label>
+          <input formControlName="institucion">
+        </div>
+        <div class="form-group">
+          <label>Procedencia:></label>
+          <input id="procedencia" formControlName="procedencia">
+        </div>
+        <div class="form-group">
+          <label>Categoría:</label>
+          <input id="categoria" formControlName="categoria">
+        </div>
+        <button type="submit">Guardar</button>
+        <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+      </form>
+    </div>
+  </div>
+      
   <!-- FORMULARIO DE EDICIÓN EMERGENTE -->
   <div *ngIf="mostrarForm && editando && proyectoSeleccionado && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
     <div class="popup-content">

@@ -4,62 +4,83 @@
     align-items: center;
     margin-bottom: 15px;
     width: 98.5%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
   }
-
-.proyectos-table {
+  
+  /* Botón de añadir */
+  button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Tabla de proyectos */
+  .proyectos-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
-}
-
-/* Encabezados */
-.proyectos-table th {
+    margin-top: 10px;
+  }
+  
+  /* Encabezados */
+  .proyectos-table th {
     background-color: #007bff;
     color: white;
     padding: 12px;
     text-align: left;
-}
-
-/* Celdas */
-.proyectos-table td {
+  }
+  
+  /* Celdas */
+  .proyectos-table td {
     padding: 10px;
     border-bottom: 1px solid #ccc;
-}
-
-/* Filas alternas */
-.proyectos-table tr:nth-child(even) {
+    cursor: pointer;
+  }
+  
+  /* Filas alternas */
+  .proyectos-table tr:nth-child(even) {
     background-color: #f8f9fa;
-}
-
-/* Botones de acción */
-.proyectos-table button {
+  }
+  
+  /* Botones dentro de la tabla */
+  .proyectos-table button {
     padding: 6px 10px;
     border: none;
     cursor: pointer;
     border-radius: 4px;
     margin: 2px;
-}
-
-/* Botón de edición */
-.proyectos-table button:first-child {
+  }
+  
+  /* Botón de edición */
+  .proyectos-table button:first-child {
     background-color: #ffc107;
-}
-
-.proyectos-table button:first-child:hover {
+  }
+  
+  .proyectos-table button:first-child:hover {
     background-color: #e0a800;
-}
-
-/* Botón de eliminación */
-.proyectos-table button:last-child {
+  }
+  
+  /* Botón de eliminación */
+  .proyectos-table button:last-child {
     background-color: #dc3545;
-}
-
-.proyectos-table button:last-child:hover {
+  }
+  
+  .proyectos-table button:last-child:hover {
     background-color: #c82333;
-}
-
-/* Ventana emergente */
-.popup-form {
+  }
+  
+  /* Fondo de ventana emergente */
+  .popup-form {
     background: rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
@@ -69,65 +90,63 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-/* Contenido dentro de la ventana */
-.popup-content {
+    z-index: 999;
+  }
+  
+  /* Contenido de los formularios */
+  .popup-content {
     background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    width: 350px;
-    max-width: 85%;
-    overflow: auto;
-}
-
-/* Organización de los campos del formulario */
-.form-group {
+    width: 500px;
+    max-width: 95%;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow-y: auto;
+    max-height: 90vh;
+  }
+  
+  /* Organización del formulario */
+  .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 8px;
-}
-
-.form-group label {
+    margin-bottom: 12px;
+  }
+  
+  .form-group label {
     font-weight: bold;
-    margin-bottom: 3px;
-}
-
-.form-group input {
-    padding: 6px;
+    margin-bottom: 4px;
+  }
+  
+  .form-group input {
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
-
-/* Botón de actualización */
-.popup-form button {
-    width: 100%;
+  }
+  
+  /* Botón de guardar o actualizar */
+  .popup-form button[type="submit"] {
     background-color: #28a745;
-    padding: 8px;
-    font-size: 14px;
-    border: none;
     color: white;
+    width: 100%;
+    padding: 10px;
     border-radius: 6px;
-    cursor: pointer;
-}
-
-.popup-form button:hover {
-    background-color: #218838;
-}
-
-/* Botón de volver */
-.back-button {
-    background-color: #6c757d;
-    padding: 8px;
-    font-size: 14px;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
     margin-top: 10px;
-}
-
-.back-button:hover {
+  }
+  
+  .popup-form button[type="submit"]:hover {
+    background-color: #218838;
+  }
+  
+  /* Botón de volver */
+  .back-button {
+    background-color: #28a745;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  
+  .back-button:hover {
     background-color: #5a6268;
-}
+  }

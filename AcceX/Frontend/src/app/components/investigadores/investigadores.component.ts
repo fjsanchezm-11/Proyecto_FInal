@@ -16,6 +16,7 @@ export class InvestigadoresComponent implements OnInit {
   mostrarForm = false;
   editando = false;
   investigadorSeleccionado: any = null;
+  mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' }; 
   bloquearCierre = false; 
   busqueda: string = '';
@@ -29,19 +30,8 @@ export class InvestigadoresComponent implements OnInit {
     this.investigadorForm = this.fb.group({
       nombre_investigador: [''],
       correo: [''],
-      crear_usuario: [false],
-      nombre_usuario: [''],
-      gid_number: [null],
-      fecha_alta: [''],
-      contacto: [''],
-      telefono: [''],
-      orcid: [''],
-      scholar: [''],
-      wos: [''],
-      scopus: [''],
-      res: [''],
       publicacionIdParaAsociar: [null]
-    });    
+    });
   }
 
   ngOnInit(): void {
@@ -77,10 +67,11 @@ export class InvestigadoresComponent implements OnInit {
 
   editarInvestigador(investigador: any, event: MouseEvent) {
     event.stopPropagation();
+    this.investigadorSeleccionado = investigador;
     this.bloquearCierre = true;
     this.mostrarForm = true;
     this.editando = true;
-    this.investigadorSeleccionado = investigador;
+    this.mostrandoDetalles = false;
 
     this.cargarPublicacionesDelInvestigador(investigador.iid_number);
 
@@ -98,51 +89,21 @@ export class InvestigadoresComponent implements OnInit {
   }
 
   guardarInvestigador() {
-    const formValue = this.investigadorForm.value;
-  
-    const datos = {
-      nombre_investigador: formValue.nombre_investigador,
-      correo: formValue.correo,
-      crear_usuario: true,
-      nombre_usuario: formValue.nombre_usuario,
-      gid_number: formValue.gid_number,
-      contacto: formValue.contacto,
-      telefono: formValue.telefono,
-      orcid: formValue.orcid,
-      scholar: formValue.scholar,
-      wos: formValue.wos,
-      scopus: formValue.scopus,
-      res: formValue.res
-    };
-  
-    console.log("Datos que se envían al backend:", datos);
-  
     if (this.editando) {
-      this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, datos).subscribe({
-        next: () => {
-          alert("✅ Investigador actualizado correctamente");
-          this.mostrarForm = false;
-          this.cargarInvestigadores();
-        },
-        error: (err) => {
-          console.error("❌ Error al actualizar:", err);
-        }
+      this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, this.investigadorForm.value).subscribe(() => {
+        alert("Investigador actualizado correctamente");
+        this.mostrarForm = false;
+        this.cargarInvestigadores();
       });
     } else {
-      this.investigadorService.crearInvestigador(datos).subscribe({
-        next: () => {
-          alert("✅ Investigador y usuario creados correctamente");
-          this.mostrarForm = false;
-          this.investigadorForm.reset();
-          this.cargarInvestigadores();
-        },
-        error: (err) => {
-          console.error("❌ Error al crear:", err);
-        }
+      this.investigadorService.crearInvestigador(this.investigadorForm.value).subscribe(() => {
+        alert("Investigador creado correctamente");
+        this.mostrarForm = false;
+        this.cargarInvestigadores();
       });
     }
   }
-  
+
   cargarPublicacionesDelInvestigador(investigadorId: number) {
     this.investigadorService.getPublicacionesPorInvestigador(investigadorId).subscribe(publicaciones => {
       this.publicacionesDelInvestigador = publicaciones;
@@ -209,4 +170,23 @@ export class InvestigadoresComponent implements OnInit {
       inv.nombre_investigador?.toLowerCase().includes(this.busqueda.toLowerCase())
     );
   }
+
+  /* Muestra los detalles del investigador */
+mostrarDetalles(investigador: any) {
+  this.investigadorSeleccionado = investigador;
+  this.mostrandoDetalles = true;
+  this.mostrarForm = false;
+}
+
+/* Cierra la ventana emergente */
+cerrarDetalles() {
+  this.investigadorSeleccionado = null;
+  this.mostrandoDetalles = false;
+}
+/* Cierra el formulario de edición */
+cerrarFormulario() {
+  this.mostrarForm = false;
+  this.editando = false;
+  this.investigadorSeleccionado = null;
+}
 }

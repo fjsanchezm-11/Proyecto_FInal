@@ -28,6 +28,28 @@ class="buscador"
   </tbody>
 </table>
 
+<div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
+  <div class="popup-content">
+    <h2>Nueva Publicación</h2>
+    <form [formGroup]="publicacionForm" (ngSubmit)="guardarPublicacion()">
+      <div class="form-group">
+        <label>Descripción:</label>
+        <input formControlName="result_description" placeholder="Descripción">
+      </div>
+      <div class="form-group">
+        <label>Fecha de publicación:</label>
+        <input formControlName="fecha_publicacion" type="date">
+      </div>
+      <div class="form-group">
+        <label>DOI:</label>
+        <input formControlName="doi" placeholder="DOI">
+      </div>
+        <button type="submit">Guardar</button>
+        <button class="back-button" (click)="cerrarFormulario()">⬅️ Volver atrás</button>
+    </form>
+  </div>
+</div>
+
 <!-- FORMULARIO DE EDICIÓN EMERGENTE -->
 <div *ngIf="mostrarForm && editando && publicacionSeleccionada && !mostrandoDetalles" class="popup-form" (click)="onFormClick($event)">
   <div class="popup-content">
@@ -46,7 +68,7 @@ class="buscador"
         <input formControlName="doi" placeholder="DOI">
       </div>
       <button type="submit">Actualizar</button>
-      <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+      <button class="back-button" (click)="cerrarFormulario()">⬅️ Volver atrás</button>
     </form>
   </div>
 </div>
