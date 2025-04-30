@@ -46,6 +46,13 @@ class="buscador"
       </div>
         <button type="submit">Guardar</button>
         <button class="back-button" (click)="cerrarFormulario()">⬅️ Volver atrás</button>
+      <br>
+      <h3>Asociar Investigadores</h3>
+      <div >
+        <input class="id_input" type="number" placeholder="ID del investigador" formControlName="nuevoInvestigadorId">
+        <button type="submit" (click)="asociarInvestigador()">➕ Asociar Investigador</button>
+      </div>
+
     </form>
   </div>
 </div>
@@ -69,6 +76,18 @@ class="buscador"
       </div>
       <button type="submit">Actualizar</button>
       <button class="back-button" (click)="cerrarFormulario()">⬅️ Volver atrás</button>
+      <br>
+      <h3>Investigadores Asociados</h3>
+      <ul>
+        <li *ngFor="let investigador of investigadoresDePublicacion">
+          {{ investigador.nombre_investigador }} (ID: {{ investigador.iid_number }})
+          <button (click)="eliminarInvestigador(investigador.iid_number)" class="eliminar">❌ Eliminar</button>
+        </li>
+      </ul>
+      <div>
+        <input class="id_input" type="number" placeholder="ID del investigador" formControlName="nuevoInvestigadorId">
+        <button (click)="asociarInvestigador()" class="asociar">➕ Asociar Investigador</button>
+      </div>
     </form>
   </div>
 </div>

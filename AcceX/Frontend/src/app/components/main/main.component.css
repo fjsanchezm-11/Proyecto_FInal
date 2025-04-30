@@ -52,13 +52,7 @@ h1{
     border-radius: 4px;
 }
 
-.sidebar button:last-child {
-    background-color:#007bff;
-}
 
-.sidebar button:last-child:hover {
-    background-color: #c0392b;
-}
 
 /* Mensaje de error */
 .sidebar div[style="color:red;"] {

@@ -157,5 +157,22 @@
   
   .popup-form button:hover {
     background-color: #218838;
-}  
+} 
+
+  .id_input{
+    width: 96.5%;
+}
+
+  .eliminar{
+    background-color: #28a745;
+  }
+
+  .asociar{
+    background-color: #28a745;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
   
