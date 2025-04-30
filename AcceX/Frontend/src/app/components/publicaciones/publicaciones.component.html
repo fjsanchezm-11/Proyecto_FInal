@@ -1,10 +1,5 @@
 <h1>Gestión de Publicaciones</h1> 
-<input
-type="text"
-placeholder="Buscar por descripción"
-[(ngModel)]="busqueda"
-class="buscador"
-/>
+<input type="text" placeholder="Buscar por descripción" [(ngModel)]="busqueda" class="buscador"/>
 
 <button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Publicación</button>
 

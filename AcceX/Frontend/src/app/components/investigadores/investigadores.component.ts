@@ -177,6 +177,8 @@ mostrarDetalles(investigador: any) {
   this.investigadorSeleccionado = investigador;
   this.mostrandoDetalles = true;
   this.mostrarForm = false;
+
+  this.cargarPublicacionesDelInvestigador(investigador.iid_number);
 }
 
 /* Cierra la ventana emergente */

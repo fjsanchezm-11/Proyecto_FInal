@@ -191,6 +191,8 @@ export class PublicacionesComponent implements OnInit {
     this.publicacionSeleccionada = publicacion;
     this.mostrandoDetalles = true;
     this.mostrarForm = false;
+
+    this.cargarInvestigadoresDePublicacion(publicacion.result_code);
   }
 
   cerrarDetalles() {
