@@ -143,12 +143,12 @@
         <ul>
           <li *ngFor="let proyecto of proyectosDelUsuario">
             {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
-            <button (click)="eliminarProyectoDelUsuario(proyecto.pid_number)">❌ Eliminar</button>
+            <button type="submit" (click)="eliminarProyectoDelUsuario(proyecto.pid_number)">❌ Eliminar</button>
             </li>
         </ul>
         <div>
           <input class="id_input" type="number" placeholder="ID del proyecto" formControlName="proyectoIdParaAsociar">
-          <button (click)="asociarProyecto()">Añadir Proyecto</button>
+          <button  (click)="asociarProyecto()">Añadir Proyecto</button>
         </div>
       </div>
     </form>

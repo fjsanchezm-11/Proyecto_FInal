@@ -91,13 +91,13 @@
         <div class="form-group">
           <label>ID de usuario a asociar:</label>
           <input type="number" [(ngModel)]="usuarioIdParaAgregar" [ngModelOptions]="{standalone: true}" name="usuarioIdEdit" placeholder="ID del usuario">
-          <button type="button" (click)="asociarUsuarioAProyecto(proyectoSeleccionado.pid_number)">➕ Asociar</button>
+          <button type="submit" (click)="asociarUsuarioAProyecto(proyectoSeleccionado.pid_number)">➕ Asociar</button>
         </div>
         
         <ul>
           <li *ngFor="let usuario of usuariosDelProyecto">
             {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
-            <button type="button" (click)="eliminarUsuario(usuario.uid_number)">❌</button>
+            <button  (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
           </li>
         </ul>
         

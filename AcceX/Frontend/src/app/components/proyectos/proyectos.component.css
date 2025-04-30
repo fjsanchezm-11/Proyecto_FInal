@@ -146,6 +146,10 @@
     border-radius: 6px;
     margin-top: 10px;
   }
+
+  ul button{
+    background-color: #28a745;
+  }
   
   .back-button:hover {
     background-color: #5a6268;
