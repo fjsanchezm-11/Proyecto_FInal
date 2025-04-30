@@ -62,9 +62,13 @@ def eliminar_proyecto(id):
     proyecto = Proyecto.query.get(id)
     if not proyecto:
         return jsonify({'mensaje': 'Proyecto no encontrado'}), 404
+
+    db.session.execute(usuarios_proyectos.delete().where(usuarios_proyectos.c.proyectos_id == id))
+
     db.session.delete(proyecto)
     db.session.commit()
     return jsonify({'mensaje': 'Proyecto eliminado'})
+
 
 @proyectos_bp.route('/proyectos/<int:pid>/usuarios', methods=['GET'])
 def obtener_usuarios_por_proyecto(pid):
