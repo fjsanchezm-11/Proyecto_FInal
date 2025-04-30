@@ -132,6 +132,9 @@ export class GruposComponent implements OnInit {
     this.grupoSeleccionado = grupo;
     this.mostrandoDetalles = true;
     this.mostrarForm = false; 
+    this.grupoService.obtenerUsuariosPorGrupo(grupo.gid_number).subscribe(usuarios => {
+      this.usuariosDelGrupo = usuarios;
+    });
   }
 
   cerrarDetalles() {
