@@ -88,13 +88,19 @@
           <label>Institución:</label>
           <input formControlName="institucion">
         </div>
-        <h3>Usuarios asociados</h3>
-          <ul>
-              <li *ngFor="let usuario of usuariosDelProyecto">
-                  {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
-                  <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
-              </li>
-          </ul>
+        <div class="form-group">
+          <label>ID de usuario a asociar:</label>
+          <input type="number" [(ngModel)]="usuarioIdParaAgregar" [ngModelOptions]="{standalone: true}" name="usuarioIdEdit" placeholder="ID del usuario">
+          <button type="button" (click)="asociarUsuarioAProyecto(proyectoSeleccionado.pid_number)">➕ Asociar</button>
+        </div>
+        
+        <ul>
+          <li *ngFor="let usuario of usuariosDelProyecto">
+            {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
+            <button type="button" (click)="eliminarUsuario(usuario.uid_number)">❌</button>
+          </li>
+        </ul>
+        
         <button type="submit">Actualizar</button>
         <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
       </form>
