@@ -87,6 +87,10 @@
         <input formControlName="nombre_investigador" placeholder="Nombre">
       </div>
       <div class="form-group">
+        <label>Usuario asociado:</label>
+        <input formControlName="nombre_usuario" [value]="investigadorSeleccionado.nombre_usuario" readonly>
+      </div>
+      <div class="form-group">
         <label>Correo:</label>
         <input formControlName="correo" type="email" placeholder="Correo">
       </div>
@@ -117,6 +121,7 @@
     <h2>Información de {{ investigadorSeleccionado.nombre_investigador }}</h2>
     <p><strong>ID:</strong> {{ investigadorSeleccionado.iid_number }}</p>
     <p><strong>Correo:</strong> {{ investigadorSeleccionado.correo }}</p>
+    <p><strong>Nombre usuario:</strong> {{ investigadorSeleccionado.nombre_usuario }}</p>
     <p><strong>Publicaciones Asociadas:</strong></p>
     <ul>
       <li *ngFor="let publicacion of publicacionesDelInvestigador">
