@@ -88,6 +88,11 @@
       </div>
       <button type="submit">Guardar</button>
       <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+        <h2>Añadir Proyectos</h2>
+        <div>
+          <input class="id_input" type="number" placeholder="ID del proyecto" formControlName="proyectoIdParaAsociar">
+          <button (click)="asociarProyecto()">Añadir Proyecto</button>
+        </div>
     </form>
   </div>
 </div>
@@ -132,6 +137,20 @@
       </div>
       <button type="submit">Actualizar</button>
       <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+
+      <div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
+        <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
+        <ul>
+          <li *ngFor="let proyecto of proyectosDelUsuario">
+            {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
+            <button (click)="eliminarProyectoDelUsuario(proyecto.pid_number)">❌ Eliminar</button>
+            </li>
+        </ul>
+        <div>
+          <input class="id_input" type="number" placeholder="ID del proyecto" formControlName="proyectoIdParaAsociar">
+          <button (click)="asociarProyecto()">Añadir Proyecto</button>
+        </div>
+      </div>
     </form>
   </div>
 </div>
@@ -148,6 +167,14 @@
     <p><strong>Teléfono:</strong> {{ usuarioSeleccionado.telefono }}</p>
     <p><strong>Activo:</strong> {{ usuarioSeleccionado.activo ? '✅ Sí' : '❌ No' }}</p>
     <p><strong>Investigador:</strong> {{ usuarioSeleccionado.nombre_investigador}}</p>
+    <div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
+      <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
+      <ul>
+        <li *ngFor="let proyecto of proyectosDelUsuario">
+          {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
+          </li>
+      </ul>
+    </div>
     <button class="back-button" (click)="cerrarDetalles()">⬅️ Volver atrás</button>
   </div>
 </div>

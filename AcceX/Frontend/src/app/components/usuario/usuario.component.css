@@ -111,7 +111,8 @@ button:hover {
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  width: 350px;
+  width: 25%;
+  height: 96%;
   max-width: 85%;
   overflow: auto;
 }
@@ -176,3 +177,6 @@ button:hover {
   background-color: #5a6268;
 }
 
+.id_input{
+  width: 97.5%;
+}

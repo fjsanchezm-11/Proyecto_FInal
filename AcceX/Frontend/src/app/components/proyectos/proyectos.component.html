@@ -88,6 +88,13 @@
           <label>Institución:</label>
           <input formControlName="institucion">
         </div>
+        <h3>Usuarios asociados</h3>
+          <ul>
+              <li *ngFor="let usuario of usuariosDelProyecto">
+                  {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
+                  <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
+              </li>
+          </ul>
         <button type="submit">Actualizar</button>
         <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
       </form>
@@ -103,6 +110,12 @@
       <p><strong>Fecha de inicio:</strong> {{ proyectoSeleccionado.fecha_inicio | date }}</p>
       <p><strong>Fecha de fin:</strong> {{ proyectoSeleccionado.fecha_fin | date }}</p>
       <p><strong>Institución:</strong> {{ proyectoSeleccionado.institucion }}</p>
+      <h3>Usuarios asociados</h3>
+          <ul>
+              <li *ngFor="let usuario of usuariosDelProyecto">
+                  {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
+              </li>
+          </ul>
       <button class="back-button" (click)="cerrarDetalles()">⬅️ Volver atrás</button>
     </div>
   </div>
