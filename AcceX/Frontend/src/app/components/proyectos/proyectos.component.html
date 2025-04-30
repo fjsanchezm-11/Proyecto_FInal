@@ -25,7 +25,7 @@
   </table>
 
 
-  <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)" [ngStyle]="posicionFormulario">
+  <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
     <div class="popup-content">
       <h2>Nuevo Proyecto</h2>
       <form [formGroup]="proyectoForm" (ngSubmit)="guardarProyecto()">
