@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from flask import Blueprint, request, jsonify
 from models.usuario import Usuario  
 from models.grupo import Grupo
@@ -158,12 +159,16 @@ def actualizar_usuario(id):
         print("❌ Error en el servidor:", str(e))
         return jsonify({'error': 'Error interno del servidor', 'detalle': str(e)}), 500
 
-
 @usuarios_bp.route('/usuarios/<int:id>', methods=['DELETE'])
 def eliminar_usuario(id):
     usuario = Usuario.query.get(id)
     if not usuario:
         return jsonify({'mensaje': 'Usuario no encontrado'}), 404
+
+    db.session.execute(
+        text("DELETE FROM usuarios_proyectos WHERE usuario_id = :id")
+        .bindparams(id=id)
+    )
 
     relacion = db.session.execute(
         investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id == id)
@@ -173,7 +178,6 @@ def eliminar_usuario(id):
         db.session.execute(
             investigadores_usuarios.delete().where(investigadores_usuarios.c.usuario_id == id)
         )
-
         investigador = Investigador.query.get(relacion.investigador_id)
         if investigador:
             db.session.delete(investigador)
@@ -181,6 +185,4 @@ def eliminar_usuario(id):
     db.session.delete(usuario)
     db.session.commit()
 
-    return jsonify({'mensaje': 'Usuario e investigador asociados eliminados'}), 200
-
-
+    return jsonify({'mensaje': 'Usuario y relaciones asociadas eliminadas'}), 200

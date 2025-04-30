@@ -12,6 +12,21 @@
     margin-top: 15px;
 }
 
+button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+
 /* Encabezados */
 .grupos-table th {
     background-color: #007bff;
