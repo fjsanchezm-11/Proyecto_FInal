@@ -1,20 +1,32 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule,CommonModule,FormsModule],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent {
 
-  constructor(private router: Router,private activatedRoute: ActivatedRoute) {}
+  password: string = '';
+  loginError: boolean = false;
+
+  constructor(public authService: AuthService,private router: Router,private activatedRoute: ActivatedRoute) {}
+
+  login() {
+    const success = this.authService.login(this.password);
+    this.loginError = !success;
+    if (success) this.password = '';
+  }
 
   logout() {
     localStorage.setItem('isLoggedIn', 'false');
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 
   goToUsuarios() {

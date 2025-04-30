@@ -2,21 +2,21 @@
 
 <input type="text" placeholder="Buscar por ID de grupo" [(ngModel)]="busqueda" class="buscador" />
 
-<button (click)="mostrarFormulario($event)">➕ Añadir Grupo</button>
+<button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Grupo</button>
 
 <table class="grupos-table">
   <thead>
     <tr>
-      <th>Acciones</th>
+      <th *ngIf="authService.isLoggedIn()">Acciones</th>
       <th>ID de Grupo</th>
       <th>Nombre</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let grupo of gruposFiltrados">
-      <td>
-        <button (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
-        <button (click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
+      <td *ngIf="authService.isLoggedIn()">
+        <button *ngIf="authService.isLoggedIn()" (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
+        <button *ngIf="authService.isLoggedIn()"(click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
       </td>
       <td (click)="mostrarDetalles(grupo)">
         {{ grupo.gid_number }}

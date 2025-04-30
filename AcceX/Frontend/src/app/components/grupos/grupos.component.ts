@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { GruposService } from '../../services/grupos.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-grupos',
@@ -25,7 +26,7 @@ export class GruposComponent implements OnInit {
   private grupoService = inject(GruposService);
   private fb = inject(FormBuilder);
 
-  constructor() {
+  constructor(public authService: AuthService) {
     this.grupoForm = this.fb.group({
       nombre: ['']
     });

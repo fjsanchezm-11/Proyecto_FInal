@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent {
   password: string = '';
   correctPassword: string = 'admin123';
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService,private router: Router) {}
 
   checkPassword() {
     if (this.password === this.correctPassword) {
@@ -22,5 +23,5 @@ export class LoginComponent {
     } else {
       alert('Contraseña incorrecta');
     }
-  }
+  } 
 }

@@ -6,20 +6,20 @@ placeholder="Buscar por descripción"
 class="buscador"
 />
 
-<button (click)="mostrarFormulario($event)">➕ Añadir Publicación</button>
+<button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Publicación</button>
 
 <table class="publicaciones-table">
   <thead>
     <tr>
-      <th>Acciones</th>
+      <th *ngIf="authService.isLoggedIn()">Acciones</th>
       <th>Descripción</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let publicacion of publicacionesFiltradas">
-      <td>
-        <button (click)="editarPublicacion(publicacion, $event)">✏️ Editar</button>
-        <button (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
+      <td *ngIf="authService.isLoggedIn()">
+        <button *ngIf="authService.isLoggedIn()" (click)="editarPublicacion(publicacion, $event)">✏️ Editar</button>
+        <button *ngIf="authService.isLoggedIn()" (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
       </td>
       <td (click)="mostrarDetalles(publicacion)">
         {{ publicacion.result_description }}

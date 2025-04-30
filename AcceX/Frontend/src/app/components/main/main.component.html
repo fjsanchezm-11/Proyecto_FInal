@@ -9,7 +9,14 @@
             <li><button (click)="goToPublicaciones()">Ir a las publicaciones</button></li>
             <li><button (click)="goToGrupos()">Ir a los grupos</button></li>
         </ul>
-        <button (click)="logout()">Cerrar sesión</button>
+        <div *ngIf="!authService.isLoggedIn()">
+            <input type="password" [(ngModel)]="password" placeholder="Contraseña admin">
+            <button (click)="login()">Iniciar sesión</button>
+            <div *ngIf="loginError" style="color:red;">Contraseña incorrecta</div>
+          </div>
+          <div *ngIf="authService.isLoggedIn()">
+            <button (click)="logout()">Cerrar sesión</button>
+          </div>
     </nav>
     <div class="content">
         <router-outlet></router-outlet>

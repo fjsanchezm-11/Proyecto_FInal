@@ -4,6 +4,7 @@ import { ProyectoService } from '../../services/proyectos.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-usuario',
@@ -31,7 +32,7 @@ export class UsuarioComponent implements OnInit {
   private proyectoService = inject(ProyectoService);
   private fb = inject(FormBuilder);
 
-  constructor(private router: Router) {
+  constructor(private router: Router,public authService: AuthService) {
     this.usuarioForm = this.fb.group({
       gid_number: [''],
       nombre_usuario: [''],

@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, inject, } from '@angular/core';
 import { PublicacionesService } from '../../services/publicaciones.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-publicaciones',
@@ -27,7 +28,7 @@ export class PublicacionesComponent implements OnInit {
   private publicacionesService = inject(PublicacionesService);
   private fb = inject(FormBuilder);
 
-  constructor() {
+  constructor(public authService: AuthService) {
     this.publicacionForm = this.fb.group({
       result_description: [''],
       fecha_publicacion: [''],

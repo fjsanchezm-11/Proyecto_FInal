@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-proyectos',
@@ -28,7 +29,7 @@ export class ProyectosComponent implements OnInit {
   private proyectoService = inject(ProyectoService);
   private fb = inject(FormBuilder);
 
-  constructor() {
+  constructor(public authService: AuthService) {
     this.proyectoForm = this.fb.group({
       titulo: [''],
       fecha_inicio: [''],

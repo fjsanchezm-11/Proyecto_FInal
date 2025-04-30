@@ -10,12 +10,10 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/main/usuario', pathMatch: 'full' },
   { 
     path: 'main', 
-    component: MainComponent, 
-    canActivate: [AuthGuard], 
+    component: MainComponent,
     children: [
       { path: 'usuario', component: UsuarioComponent },
       { path: 'proyectos', component: ProyectosComponent },
@@ -24,5 +22,5 @@ export const routes: Routes = [
       { path: 'grupos', component: GruposComponent }
     ]
   },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: '/main/usuario' }
 ];

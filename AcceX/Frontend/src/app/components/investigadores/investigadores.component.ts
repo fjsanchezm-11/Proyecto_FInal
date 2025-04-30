@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { InvestigadoresService } from '../../services/investigadores.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-investigadores',
@@ -26,7 +27,7 @@ export class InvestigadoresComponent implements OnInit {
   private investigadorService = inject(InvestigadoresService);
   private fb = inject(FormBuilder);
 
-  constructor() {
+  constructor(public authService: AuthService) {
     this.investigadorForm = this.fb.group({
       nombre_investigador: [''],
       correo: [''],

@@ -2,20 +2,20 @@
 
 <input type="text" placeholder="Búsqueda por nombre" [(ngModel)]="busqueda" class="buscador" />
 
-<button (click)="mostrarFormulario($event)">➕ Añadir Usuario</button>
+<button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Usuario</button>
 
 <table class="usuarios-table">
   <thead>
     <tr>
-      <th>Acciones</th>
+      <th *ngIf="authService.isLoggedIn()">Acciones</th>
       <th>Nombre</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let usuario of usuariosFiltrados">
-      <td>
-        <button (click)="editarUsuario(usuario, $event)">✏️ Editar</button>
-        <button (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
+    <tr  *ngFor="let usuario of usuariosFiltrados">
+      <td *ngIf="authService.isLoggedIn()">
+        <button *ngIf="authService.isLoggedIn()" (click)="editarUsuario(usuario, $event)">✏️ Editar</button>
+        <button *ngIf="authService.isLoggedIn()" (click)="eliminarUsuario(usuario.uid_number)">❌ Eliminar</button>
       </td>
       <td (click)="mostrarDetalles(usuario)">
         {{ usuario.nombre_usuario }}

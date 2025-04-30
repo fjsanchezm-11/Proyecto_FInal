@@ -2,7 +2,7 @@
 
 <input type="text" placeholder="Buscar por títulos" [(ngModel)]="busqueda" class="buscador">
 
-<button (click)="mostrarFormulario($event)">➕ Añadir Proyecto</button>
+<button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Proyecto</button>
 
 <table class="proyectos-table">
     <thead>
@@ -14,8 +14,8 @@
     <tbody>
       <tr *ngFor="let proyecto of proyectosFiltrados">
         <td>
-          <button (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
-          <button (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
+          <button *ngIf="authService.isLoggedIn()" (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
+          <button *ngIf="authService.isLoggedIn()" (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
         </td>
         <td (click)="mostrarDetalles(proyecto)">
           {{ proyecto.titulo }}
