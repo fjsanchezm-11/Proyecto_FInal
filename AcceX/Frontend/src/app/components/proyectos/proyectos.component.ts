@@ -173,7 +173,11 @@ export class ProyectosComponent implements OnInit {
   mostrarDetalles(proyecto: any) {
     this.proyectoSeleccionado = proyecto;
     this.mostrandoDetalles = true;
-    this.mostrarForm = false; // Cerramos el formulario de edición si estaba abierto
+    this.mostrarForm = false; 
+
+    this.proyectoService.obtenerUsuariosPorProyecto(proyecto.pid_number).subscribe(usuarios => {
+      this.usuariosDelProyecto = usuarios;
+    });
   }
 
   cerrarDetalles() {

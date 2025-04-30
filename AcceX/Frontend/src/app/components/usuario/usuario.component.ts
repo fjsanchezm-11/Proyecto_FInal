@@ -58,6 +58,8 @@ mostrarDetalles(usuario: any) {
   this.usuarioSeleccionado = usuario;
   this.mostrandoDetalles = true;
   this.mostrarForm = false;
+
+  this.cargarProyectosDeUsuario(usuario.uid_number);
 }
 
 /* Cierra la ventana de detalles */
