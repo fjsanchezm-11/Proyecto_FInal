@@ -3,11 +3,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    width: 98.5%;
+    width: 99.9%;
+    height: 0.50%;
   }
 
 .investigadores-table {
-    width: 100%;
+    width: 110%;
     border-collapse: collapse;
     margin-top: 15px;
 }

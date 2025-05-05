@@ -9,6 +9,7 @@
         <tr>
           <th *ngIf="authService.isLoggedIn()">Acciones</th>
           <th>Nombre</th>
+          <th>Correo</th>
         </tr>
       </thead>
       <tbody>
@@ -19,6 +20,9 @@
           </td>
           <td (click)="mostrarDetalles(investigador)">
             {{ investigador.nombre_investigador }}
+          </td>
+          <td (click)="mostrarDetalles(investigador)">
+            {{ investigador.correo }}
           </td>
         </tr>
       </tbody>

@@ -28,11 +28,12 @@ button:hover {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  width: 98.5%;
+  width: 99.7%;
+  height: 0.50%;
 }
 
 .usuarios-table {
-  width: 100%;
+  width: 110%;
   border-collapse: collapse;
   margin-top: 15px;
 }
@@ -112,7 +113,7 @@ button:hover {
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   width: 25%;
-  height: 96%;
+  height: 60%;
   max-width: 85%;
   overflow: auto;
 }
@@ -202,7 +203,7 @@ button:hover {
   .popup-content,
   .popup-contentm {
     width: 95% !important;
-    height: 95% !important;
+    height: 50% !important;
     padding: 10px;
   }
 

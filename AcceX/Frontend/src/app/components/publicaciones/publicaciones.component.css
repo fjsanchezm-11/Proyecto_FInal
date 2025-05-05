@@ -4,9 +4,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    width: 98.5%;
+    width: 99.9%;
+    height: 1%;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #030303;
     border-radius: 6px;
   }
   
@@ -28,7 +29,7 @@
   
   /* Tabla de publicaciones */
   .publicaciones-table {
-    width: 100%;
+    width: 150%;
     border-collapse: collapse;
     margin-top: 10px;
   }
