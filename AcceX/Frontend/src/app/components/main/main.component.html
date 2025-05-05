@@ -10,13 +10,13 @@
             <li><button (click)="goToGrupos()">Ir a los grupos</button></li>
         </ul>
         <div *ngIf="!authService.isLoggedIn()">
-            <input type="password" [(ngModel)]="password" placeholder="Contraseña admin">
+            <input type="password" [(ngModel)]="password" placeholder="Contraseña admin" (keydown.enter)="login()" />
             <button (click)="login()">Iniciar sesión</button>
             <div *ngIf="loginError" style="color:red;">Contraseña incorrecta</div>
-          </div>
-          <div *ngIf="authService.isLoggedIn()">
+        </div>
+        <div *ngIf="authService.isLoggedIn()">
             <button (click)="logout()">Cerrar sesión</button>
-          </div>
+        </div>
     </nav>
     <div class="content">
         <router-outlet></router-outlet>

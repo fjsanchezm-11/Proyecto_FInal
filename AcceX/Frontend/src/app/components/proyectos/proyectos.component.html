@@ -4,26 +4,29 @@
 
 <button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Proyecto</button>
 
-<table class="proyectos-table">
-    <thead>
-      <tr>
-        <th *ngIf="authService.isLoggedIn()">Acciones</th>
-        <th>Título</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let proyecto of proyectosFiltrados">
-        <td *ngIf="authService.isLoggedIn()">
-          <button *ngIf="authService.isLoggedIn()" (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
-          <button *ngIf="authService.isLoggedIn()" (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
-        </td>
-        <td (click)="mostrarDetalles(proyecto)">
-          {{ proyecto.titulo }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div class="tabla-responsiva">
+  <table class="proyectos-table">
+      <thead>
+        <tr>
+          <th *ngIf="authService.isLoggedIn()">Acciones</th>
+          <th>Título</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let proyecto of proyectosFiltrados">
+          <td *ngIf="authService.isLoggedIn()">
+            <button *ngIf="authService.isLoggedIn()" (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
+            <button *ngIf="authService.isLoggedIn()" (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
+          </td>
+          <td (click)="mostrarDetalles(proyecto)">
+            {{ proyecto.titulo }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
 
+  <!-- FORMULARIO DE CREACIÓN EMERGENTE -->
 
   <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
     <div class="popup-content">

@@ -48,21 +48,26 @@ export class MainComponent {
 
   goToUsuarios() {
     this.router.navigate(['usuario'], { relativeTo: this.activatedRoute });
+    if (this.isMobile) this.menuAbierto = false;
   }
   
   goToProyectos() {
     this.router.navigate(['proyectos'], { relativeTo: this.activatedRoute });
+    if (this.isMobile) this.menuAbierto = false;
   }
   
   goToInvestigadores() {
     this.router.navigate(['investigadores'], { relativeTo: this.activatedRoute });
+    if (this.isMobile) this.menuAbierto = false;
   }
   
   goToPublicaciones() {
     this.router.navigate(['publicaciones'], { relativeTo: this.activatedRoute });
+    if (this.isMobile) this.menuAbierto = false;
   }
   
   goToGrupos() {
     this.router.navigate(['grupos'], { relativeTo: this.activatedRoute });
+    if (this.isMobile) this.menuAbierto = false;
   }
 }

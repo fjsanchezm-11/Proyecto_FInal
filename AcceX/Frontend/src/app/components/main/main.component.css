@@ -143,4 +143,49 @@ h1{
         width: 100%;
         padding: 15px;
     }
+    .content {
+        padding: 10px;
+        font-size: 14px;
+      }
+    
+      .content h1,
+      .content h2,
+      .content h3 {
+        font-size: 18px;
+      }
+    
+      .content p,
+      .content li,
+      .content label,
+      .content input,
+      .content button,
+      .content select,
+      .content textarea {
+        font-size: 14px;
+      }
+    
+      .content table {
+        width: 100%;
+        font-size: 12px;
+        overflow-x: auto;
+      }
+    
+      .content form {
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+    
+      .content input,
+      .content select,
+      .content textarea {
+        width: 100%;
+        padding: 6px;
+      }
+    
+      .content button {
+        padding: 8px;
+        width: 100%;
+      }
 }
+

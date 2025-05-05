@@ -3,27 +3,27 @@
 <input type="text" placeholder="Buscar por nombre" [(ngModel)]="busqueda" class="buscador">
 
 <button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Investigador</button>
-
-<table class="investigadores-table">
-    <thead>
-      <tr>
-        <th *ngIf="authService.isLoggedIn()">Acciones</th>
-        <th>Nombre</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let investigador of investigadoresFiltrados">
-        <td *ngIf="authService.isLoggedIn()">
-          <button *ngIf="authService.isLoggedIn()"  (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
-          <button *ngIf="authService.isLoggedIn()" (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
-        </td>
-        <td (click)="mostrarDetalles(investigador)">
-          {{ investigador.nombre_investigador }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
+<div class="tabla-responsiva">
+  <table class="investigadores-table">
+      <thead>
+        <tr>
+          <th *ngIf="authService.isLoggedIn()">Acciones</th>
+          <th>Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let investigador of investigadoresFiltrados">
+          <td *ngIf="authService.isLoggedIn()">
+            <button *ngIf="authService.isLoggedIn()"  (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
+            <button *ngIf="authService.isLoggedIn()" (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
+          </td>
+          <td (click)="mostrarDetalles(investigador)">
+            {{ investigador.nombre_investigador }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
 <!-- FORMULARIO PARA NUEVO INVESTIGADOR -->
 <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
   <div class="popup-content">

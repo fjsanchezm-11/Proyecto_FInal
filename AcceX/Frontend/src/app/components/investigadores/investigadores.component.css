@@ -155,3 +155,73 @@ button {
 .back-button:hover {
     background-color: #5a6268;
 }
+@media screen and (max-width: 768px) {
+    .buscador {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+  
+    button,
+    .proyectos-table button {
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+  
+    .investigadores-table th,
+    .investigadores-table td {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    .popup-content,
+    .popup-contentm {
+      width: 95% !important;
+      height: 95% !important;
+      padding: 10px;
+    }
+  
+    .form-group input,
+    .form-group label {
+      font-size: 14px;
+    }
+  
+    .id_input {
+      width: 100%;
+    }
+  
+    .popup-form button,
+    .back-button {
+      font-size: 12px;
+      padding: 6px;
+    }
+  
+    .activo-checkbox {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .popup-contentm {
+      width: 95% !important;
+      height: auto;
+    }
+    .tabla-responsiva {
+      width: 97%;
+      overflow-x: auto;
+    }
+  
+    .investigadores-table {
+      width: 600px; /* o más si necesitas más espacio fijo */
+      font-size: 12px;
+    }
+  
+    .investigadores-table th,
+    .investigadores-table td {
+      padding: 6px;
+      white-space: nowrap;
+    }
+  
+    .buscador{
+      width: 93.9%;
+    }
+  }

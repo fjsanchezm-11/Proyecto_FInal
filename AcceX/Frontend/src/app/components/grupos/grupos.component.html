@@ -3,31 +3,31 @@
 <input type="text" placeholder="Buscar por ID de grupo" [(ngModel)]="busqueda" class="buscador" />
 
 <button *ngIf="authService.isLoggedIn()" (click)="mostrarFormulario($event)">➕ Añadir Grupo</button>
-
+<div class="tabla-responsiva">
 <table class="grupos-table">
-  <thead>
-    <tr>
-      <th *ngIf="authService.isLoggedIn()">Acciones</th>
-      <th>ID de Grupo</th>
-      <th>Nombre</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let grupo of gruposFiltrados">
-      <td *ngIf="authService.isLoggedIn()">
-        <button *ngIf="authService.isLoggedIn()" (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
-        <button *ngIf="authService.isLoggedIn()"(click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
-      </td>
-      <td (click)="mostrarDetalles(grupo)">
-        {{ grupo.gid_number }}
-      </td>
-      <td (click)="mostrarDetalles(grupo)">
-        {{ grupo.nombre }}
-      </td>
-    </tr>
-  </tbody>
-</table>
-
+    <thead>
+      <tr>
+        <th *ngIf="authService.isLoggedIn()">Acciones</th>
+        <th>ID de Grupo</th>
+        <th>Nombre</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let grupo of gruposFiltrados">
+        <td *ngIf="authService.isLoggedIn()">
+          <button *ngIf="authService.isLoggedIn()" (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
+          <button *ngIf="authService.isLoggedIn()"(click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
+        </td>
+        <td (click)="mostrarDetalles(grupo)">
+          {{ grupo.gid_number }}
+        </td>
+        <td (click)="mostrarDetalles(grupo)">
+          {{ grupo.nombre }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
   <div class="popup-contentm">
     <h2>Nuevo Grupo</h2>
