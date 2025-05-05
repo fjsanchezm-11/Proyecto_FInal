@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -15,8 +15,25 @@ export class MainComponent {
 
   password: string = '';
   loginError: boolean = false;
+  menuAbierto = false;
+  isMobile = false;
 
   constructor(public authService: AuthService,private router: Router,private activatedRoute: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  checkScreenSize(): void {
+    this.isMobile = window.innerWidth <= 768;
+
+    if (this.isMobile) {
+      this.menuAbierto = false; // 🔧 en móvil, empezar cerrado
+    } else {
+      this.menuAbierto = true; // 🔧 en escritorio, siempre abierto
+    }
+  }
 
   login() {
     const success = this.authService.login(this.password);
