@@ -35,7 +35,7 @@ export class UsuarioComponent implements OnInit {
 
   constructor(private router: Router,public authService: AuthService) {
     this.usuarioForm = this.fb.group({
-      gid_number: [''],
+      gid_number: ['', Validators.required],
       nombre_usuario: ['', Validators.required],
       fecha_alta: [''],
       fecha_baja: [''],
@@ -52,8 +52,6 @@ export class UsuarioComponent implements OnInit {
     });
     
   }
-
-
 
 /* Muestra los detalles del usuario seleccionado */
 mostrarDetalles(usuario: any) {
