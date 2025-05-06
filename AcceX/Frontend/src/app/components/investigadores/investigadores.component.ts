@@ -3,6 +3,7 @@ import { InvestigadoresService } from '../../services/investigadores.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-investigadores',
@@ -29,10 +30,22 @@ export class InvestigadoresComponent implements OnInit {
 
   constructor(public authService: AuthService) {
     this.investigadorForm = this.fb.group({
-      nombre_investigador: [''],
-      correo: [''],
-      publicacionIdParaAsociar: [null]
+      nombre_investigador: ['', Validators.required],
+      correo: ['', [Validators.required, Validators.email]],
+      crear_usuario: [true],
+      gid_number: ['', Validators.required],
+      nombre_usuario: ['', Validators.required],
+      fecha_alta: [''],
+      fecha_baja: [''],
+      activo: [true],
+      telefono: [''],
+      orcid: [''],
+      scholar: [''],
+      wos: [''],
+      scopus: [''],
+      res: ['']
     });
+    
   }
 
   ngOnInit(): void {
@@ -90,20 +103,27 @@ export class InvestigadoresComponent implements OnInit {
   }
 
   guardarInvestigador() {
+    const formData = this.investigadorForm.value;
+    formData.crear_usuario = true;
+  
     if (this.editando) {
-      this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, this.investigadorForm.value).subscribe(() => {
+      this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, formData).subscribe(() => {
         alert("Investigador actualizado correctamente");
         this.mostrarForm = false;
         this.cargarInvestigadores();
       });
     } else {
-      this.investigadorService.crearInvestigador(this.investigadorForm.value).subscribe(() => {
-        alert("Investigador creado correctamente");
+      this.investigadorService.crearInvestigador(formData).subscribe(() => {
+        alert("Investigador y usuario creados correctamente");
         this.mostrarForm = false;
         this.cargarInvestigadores();
+      }, (error) => {
+        console.error("Error al crear el investigador y usuario", error);
+        alert("Error al crear el investigador y usuario.");
       });
     }
   }
+  
 
   cargarPublicacionesDelInvestigador(investigadorId: number) {
     this.investigadorService.getPublicacionesPorInvestigador(investigadorId).subscribe(publicaciones => {
