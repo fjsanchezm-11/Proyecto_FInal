@@ -104,7 +104,19 @@ button {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     width: 350px;
     max-width: 85%;
+    height: 95%;
     overflow: auto;
+}
+
+.popup-contentm {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  width: 350px;
+  max-width: 85%;
+  height: 40%;
+  overflow: auto;
 }
 
 /* Organización de los campos del formulario */
