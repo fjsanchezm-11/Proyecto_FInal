@@ -230,4 +230,41 @@ button {
     .buscador{
       width: 93.5%;
     }
+
+    /* Ventana emergente */
+.popup-form {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenido dentro de la ventana */
+.popup-content {
+  background: white;
+  width: 500px; /* Tamaño fijo de ancho */
+  height: 300px; /* Tamaño fijo de altura */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  overflow-y: auto; /* Agrega desplazamiento vertical si hay demasiado contenido */
+  max-height: 25%;
+}
+
+.popup-contentm {
+  background: white;
+  width: 550px; /* Tamaño fijo de ancho */
+  height: 250; /* Tamaño fijo de altura */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  max-height: 25%;
+  overflow-y: auto; /* Agrega desplazamiento vertical si hay demasiado contenido */
+}
+
   }
