@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angul
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-proyectos',
@@ -31,7 +32,7 @@ export class ProyectosComponent implements OnInit {
 
   constructor(public authService: AuthService) {
     this.proyectoForm = this.fb.group({
-      titulo: [''],
+      titulo: ['', Validators.required],
       fecha_inicio: [''],
       fecha_fin: [''],
       email: [''],
@@ -109,20 +110,38 @@ export class ProyectosComponent implements OnInit {
   }
 
   guardarProyecto() {
+    const datos = this.proyectoForm.value;
+  
+    if (!datos.categoria) {
+      datos.categoria = "Sin categoría"; 
+    }
+  
     if (this.editando) {
-      this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, this.proyectoForm.value).subscribe(() => {
-        alert("Proyecto actualizado correctamente");
-        this.mostrarForm = false;
-        this.cargarProyectos();
+      this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, datos).subscribe({
+        next: () => {
+          alert("✅ Proyecto actualizado correctamente");
+          this.mostrarForm = false;
+          this.cargarProyectos();
+        },
+        error: (error) => {
+          console.error("❌ Error al actualizar proyecto:", error);
+          alert(`❌ Error: ${error.error?.mensaje || "No se pudo actualizar el proyecto."}`);
+        }
       });
     } else {
-      this.proyectoService.crearProyecto(this.proyectoForm.value).subscribe(() => {
-        alert("Proyecto creado correctamente");
-        this.mostrarForm = false;
-        this.cargarProyectos();
+      this.proyectoService.crearProyecto(datos).subscribe({
+        next: () => {
+          alert("✅ Proyecto creado correctamente");
+          this.mostrarForm = false;
+          this.cargarProyectos();
+        },
+        error: (error) => {
+          console.error("❌ Error al crear proyecto:", error);
+          alert(`❌ Error: ${error.error?.mensaje || "No se pudo crear el proyecto."}`);
+        }
       });
     }
-  }
+  }  
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
