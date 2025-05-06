@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-usuario',
@@ -35,11 +36,11 @@ export class UsuarioComponent implements OnInit {
   constructor(private router: Router,public authService: AuthService) {
     this.usuarioForm = this.fb.group({
       gid_number: [''],
-      nombre_usuario: [''],
+      nombre_usuario: ['', Validators.required],
       fecha_alta: [''],
       fecha_baja: [''],
       activo: [false],
-      contacto: [''],
+      contacto: ['', [Validators.required, Validators.email]],
       telefono: [''],
       orcid: [''],
       scholar: [''],
@@ -49,6 +50,7 @@ export class UsuarioComponent implements OnInit {
       proyectoIdParaAsociar: [null],
       nombre_investigador: ['']
     });
+    
   }
 
 
@@ -149,6 +151,7 @@ cerrarDetalles() {
     const usuarioData = this.usuarioForm.value;
   
     if (this.editando) {
+      console.log("📤 Datos enviados:", usuarioData);
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
         .subscribe({
           next: () => {
@@ -159,7 +162,8 @@ cerrarDetalles() {
           },
           error: (err) => {
             console.error("❌ Error al actualizar:", err);
-            if (err.error && err.error.error === 'El grupo especificado no existe') {
+            const errorMsg = err.error?.error;
+            if (errorMsg && errorMsg.includes("El grupo con gid_number")) {
               alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
             } else {
               alert("❌ Error al actualizar el usuario.");
@@ -176,16 +180,18 @@ cerrarDetalles() {
         },
         error: (err) => {
           console.error("❌ Error al crear:", err);
-          if (err.error && err.error.error === 'El grupo especificado no existe') {
+          const errorMsg = err.error?.error;
+          if (errorMsg && errorMsg.includes("El grupo con gid_number")) {
             alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
           } else {
+            console.error("❌ Detalles del error:", errorMsg);
             alert("❌ Error al crear el usuario.");
           }
         }
       });
     }
   }
-
+  
   cargarProyectosDeUsuario(usuarioId: number) {
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
       this.proyectosDelUsuario = proyectos;
