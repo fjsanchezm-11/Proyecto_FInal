@@ -53,7 +53,7 @@
           <input formControlName="institucion">
         </div>
         <div class="form-group">
-          <label>Procedencia:></label>
+          <label>Procedencia:</label>
           <input id="procedencia" formControlName="procedencia">
         </div>
         <div class="form-group">
@@ -99,11 +99,6 @@
           <label>Categoría:</label>
           <input id="categoria" formControlName="categoria">
         </div>
-        <div class="form-group">
-          <label>ID de usuario a asociar:</label>
-          <input type="number" [(ngModel)]="usuarioIdParaAgregar" [ngModelOptions]="{standalone: true}" name="usuarioIdEdit" placeholder="ID del usuario">
-          <button type="submit" (click)="asociarUsuarioAProyecto(proyectoSeleccionado.pid_number)">➕ Asociar</button>
-        </div>
         
         <ul>
           <li *ngFor="let usuario of usuariosDelProyecto">
@@ -114,6 +109,12 @@
         
         <button type="submit">Actualizar</button>
         <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
+
+        <div class="form-group">
+          <label>ID de usuario a asociar:</label>
+          <input type="number" [(ngModel)]="usuarioIdParaAgregar" [ngModelOptions]="{standalone: true}" name="usuarioIdEdit" placeholder="ID del usuario">
+          <button type="submit" (click)="asociarUsuarioAProyecto(proyectoSeleccionado.pid_number)">➕ Asociar</button>
+        </div>
       </form>
     </div>
   </div>

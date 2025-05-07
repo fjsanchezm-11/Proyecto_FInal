@@ -50,12 +50,13 @@ def actualizar_proyecto(id):
     proyecto.fecha_inicio = data.get('fecha_inicio', proyecto.fecha_inicio)
     proyecto.fecha_fin = data.get('fecha_fin', proyecto.fecha_fin)
     proyecto.email = data.get('email', proyecto.email)
-    proyecto.gid_number = data.get('gid_number', proyecto.gid_number)
+    gid = data.get('gid_number')
+    proyecto.gid_number = int(gid) if gid and gid.strip().isdigit() else None
     proyecto.institucion = data.get('institucion', proyecto.institucion)
     proyecto.procedencia = data.get('procedencia', proyecto.procedencia)
     proyecto.categoria = data.get('categoria', proyecto.categoria)
     db.session.commit()
-    return jsonify({'mensaje': 'Proyecto actualizado'})
+    return jsonify({'mensaje': 'Proyecto actualizado'}), 200
 
 @proyectos_bp.route('/proyectos/<int:id>', methods=['DELETE'])
 def eliminar_proyecto(id):
@@ -95,10 +96,15 @@ def asociar_usuario_a_proyecto(pid):
     if not usuario:
         return jsonify({"error": "El usuario no existe"}), 404
 
-    insert_stmt = usuarios_proyectos.insert().values(usuario_id=usuario_id, proyectos_id=pid)
-    db.session.execute(insert_stmt)
-    db.session.commit()
-    return jsonify({"mensaje": "Usuario asociado al proyecto correctamente"})
+    try:
+        insert_stmt = usuarios_proyectos.insert().values(usuario_id=usuario_id, proyectos_id=pid)
+        db.session.execute(insert_stmt)
+        db.session.commit()
+        return jsonify({"mensaje": "Usuario asociado al proyecto correctamente"}), 200 
+    except Exception as e:
+        db.session.rollback()
+        print("❌ Error al asociar usuario:", str(e))
+        return jsonify({"error": "Error al asociar usuario", "detalle": str(e)}), 500
 
 @proyectos_bp.route('/proyectos/<int:pid>/usuarios/<int:uid>', methods=['DELETE'])
 def eliminar_usuario_de_proyecto(pid, uid):

@@ -111,17 +111,16 @@ export class ProyectosComponent implements OnInit {
 
   guardarProyecto() {
     const datos = this.proyectoForm.value;
-  
+    
     if (!datos.categoria) {
       datos.categoria = "Sin categoría"; 
     }
-  
+    
     if (this.editando) {
       this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, datos).subscribe({
         next: () => {
-          alert("✅ Proyecto actualizado correctamente");
           this.mostrarForm = false;
-          this.cargarProyectos();
+          this.cargarProyectos(); // 🔥 No muestra alert en caso de éxito
         },
         error: (error) => {
           console.error("❌ Error al actualizar proyecto:", error);
@@ -131,9 +130,8 @@ export class ProyectosComponent implements OnInit {
     } else {
       this.proyectoService.crearProyecto(datos).subscribe({
         next: () => {
-          alert("✅ Proyecto creado correctamente");
           this.mostrarForm = false;
-          this.cargarProyectos();
+          this.cargarProyectos(); 
         },
         error: (error) => {
           console.error("❌ Error al crear proyecto:", error);

@@ -43,7 +43,8 @@ export class InvestigadoresComponent implements OnInit {
       scholar: [''],
       wos: [''],
       scopus: [''],
-      res: ['']
+      res: [''],
+      publicacionIdParaAsociar: ['']
     });
     
   }

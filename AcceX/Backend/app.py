@@ -12,7 +12,7 @@ from routes.grupos import grupos_bp
 app = Flask(__name__)
 app.config.from_object(Config)
 
-CORS(app, supports_credentials=True, origins=["http://localhost:4200"])
+CORS(app, supports_credentials=True)
 
 db.init_app(app)
 
