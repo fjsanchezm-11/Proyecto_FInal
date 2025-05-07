@@ -42,13 +42,20 @@ def crear_proyecto():
 @proyectos_bp.route('/proyectos/<int:id>', methods=['PUT'])
 def actualizar_proyecto(id):
     data = request.json
+
     proyecto = Proyecto.query.get(id)
     if not proyecto:
         return jsonify({'mensaje': 'Proyecto no encontrado'}), 404
 
     proyecto.titulo = data.get('titulo', proyecto.titulo)
-    proyecto.fecha_inicio = data.get('fecha_inicio', proyecto.fecha_inicio)
-    proyecto.fecha_fin = data.get('fecha_fin', proyecto.fecha_fin)
+    fecha_inicio = data.get('fecha_inicio', None)
+    if fecha_inicio == '':
+        fecha_inicio = None 
+    proyecto.fecha_inicio = fecha_inicio
+    fecha_fin = data.get('fecha_fin', None)
+    if fecha_fin == '':
+        fecha_fin = None 
+    proyecto.fecha_fin = fecha_fin
     proyecto.email = data.get('email', proyecto.email)
     gid = data.get('gid_number')
     proyecto.gid_number = int(gid) if gid and gid.strip().isdigit() else None
@@ -56,6 +63,7 @@ def actualizar_proyecto(id):
     proyecto.procedencia = data.get('procedencia', proyecto.procedencia)
     proyecto.categoria = data.get('categoria', proyecto.categoria)
     db.session.commit()
+
     return jsonify({'mensaje': 'Proyecto actualizado'}), 200
 
 @proyectos_bp.route('/proyectos/<int:id>', methods=['DELETE'])
