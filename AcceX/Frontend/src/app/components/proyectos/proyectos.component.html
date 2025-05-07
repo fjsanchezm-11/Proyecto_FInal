@@ -99,7 +99,7 @@
           <label>Categoría:</label>
           <input id="categoria" formControlName="categoria">
         </div>
-        
+        <h3>Usuarios asociados:</h3>
         <ul>
           <li *ngFor="let usuario of usuariosDelProyecto">
             {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
