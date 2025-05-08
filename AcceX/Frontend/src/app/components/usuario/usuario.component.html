@@ -34,14 +34,14 @@
 
 <div *ngIf="mostrarForm && !editando" class="popup-form" (click)="onFormClick($event)">
   <div class="popup-contentm">
-    <h2>Nuevo Usuario</h2>
+    <h2>Nuevo Usuario</h2><p>Los campos con * son obligatorios</p>
     <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
       <div class="form-group">
-        <label>ID del grupo:</label>
+        <label>ID del grupo:*</label>
         <input formControlName="gid_number" placeholder="ID del grupo">
       </div>
       <div class="form-group">
-        <label>Nombre:</label>
+        <label>Nombre:*</label>
         <input formControlName="nombre_usuario" placeholder="Nombre">
       </div>
       <div class="form-group">
@@ -89,7 +89,7 @@
       </div>
       <h3>Información del Investigador</h3>
       <div class="form-group">
-        <label>Nombre del Investigador:</label>
+        <label>Nombre del Investigador:*</label>
         <input formControlName="nombre_investigador" placeholder="Nombre del Investigador">
       </div>
       <button type="submit">Guardar</button>
