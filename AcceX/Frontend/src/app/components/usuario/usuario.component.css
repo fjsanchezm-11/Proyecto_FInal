@@ -207,8 +207,8 @@ button:hover {
     min-width: 45%;
     width: auto;
     height: auto;
-    max-width: 95% !important;
-    max-height: 90% !important;
+    max-width: 95%;
+    max-height: 90%;
     padding: 10px;
   }
 
