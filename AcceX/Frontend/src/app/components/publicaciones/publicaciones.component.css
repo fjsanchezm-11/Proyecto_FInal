@@ -197,8 +197,11 @@
   
     .popup-content,
     .popup-contentm {
-      width: 95% !important;
-      height: 95% !important;
+      min-width: 45%;
+      width: auto;
+      height: auto;
+      max-width: 95% !important;
+      max-height: 90% !important;
       padding: 10px;
     }
   
@@ -222,17 +225,13 @@
       align-items: flex-start;
     }
   
-    .popup-contentm {
-      width: 95% !important;
-      height: auto;
-    }
     .tabla-responsiva {
       width: 97%;
       overflow-x: auto;
     }
   
     .publicaciones-table {
-      width: 600px; /* o más si necesitas más espacio fijo */
+      width: 98%;
       font-size: 12px;
     }
   
@@ -263,15 +262,12 @@
   /* Contenido de la ventana */
   .popup-content {
     background: white;
-    width: 500px;
-    max-width: 95%;
-    height: auto;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     overflow-y: auto;
-    max-height: 40vh;
   }
+
   .id_input {
     width: 98.5%;
   }
