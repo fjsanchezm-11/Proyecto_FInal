@@ -112,20 +112,22 @@ button:hover {
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  width: 25%;
-  height: 60%;
+  width: 30%;
+  height: auto;
+  max-height: 85%;
   max-width: 85%;
   overflow: auto;
 }
 
 .popup-contentm {
   background: white;
-  width: 500px; /* Tamaño fijo de ancho */
-  height: 95%; /* Tamaño fijo de altura */
+  width: 30%;
+  height: auto;
+  max-height: 85%;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
-  overflow-y: auto; /* Agrega desplazamiento vertical si hay demasiado contenido */
+  overflow-y: auto; 
 }
 
 /* Organización de los campos del formulario */

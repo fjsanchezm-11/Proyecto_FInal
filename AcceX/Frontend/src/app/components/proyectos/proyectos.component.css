@@ -97,13 +97,14 @@
   /* Contenido de los formularios */
   .popup-content {
     background: white;
-    width: 500px;
+    width: 30%;
     max-width: 95%;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     overflow-y: auto;
-    max-height: 90vh;
+    height: auto;
+    max-height: 90%;
   }
   
   /* Organización del formulario */
