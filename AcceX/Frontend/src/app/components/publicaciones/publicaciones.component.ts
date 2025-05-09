@@ -103,19 +103,16 @@ export class PublicacionesComponent implements OnInit {
   
     setTimeout(() => this.bloquearCierre = false, 100);
   }
-  
 
   guardarPublicacion() {
     if (this.editando) {
       this.publicacionesService.actualizarPublicacion(this.publicacionSeleccionada.result_code, this.publicacionForm.value).subscribe(() => {
-        alert("Publicación actualizada correctamente");
         this.mostrarForm = false;
         this.publicacionForm.reset();
         this.cargarPublicaciones();
       });
     } else {
       this.publicacionesService.crearPublicacion(this.publicacionForm.value).subscribe(() => {
-        alert("Publicación creada correctamente");
         this.mostrarForm = false;
         this.publicacionForm.reset();
         this.cargarPublicaciones();
@@ -130,7 +127,7 @@ export class PublicacionesComponent implements OnInit {
   }
 
   asociarInvestigador() {
-    const investigadorId = this.publicacionForm.get('nuevoInvestigadorId')?.value; // Obtén el ID del investigador del formulario
+    const investigadorId = this.publicacionForm.get('nuevoInvestigadorId')?.value; 
   
     if (!this.publicacionSeleccionada || !investigadorId) {
       alert("Debes seleccionar una publicación y proporcionar un ID de investigador válido.");

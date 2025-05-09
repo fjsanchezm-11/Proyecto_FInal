@@ -120,11 +120,11 @@ export class ProyectosComponent implements OnInit {
       this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, datos).subscribe({
         next: () => {
           this.mostrarForm = false;
-          this.cargarProyectos(); // 🔥 No muestra alert en caso de éxito
+          this.cargarProyectos();
         },
         error: (error) => {
-          console.error("❌ Error al actualizar proyecto:", error);
-          alert(`❌ Error: ${error.error?.mensaje || "No se pudo actualizar el proyecto."}`);
+          console.error("Error al actualizar proyecto:", error);
+          alert(`Error: ${error.error?.mensaje || "No se pudo actualizar el proyecto."}`);
         }
       });
     } else {
@@ -134,8 +134,8 @@ export class ProyectosComponent implements OnInit {
           this.cargarProyectos(); 
         },
         error: (error) => {
-          console.error("❌ Error al crear proyecto:", error);
-          alert(`❌ Error: ${error.error?.mensaje || "No se pudo crear el proyecto."}`);
+          console.error("Error al crear proyecto:", error);
+          alert(`Error: ${error.error?.mensaje || "No se pudo crear el proyecto."}`);
         }
       });
     }

@@ -159,12 +159,12 @@ cerrarDetalles() {
             this.cargarUsuarios();
           },
           error: (err) => {
-            console.error("❌ Error al actualizar:", err);
+            console.error("Error al actualizar:", err);
             const errorMsg = err.error?.error;
             if (errorMsg && errorMsg.includes("El grupo con gid_number")) {
-              alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
+              alert("Error: El grupo especificado no existe. Introduce un gid_number válido.");
             } else {
-              alert("❌ Error al actualizar el usuario.");
+              alert("Error al actualizar el usuario.");
             }
           }
         });
@@ -177,13 +177,13 @@ cerrarDetalles() {
           this.cargarUsuarios();
         },
         error: (err) => {
-          console.error("❌ Error al crear:", err);
+          console.error("Error al crear:", err);
           const errorMsg = err.error?.error;
           if (errorMsg && errorMsg.includes("El grupo con gid_number")) {
-            alert("❌ Error: El grupo especificado no existe. Introduce un gid_number válido.");
+            alert("Error: El grupo especificado no existe. Introduce un gid_number válido.");
           } else {
-            console.error("❌ Detalles del error:", errorMsg);
-            alert("❌ Error al crear el usuario.");
+            console.error("Detalles del error:", errorMsg);
+            alert("Error al crear el usuario.");
           }
         }
       });

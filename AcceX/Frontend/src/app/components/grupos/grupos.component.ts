@@ -102,7 +102,6 @@ export class GruposComponent implements OnInit {
       });
     } else {
       this.grupoService.crearGrupo(this.grupoForm.value).subscribe(() => {
-        alert("Grupo creado correctamente");
         this.mostrarForm = false;
         this.cargarGrupos();
       });

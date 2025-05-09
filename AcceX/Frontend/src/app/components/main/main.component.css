@@ -1,7 +1,7 @@
 .container {
     display: flex;
-    height: 100vh; /* que ocupe toda la pantalla */
-    overflow: hidden; /* sin scroll general */
+    height: 100vh; 
+    overflow: hidden; 
 }
 
 h1{
@@ -10,13 +10,13 @@ h1{
 }
 
 .sidebar {
-    width: 250px; /* o lo que quieras */
+    width: 17%;
     background-color: #343a40;
     color: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Si hay muchos botones, que haga scroll */
+    overflow-y: auto;
 }
 
 .sidebar ul {
@@ -76,9 +76,6 @@ h1{
     cursor: pointer;
 }
 
-/* ---------------------------
-   ESTILOS RESPONSIVOS
----------------------------- */
 @media (max-width: 768px) {
     .hamburger {
         display: block;

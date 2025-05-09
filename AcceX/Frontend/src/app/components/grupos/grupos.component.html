@@ -63,7 +63,7 @@
   </div>
 </div>
 
-<!-- VENTANA EMERGENTE DE INFORMACIÓN SOLO AL PULSAR EL NOMBRE DEL GRUPO -->
+<!-- VENTANA EMERGENTE DE INFORMACIÓN -->
 <div *ngIf="grupoSeleccionado && mostrandoDetalles" class="popup-form" (click)="cerrarDetalles()">
   <div class="popup-content">
     <h2>Información del Grupo</h2>
@@ -75,6 +75,6 @@
         {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
       </li>
     </ul>
-    <button class="back-button" (click)="cerrarDetalles()">⬅️ Volver atrás</button>
+    <button class="back-button" (click)="cerrarDetalles()">Volver</button>
   </div>
 </div>

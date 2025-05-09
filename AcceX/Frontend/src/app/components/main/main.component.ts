@@ -29,9 +29,9 @@ export class MainComponent {
     this.isMobile = window.innerWidth <= 768;
 
     if (this.isMobile) {
-      this.menuAbierto = false; // 🔧 en móvil, empezar cerrado
+      this.menuAbierto = false;
     } else {
-      this.menuAbierto = true; // 🔧 en escritorio, siempre abierto
+      this.menuAbierto = true;
     }
   }
 

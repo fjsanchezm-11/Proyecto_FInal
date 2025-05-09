@@ -115,7 +115,6 @@ export class InvestigadoresComponent implements OnInit {
       });
     } else {
       this.investigadorService.crearInvestigador(formData).subscribe(() => {
-        alert("Investigador y usuario creados correctamente");
         this.mostrarForm = false;
         this.cargarInvestigadores();
       }, (error) => {
@@ -154,7 +153,6 @@ export class InvestigadoresComponent implements OnInit {
         }
       });
   }
-  
 
   eliminarPublicacion(publicacionId: number) {
     if (!this.investigadorSeleccionado) {
@@ -193,7 +191,6 @@ export class InvestigadoresComponent implements OnInit {
     );
   }
 
-  /* Muestra los detalles del investigador */
 mostrarDetalles(investigador: any) {
   this.investigadorSeleccionado = investigador;
   this.mostrandoDetalles = true;
@@ -202,12 +199,10 @@ mostrarDetalles(investigador: any) {
   this.cargarPublicacionesDelInvestigador(investigador.iid_number);
 }
 
-/* Cierra la ventana emergente */
 cerrarDetalles() {
   this.investigadorSeleccionado = null;
   this.mostrandoDetalles = false;
 }
-/* Cierra el formulario de edición */
 cerrarFormulario() {
   this.mostrarForm = false;
   this.editando = false;
