@@ -96,7 +96,7 @@ export class GruposComponent implements OnInit {
   guardarGrupo() {
     if (this.editando) {
       this.grupoService.actualizarGrupo(this.grupoSeleccionado.gid_number, this.grupoForm.value).subscribe(() => {
-        alert("Grupo actualizado correctamente");
+        alert("Grupo actualizado correctamente.");
         this.mostrarForm = false;
         this.cargarGrupos();
       });

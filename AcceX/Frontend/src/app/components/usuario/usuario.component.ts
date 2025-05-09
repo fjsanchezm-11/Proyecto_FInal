@@ -153,7 +153,7 @@ cerrarDetalles() {
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
         .subscribe({
           next: () => {
-            alert("✅ Usuario actualizado correctamente");
+            alert("Usuario actualizado correctamente.");
             this.mostrarForm = false;
             this.usuarioForm.reset();
             this.cargarUsuarios();
@@ -171,7 +171,6 @@ cerrarDetalles() {
     } else {
       this.usuarioService.crearUsuario(usuarioData).subscribe({
         next: () => {
-          alert("✅ Usuario creado correctamente");
           this.mostrarForm = false;
           this.usuarioForm.reset();
           this.cargarUsuarios();

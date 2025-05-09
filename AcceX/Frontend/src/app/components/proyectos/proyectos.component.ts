@@ -119,6 +119,7 @@ export class ProyectosComponent implements OnInit {
     if (this.editando) {
       this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, datos).subscribe({
         next: () => {
+          alert("Proyecto actualizado correctamente.");
           this.mostrarForm = false;
           this.cargarProyectos();
         },
