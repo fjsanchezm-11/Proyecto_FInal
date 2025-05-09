@@ -15,8 +15,10 @@
       <tbody>
         <tr *ngFor="let proyecto of proyectosFiltrados">
           <td *ngIf="authService.isLoggedIn()">
-            <button *ngIf="authService.isLoggedIn()" (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
-            <button *ngIf="authService.isLoggedIn()" (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
+            <div class="botones-accion">
+              <button *ngIf="authService.isLoggedIn()" (click)="editarProyecto(proyecto, $event)">✏️ Editar</button>
+              <button *ngIf="authService.isLoggedIn()" (click)="eliminarProyecto(proyecto.pid_number)">❌ Eliminar</button>
+            </div>
           </td>
           <td (click)="mostrarDetalles(proyecto)">
             {{ proyecto.titulo }}

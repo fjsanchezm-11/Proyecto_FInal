@@ -15,8 +15,10 @@
       <tbody>
         <tr *ngFor="let investigador of investigadoresFiltrados">
           <td *ngIf="authService.isLoggedIn()">
-            <button *ngIf="authService.isLoggedIn()"  (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
-            <button *ngIf="authService.isLoggedIn()" (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
+            <div class="botones-accion">
+              <button *ngIf="authService.isLoggedIn()"  (click)="editarInvestigador(investigador, $event)">✏️ Editar</button>
+              <button *ngIf="authService.isLoggedIn()" (click)="eliminarInvestigador(investigador.iid_number)">❌ Eliminar</button>
+            </div>
           </td>
           <td (click)="mostrarDetalles(investigador)">
             {{ investigador.nombre_investigador }}

@@ -47,40 +47,39 @@ button {
     background-color: #f8f9fa;
 }
 
-/* Botones de acción */
-.investigadores-table button {
-    padding: 6px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    margin: 2px;
+/* Botones dentro de celdas */
+.botones-accion {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+/* Estilo base para botones de acción */
+.botones-accion button {
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
 }
 
 /* Botón de edición */
 .investigadores-table button:first-child {
-    background-color: #ffc107;
+  background-color: #ffc107;
 }
 
 .investigadores-table button:first-child:hover {
-    background-color: #e0a800;
+  background-color: #e0a800;
 }
 
 /* Botón de eliminación */
 .investigadores-table button:nth-child(2) {
-    background-color: #dc3545;
+  background-color: #dc3545;
 }
 
 .investigadores-table button:nth-child(2):hover {
-    background-color: #c82333;
-}
-
-/* Botón de detalles */
-.investigadores-table button:last-child {
-    background-color: #dc3545;
-}
-
-.investigadores-table button:last-child:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
 /* Ventana emergente */

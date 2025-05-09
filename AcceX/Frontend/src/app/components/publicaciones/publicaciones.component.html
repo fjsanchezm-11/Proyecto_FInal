@@ -13,9 +13,11 @@
     <tbody>
       <tr *ngFor="let publicacion of publicacionesFiltradas">
         <td *ngIf="authService.isLoggedIn()">
-          <button *ngIf="authService.isLoggedIn()" (click)="editarPublicacion(publicacion, $event)">✏️ Editar</button>
-          <button *ngIf="authService.isLoggedIn()" (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
-        </td>
+          <div class="botones-accion">
+            <button (click)="editarPublicacion(publicacion, $event)">✏️ Editar</button>
+            <button (click)="eliminarPublicacion(publicacion.result_code)">❌ Eliminar</button>
+          </div>
+        </td>        
         <td (click)="mostrarDetalles(publicacion)">
           {{ publicacion.result_description }}
         </td>

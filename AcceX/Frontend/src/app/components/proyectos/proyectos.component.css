@@ -53,32 +53,41 @@
     background-color: #f8f9fa;
   }
   
-  /* Botones dentro de la tabla */
-  .proyectos-table button {
-    padding: 6px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    margin: 2px;
-  }
-  
-  /* Botón de edición */
-  .proyectos-table button:first-child {
-    background-color: #ffc107;
-  }
-  
-  .proyectos-table button:first-child:hover {
-    background-color: #e0a800;
-  }
-  
-  /* Botón de eliminación */
-  .proyectos-table button:last-child {
-    background-color: #dc3545;
-  }
-  
-  .proyectos-table button:last-child:hover {
-    background-color: #c82333;
-  }
+/* Botones dentro de celdas */
+.botones-accion {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+/* Estilo base para botones de acción */
+.botones-accion button {
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
+}
+
+/* Botón de edición */
+.proyectos-table button:first-child {
+  background-color: #ffc107;
+}
+
+.proyectos-table button:first-child:hover {
+  background-color: #e0a800;
+}
+
+/* Botón de eliminación */
+.proyectos-table button:last-child {
+  background-color: #dc3545;
+}
+
+.proyectos-table button:last-child:hover {
+  background-color: #c82333;
+}
+
   
   /* Fondo de ventana emergente */
   .popup-form {

@@ -57,13 +57,21 @@ button:hover {
   background-color: #f8f9fa;
 }
 
-/* Botones de acción */
-.usuarios-table button {
+/* Botones dentro de celdas */
+.botones-accion {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+/* Estilo base para botones de acción */
+.botones-accion button {
   padding: 6px 10px;
   border: none;
   cursor: pointer;
   border-radius: 4px;
-  margin: 2px;
+  color: white;
+  white-space: nowrap;
 }
 
 /* Botón de edición */
@@ -76,11 +84,11 @@ button:hover {
 }
 
 /* Botón de eliminación */
-.usuarios-table button:nth-child(2) {
+.usuarios-table button:last-child {
   background-color: #dc3545;
 }
 
-.usuarios-table button:nth-child(2):hover {
+.usuarios-table button:last-child:hover {
   background-color: #c82333;
 }
 

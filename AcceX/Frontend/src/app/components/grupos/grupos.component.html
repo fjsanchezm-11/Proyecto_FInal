@@ -15,8 +15,10 @@
     <tbody>
       <tr *ngFor="let grupo of gruposFiltrados">
         <td *ngIf="authService.isLoggedIn()">
-          <button *ngIf="authService.isLoggedIn()" (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
-          <button *ngIf="authService.isLoggedIn()"(click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
+          <div class="botones-accion">
+            <button *ngIf="authService.isLoggedIn()" (click)="editarGrupo(grupo, $event)">✏️ Editar</button>
+            <button *ngIf="authService.isLoggedIn()"(click)="eliminarGrupo(grupo.gid_number)">❌ Eliminar</button>
+          </div>
         </td>
         <td (click)="mostrarDetalles(grupo)">
           {{ grupo.gid_number }}
