@@ -103,55 +103,71 @@ export class UsuarioComponent implements OnInit {
     setTimeout(() => this.bloquearCierre = false, 100);
   }
 
-  editarUsuario(usuario: any, event: MouseEvent) {
+  abrirFormularioUsuario(event: MouseEvent, usuario: any = null) {
     event.stopPropagation();
     this.bloquearCierre = true;
     this.mostrarForm = true;
-    this.editando = true;
-    this.usuarioSeleccionado = usuario;
     this.mostrandoDetalles = false;
-  
-    console.log("Usuario seleccionado:", this.usuarioSeleccionado); 
-    this.cargarProyectosDeUsuario(usuario.uid_number);
-    this.cargarGruposDeUsuario(usuario.uid_number);
-  
-    const fechaFormateada1 = usuario.fecha_alta
-      ? new Date(usuario.fecha_alta).toISOString().split('T')[0]
-      : '';
-    const fechaFormateada2 = usuario.fecha_baja
-      ? new Date(usuario.fecha_baja).toISOString().split('T')[0]
-      : '';
-  
-    this.usuarioForm.patchValue({
-      gid_number: usuario.gid_number,
-      nombre_usuario: usuario.nombre_usuario,
-      fecha_alta: fechaFormateada1 ?? '',
-      fecha_baja: fechaFormateada2 ?? '',
-      activo: usuario.activo === 1 || usuario.activo === true,
-      contacto: usuario.contacto ?? '',
-      telefono: usuario.telefono ?? '',
-      orcid: usuario.orcid ?? '',
-      scholar: usuario.scholar ?? '',
-      wos: usuario.wos ?? '',
-      scopus: usuario.scopus ?? '',
-      res: usuario.res ?? '',
-      proyectoIdParaAsociar: null,
-      grupoIdParaAsociar: null
-    });
-  
-    const buttonElement = event.target as HTMLButtonElement;
+
+    if (usuario) {
+      this.editando = true;
+      this.usuarioSeleccionado = usuario;
+      this.cargarProyectosDeUsuario(usuario.uid_number);
+      this.cargarGruposDeUsuario(usuario.uid_number);
+
+      const fechaFormateada1 = usuario.fecha_alta
+        ? new Date(usuario.fecha_alta).toISOString().split('T')[0]
+        : '';
+      const fechaFormateada2 = usuario.fecha_baja
+        ? new Date(usuario.fecha_baja).toISOString().split('T')[0]
+        : '';
+
+      this.usuarioForm.patchValue({
+        gid_number: usuario.gid_number,
+        nombre_usuario: usuario.nombre_usuario,
+        fecha_alta: fechaFormateada1,
+        fecha_baja: fechaFormateada2,
+        activo: usuario.activo === 1 || usuario.activo === true,
+        contacto: usuario.contacto ?? '',
+        telefono: usuario.telefono ?? '',
+        orcid: usuario.orcid ?? '',
+        scholar: usuario.scholar ?? '',
+        wos: usuario.wos ?? '',
+        scopus: usuario.scopus ?? '',
+        res: usuario.res ?? '',
+        proyectoIdParaAsociar: null,
+        grupoIdParaAsociar: null,
+        nombre_investigador: usuario.nombre_investigador ?? ''
+      });
+    } else {
+    this.editando = false;
+    this.usuarioSeleccionado = null;
+    this.usuarioForm.reset();
+    this.usuarioForm.get('activo')?.setValue(false);
+  }
+
+    const buttonElement = event.target as HTMLElement;
     const rect = buttonElement.getBoundingClientRect();
     this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
     this.posicionFormulario.left = `${rect.left}px`;
-  
+
     setTimeout(() => this.bloquearCierre = false, 100);
-  }  
+  }
+
+  editarUsuario(usuario: any, event: MouseEvent) {
+    this.abrirFormularioUsuario(event, usuario);
+  }
+
+  crearNuevoUsuario(event: MouseEvent) {
+    this.abrirFormularioUsuario(event);
+  }
 
   guardarUsuario() {
-    const usuarioData = this.usuarioForm.value;
-    usuarioData.grupoIdParaAsociar = this.usuarioForm.value.gid_number;
-    console.log("📤 Datos antes de enviar:", usuarioData);
-  
+    const usuarioData = { ...this.usuarioForm.value };
+
+    usuarioData.grupos = this.gruposDelUsuario.map(g => g.gid_number);
+    usuarioData.proyectos = this.proyectosDelUsuario;
+
     if (this.editando) {
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
         .subscribe({
@@ -163,19 +179,18 @@ export class UsuarioComponent implements OnInit {
           },
           error: (err) => {
             console.error("Error al actualizar:", err);
-            const errorMsg = err.error?.error;
-            if (errorMsg && errorMsg.includes("El grupo con gid_number")) {
-              alert("Error: El grupo especificado no existe. Introduce un gid_number válido.");
-            } else {
-              alert("Error al actualizar el usuario.");
-            }
+            alert("Error al actualizar el usuario.");
           }
         });
     } else {
       this.usuarioService.crearUsuario(usuarioData).subscribe({
-        next: () => {
+        next: (nuevoUsuario) => {
+          alert("Usuario creado correctamente.");
           this.mostrarForm = false;
           this.usuarioForm.reset();
+          if (usuarioData.grupoIdParaAsociar) {
+            this.asociarGrupo();
+          }
           this.cargarUsuarios();
         },
         error: (err) => {
@@ -271,21 +286,21 @@ export class UsuarioComponent implements OnInit {
   }
 
   eliminarGrupoDelUsuario(grupoId: number) {
-  if (!this.usuarioSeleccionado) {
-    alert("No hay usuario seleccionado.");
-    return;
-  }
+    if (!this.usuarioSeleccionado) {
+      alert("No hay usuario seleccionado.");
+      return;
+    }
 
-  this.usuarioService.eliminarGrupoDeUsuario(this.usuarioSeleccionado.uid_number, grupoId)
-    .subscribe({
-      next: () => {
-        this.cargarGruposDeUsuario(this.usuarioSeleccionado.uid_number);
-      },
-      error: (err) => {
-        console.error("Error al eliminar grupo:", err);
-        alert("Error al eliminar grupo.");
-      }
-    });
+    this.usuarioService.eliminarGrupoDeUsuario(this.usuarioSeleccionado.uid_number, grupoId)
+      .subscribe({
+        next: () => {
+          this.cargarGruposDeUsuario(this.usuarioSeleccionado.uid_number);
+        },
+        error: (err) => {
+          console.error("Error al eliminar grupo:", err);
+          alert("Error al eliminar grupo.");
+        }
+      });
   }
   
   @HostListener('document:click', ['$event'])

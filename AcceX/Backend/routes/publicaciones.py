@@ -11,13 +11,6 @@ def obtener_publicaciones():
     publicaciones = Publicacion.query.all()
     return jsonify([publicacion.to_dict() for publicacion in publicaciones])
 
-@publicaciones_bp.route('/publicaciones/<int:id>', methods=['GET'])
-def obtener_publicacion(id):
-    publicacion = Publicacion.query.get(id)
-    if not publicacion:
-        return jsonify({'mensaje': 'Publicación no encontrada'}), 404
-    return jsonify(publicacion.to_dict())
-
 @publicaciones_bp.route('/publicaciones', methods=['POST'])
 def crear_publicacion():
     data = request.json

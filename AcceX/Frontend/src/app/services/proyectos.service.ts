@@ -46,11 +46,4 @@ export class ProyectoService {
   obtenerProyectosPorUsuario(usuarioId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.usuariosApiUrl}/${usuarioId}/proyectos`);
   }
-
-  verificarProyectoExiste(proyectoId: number): Observable<boolean> {
-    return this.http.get<any>(`${this.apiUrl}/${proyectoId}`).pipe(
-      map(() => true),
-      catchError(() => of(false)) 
-    );
-  }
 }

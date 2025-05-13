@@ -12,11 +12,7 @@ export class GrupoService {
   obtenerGrupos(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
-
-  obtenerGrupoPorId(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
-  }
-
+  
   crearGrupo(grupo: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, grupo);
   }
@@ -31,10 +27,6 @@ export class GrupoService {
 
   obtenerUsuariosDeGrupo(grupoId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/${grupoId}/usuarios`);
-  }
-
-  asociarUsuarioAGrupo(grupoId: number, usuarioId: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${grupoId}/usuarios`, { usuario_id: usuarioId });
   }
 
   eliminarUsuarioDeGrupo(grupoId: number, usuarioId: number): Observable<any> {

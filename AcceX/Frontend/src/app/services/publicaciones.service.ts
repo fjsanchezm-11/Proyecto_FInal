@@ -13,10 +13,6 @@ export class PublicacionesService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  obtenerPublicacionPorId(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
-  }
-
   crearPublicacion(publicacion: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, publicacion);
   }
@@ -30,14 +26,14 @@ export class PublicacionesService {
   }
 
   getInvestigadoresPorPublicacion(publicacionId: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://127.0.0.1:5000/api/publicaciones/${publicacionId}/investigadores`);
+    return this.http.get<any[]>(`${this.apiUrl}/${publicacionId}/investigadores`);
   }
   
   asociarInvestigadorAPublicacion(publicacionId: number, investigadorId: number): Observable<any> {
-    return this.http.post<any>(`http://127.0.0.1:5000/api/publicaciones/${publicacionId}/investigadores`, { investigador_id: investigadorId });
+    return this.http.post<any>(`${this.apiUrl}/${publicacionId}/investigadores`, { investigador_id: investigadorId });
   }
   
   eliminarInvestigadorDePublicacion(publicacionId: number, investigadorId: number): Observable<any> {
-    return this.http.delete<any>(`http://127.0.0.1:5000/api/publicaciones/${publicacionId}/investigadores/${investigadorId}`);
+    return this.http.delete<any>(`${this.apiUrl}/${publicacionId}/investigadores/${investigadorId}`);
   }  
 }

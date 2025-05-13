@@ -29,14 +29,6 @@ def obtener_investigadores():
 
     return jsonify(resultado)
 
-
-@investigadores_bp.route('/investigadores/<int:id>', methods=['GET'])
-def obtener_investigador(id):
-    investigador = Investigador.query.get(id)
-    if not investigador:
-        return jsonify({'mensaje': 'Investigador no encontrado'}), 404
-    return jsonify(investigador.to_dict())
-
 @investigadores_bp.route('/investigadores', methods=['POST'])
 def crear_investigador():
     data = request.json
