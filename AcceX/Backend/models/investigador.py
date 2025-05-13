@@ -1,5 +1,4 @@
 from models.database import db, investigadores_publicaciones
-from models.publicacion import Publicacion
 
 class Investigador(db.Model):
     __tablename__ = 'investigadores'

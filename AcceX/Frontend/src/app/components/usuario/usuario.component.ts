@@ -140,11 +140,11 @@ export class UsuarioComponent implements OnInit {
         nombre_investigador: usuario.nombre_investigador ?? ''
       });
     } else {
-    this.editando = false;
-    this.usuarioSeleccionado = null;
-    this.usuarioForm.reset();
-    this.usuarioForm.get('activo')?.setValue(false);
-  }
+      this.editando = false;
+      this.usuarioSeleccionado = null;
+      this.usuarioForm.reset();
+      this.usuarioForm.get('activo')?.setValue(false);
+    }
 
     const buttonElement = event.target as HTMLElement;
     const rect = buttonElement.getBoundingClientRect();
@@ -184,7 +184,7 @@ export class UsuarioComponent implements OnInit {
         });
     } else {
       this.usuarioService.crearUsuario(usuarioData).subscribe({
-        next: (nuevoUsuario) => {
+        next: () => {
           alert("Usuario creado correctamente.");
           this.mostrarForm = false;
           this.usuarioForm.reset();
