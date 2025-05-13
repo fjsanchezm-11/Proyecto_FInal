@@ -24,8 +24,8 @@ export class UsuarioComponent implements OnInit {
   posicionFormulario = { top: '0px', left: '0px' };
   bloquearCierre = false;
   busqueda: string = '';
-
-
+  gruposDelUsuario: any[] = [];
+  grupoIdParaAsociar: number | null = null;
   proyectosDelUsuario: any[] = [];
   proyectoIdParaAsociar: number | null = null;
 
@@ -48,25 +48,25 @@ export class UsuarioComponent implements OnInit {
       scopus: [''],
       res: [''],
       proyectoIdParaAsociar: [null],
-      nombre_investigador: ['']
+      nombre_investigador: [''],
+      grupoIdParaAsociar: [null]
     });
     
   }
 
-/* Muestra los detalles del usuario seleccionado */
-mostrarDetalles(usuario: any) {
-  this.usuarioSeleccionado = usuario;
-  this.mostrandoDetalles = true;
-  this.mostrarForm = false;
+  mostrarDetalles(usuario: any) {
+    this.usuarioSeleccionado = usuario;
+    this.mostrandoDetalles = true;
+    this.mostrarForm = false;
 
-  this.cargarProyectosDeUsuario(usuario.uid_number);
-}
+    this.cargarProyectosDeUsuario(usuario.uid_number);
+    this.cargarGruposDeUsuario(usuario.uid_number);
+  }
 
-/* Cierra la ventana de detalles */
-cerrarDetalles() {
-  this.usuarioSeleccionado = null;
-  this.mostrandoDetalles = false;
-}
+  cerrarDetalles() {
+    this.usuarioSeleccionado = null;
+    this.mostrandoDetalles = false;
+  }
 
 
   ngOnInit(): void {
@@ -113,6 +113,7 @@ cerrarDetalles() {
   
     console.log("Usuario seleccionado:", this.usuarioSeleccionado); 
     this.cargarProyectosDeUsuario(usuario.uid_number);
+    this.cargarGruposDeUsuario(usuario.uid_number);
   
     const fechaFormateada1 = usuario.fecha_alta
       ? new Date(usuario.fecha_alta).toISOString().split('T')[0]
@@ -134,7 +135,8 @@ cerrarDetalles() {
       wos: usuario.wos ?? '',
       scopus: usuario.scopus ?? '',
       res: usuario.res ?? '',
-      proyectoIdParaAsociar: null
+      proyectoIdParaAsociar: null,
+      grupoIdParaAsociar: null
     });
   
     const buttonElement = event.target as HTMLButtonElement;
@@ -147,9 +149,10 @@ cerrarDetalles() {
 
   guardarUsuario() {
     const usuarioData = this.usuarioForm.value;
+    usuarioData.grupoIdParaAsociar = this.usuarioForm.value.gid_number;
+    console.log("📤 Datos antes de enviar:", usuarioData);
   
     if (this.editando) {
-      console.log("📤 Datos enviados:", usuarioData);
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
         .subscribe({
           next: () => {
@@ -240,15 +243,59 @@ cerrarDetalles() {
     this.usuarioSeleccionado = usuario;
     this.cargarProyectosDeUsuario(usuario.uid_number);
   }
+
+  cargarGruposDeUsuario(usuarioId: number) {
+    this.usuarioService.obtenerGruposDeUsuario(usuarioId).subscribe(grupos => {
+      this.gruposDelUsuario = grupos;
+    });
+  }
+
+  asociarGrupo() {
+  const grupoId = this.usuarioForm.get('grupoIdParaAsociar')?.value;
+  if (!this.usuarioSeleccionado || !grupoId) {
+    alert("Debes seleccionar un usuario y un grupo válido.");
+    return;
+  }
+
+  this.usuarioService.asociarGrupoAUsuario(this.usuarioSeleccionado.uid_number, grupoId)
+    .subscribe({
+      next: () => {
+        this.cargarGruposDeUsuario(this.usuarioSeleccionado.uid_number);
+        this.usuarioForm.patchValue({ grupoIdParaAsociar: null });
+      },
+      error: (err) => {
+        console.error("Error al asociar grupo:", err);
+        alert("Error al asociar grupo.");
+      }
+    });
+  }
+
+  eliminarGrupoDelUsuario(grupoId: number) {
+  if (!this.usuarioSeleccionado) {
+    alert("No hay usuario seleccionado.");
+    return;
+  }
+
+  this.usuarioService.eliminarGrupoDeUsuario(this.usuarioSeleccionado.uid_number, grupoId)
+    .subscribe({
+      next: () => {
+        this.cargarGruposDeUsuario(this.usuarioSeleccionado.uid_number);
+      },
+      error: (err) => {
+        console.error("Error al eliminar grupo:", err);
+        alert("Error al eliminar grupo.");
+      }
+    });
+  }
   
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (this.bloquearCierre) return;
-    const formElement = document.querySelector('.popup-form');
-    if (this.mostrarForm && formElement && !formElement.contains(event.target as Node)) {
-      this.mostrarForm = false;
+    onDocumentClick(event: MouseEvent): void {
+      if (this.bloquearCierre) return;
+      const formElement = document.querySelector('.popup-form');
+      if (this.mostrarForm && formElement && !formElement.contains(event.target as Node)) {
+        this.mostrarForm = false;
+      }
     }
-  }
 
   onFormClick(event: MouseEvent): void {
     event.stopPropagation();

@@ -17,8 +17,6 @@ class Usuario(db.Model):
     scopus = db.Column(db.String(255), nullable=True)
     res = db.Column(db.String(255), nullable=True)
 
-    grupo = db.relationship("Grupo", backref="usuarios") 
-
     def to_dict(self):
         return {
             "uid_number": self.uid_number,

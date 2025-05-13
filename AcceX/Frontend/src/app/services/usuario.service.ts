@@ -28,4 +28,16 @@ export class UsuarioService {
   eliminarUsuario(id: number): Observable<any>{
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  obtenerGruposDeUsuario(usuarioId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${usuarioId}/grupos`);
+  }
+
+  asociarGrupoAUsuario(usuarioId: number, grupoId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${usuarioId}/grupos`, { grupo_id: grupoId });
+  }
+
+  eliminarGrupoDeUsuario(usuarioId: number, grupoId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${usuarioId}/grupos/${grupoId}`);
+  }
 }

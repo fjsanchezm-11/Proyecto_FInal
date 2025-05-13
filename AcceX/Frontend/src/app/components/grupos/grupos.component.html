@@ -54,7 +54,7 @@
         <h3>Usuarios en este grupo:</h3>
         <ul>
           <li *ngFor="let usuario of usuariosDelGrupo">
-            {{ usuario.nombre_usuario }}
+            {{ usuario?.nombre_usuario }}
             <button (click)="eliminarUsuario(usuario.uid_number)">❌</button>
           </li>
         </ul>
@@ -74,7 +74,7 @@
     <h3>Usuarios en este grupo:</h3>
     <ul>
       <li *ngFor="let usuario of usuariosDelGrupo">
-        {{ usuario.nombre_usuario }} (ID: {{ usuario.uid_number }})
+        {{ usuario?.nombre_usuario  }}  (ID: {{ usuario.uid_number }})
       </li>
     </ul>
     <button class="back-button" (click)="cerrarDetalles()">Volver</button>

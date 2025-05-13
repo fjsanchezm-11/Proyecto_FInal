@@ -46,7 +46,11 @@ def eliminar_grupo(id):
 
 @grupos_bp.route('/grupos/<int:gid>/usuarios', methods=['GET'])
 def obtener_usuarios_por_grupo(gid):
-    usuarios = Usuario.query.filter_by(gid_number=gid).all()
+    grupo = Grupo.query.get(gid)
+    if not grupo:
+        return jsonify({'error': 'Grupo no encontrado'}), 404
+
+    usuarios = db.session.query(Usuario).join(usuarios_grupos).filter(usuarios_grupos.c.grupo_id == gid).all()
     return jsonify([
         {
             'uid_number': u.uid_number,
@@ -54,23 +58,59 @@ def obtener_usuarios_por_grupo(gid):
         } for u in usuarios
     ])
 
+@grupos_bp.route('/grupos/<int:gid>/usuarios', methods=['POST'])
+def asociar_usuario_a_grupo(gid):
+    data = request.get_json()
+    usuario_id = data.get('usuario_id')
+    if not usuario_id:
+        return jsonify({"error": "Falta usuario_id"}), 400
+
+    grupo = Grupo.query.get(gid)
+    usuario = Usuario.query.get(usuario_id)
+    if not grupo:
+        return jsonify({"error": "El grupo no existe"}), 404
+    if not usuario:
+        return jsonify({"error": "El usuario no existe"}), 404
+
+    try:
+        existe_relacion = db.session.execute(
+            usuarios_grupos.select().where(
+                usuarios_grupos.c.usuario_id == usuario_id,
+                usuarios_grupos.c.grupo_id == gid
+            )
+        ).first()
+
+        if existe_relacion:
+            return jsonify({"mensaje": "El usuario ya está asociado al grupo"}), 200
+
+        db.session.execute(
+            usuarios_grupos.insert().values(usuario_id=usuario_id, grupo_id=gid)
+        )
+        db.session.commit()
+        return jsonify({"mensaje": "Usuario asociado al grupo correctamente"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("❌ Error al asociar usuario:", str(e))
+        return jsonify({"error": "Error al asociar usuario", "detalle": str(e)}), 500
+
 @grupos_bp.route('/grupos/<int:gid>/usuarios/<int:uid>', methods=['DELETE'])
 def eliminar_usuario_de_grupo(gid, uid):
+    grupo = Grupo.query.get(gid)
     usuario = Usuario.query.get(uid)
+    if not grupo:
+        return jsonify({'error': 'Grupo no encontrado'}), 404
     if not usuario:
         return jsonify({'error': 'Usuario no encontrado'}), 404
 
-    if usuario.gid_number != gid:
-        return jsonify({'error': 'El usuario no pertenece a este grupo'}), 400
-
-    db.session.execute(
-        usuarios_grupos.delete().where(
-            usuarios_grupos.c.usuario_id == uid,
-            usuarios_grupos.c.grupo_id == gid
-        )
+    delete_query = usuarios_grupos.delete().where(
+        usuarios_grupos.c.usuario_id == uid,
+        usuarios_grupos.c.grupo_id == gid
     )
-
-    usuario.gid_number = None
+    result = db.session.execute(delete_query)
     db.session.commit()
 
-    return jsonify({'mensaje': 'Usuario eliminado del grupo correctamente'})
+    if result.rowcount == 0:
+        return jsonify({"error": "Relación no encontrada"}), 404
+
+    return jsonify({"mensaje": "Usuario eliminado del grupo correctamente"})

@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener, inject } from '@angular/core';
-import { GruposService } from '../../services/grupos.service';
+import { GrupoService } from '../../services/grupos.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -12,18 +12,18 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./grupos.component.css']
 })
 export class GruposComponent implements OnInit {
-  grupos: any[] = [];
+  grupos: { gid_number: number; nombre: string }[] = [];
+  usuariosDelGrupo: { uid_number: number; nombre_usuario: string }[] = [];
   grupoForm: FormGroup;
   mostrarForm = false;
   editando = false;
-  grupoSeleccionado: any = null;
+  grupoSeleccionado: { gid_number: number; nombre: string } | null = null;
   mostrandoDetalles = false;
   posicionFormulario = { top: '0px', left: '0px' };
   bloquearCierre = false;
-  busqueda: string = '';
-  usuariosDelGrupo: any[] = [];
+  busqueda = '';
 
-  private grupoService = inject(GruposService);
+  private grupoService = inject(GrupoService);
   private fb = inject(FormBuilder);
 
   constructor(public authService: AuthService) {
@@ -36,76 +36,84 @@ export class GruposComponent implements OnInit {
     this.cargarGrupos();
   }
 
-  cargarGrupos() {
-    this.grupoService.obtenerGrupos().subscribe((grupos) => {
-      this.grupos = grupos;
+  cargarGrupos(): void {
+    this.grupoService.obtenerGrupos().subscribe({
+      next: (grupos) => (this.grupos = grupos),
+      error: (error) => console.error('Error cargando grupos', error)
     });
   }
 
-  eliminarGrupo(id: number) {
-    this.grupoService.eliminarGrupo(id).subscribe(() => {
-      this.cargarGrupos();
+  eliminarGrupo(id: number): void {
+    this.grupoService.eliminarGrupo(id).subscribe({
+      next: () => this.cargarGrupos(),
+      error: (error) => console.error('Error eliminando grupo', error)
     });
   }
 
-  mostrarFormulario(event: MouseEvent) {
-    this.bloquearCierre = true;
-    this.mostrarForm = true;
-    this.editando = false;
-    this.grupoSeleccionado = null;
-    this.grupoForm.reset();
-
-    const buttonElement = event.target as HTMLButtonElement;
-    const rect = buttonElement.getBoundingClientRect();
-    this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
-    this.posicionFormulario.left = `${rect.left}px`;
-
-    setTimeout(() => this.bloquearCierre = false, 100);
+  mostrarFormulario(event: MouseEvent): void {
+    this.prepararFormulario();
+    this.posicionarFormulario(event);
   }
 
-  editarGrupo(grupo: any, event: MouseEvent) {
+  editarGrupo(grupo: { gid_number: number; nombre: string }, event: MouseEvent): void {
     event.stopPropagation();
-    this.bloquearCierre = true;
-    this.mostrarForm = true;
-    this.editando = true;
-    this.grupoSeleccionado = grupo;
-    this.mostrandoDetalles = false;
-    this.grupoForm.patchValue({ nombre: grupo.nombre });
-  
-    const buttonElement = event.target as HTMLButtonElement;
-    const rect = buttonElement.getBoundingClientRect();
-    this.posicionFormulario.top = `${rect.bottom + window.scrollY}px`;
-    this.posicionFormulario.left = `${rect.left}px`;
-  
-    this.grupoService.obtenerUsuariosPorGrupo(grupo.gid_number).subscribe(usuarios => {
-      this.usuariosDelGrupo = usuarios;
-    });
-  
-    setTimeout(() => this.bloquearCierre = false, 100);
+    this.prepararFormulario(grupo);
+    this.posicionarFormulario(event);
+    this.cargarUsuariosDelGrupo(grupo.gid_number);
   }
-  
-  eliminarUsuario(uid: number) {
-    const gid = this.grupoSeleccionado?.gid_number;
-    if (!gid) return;
-  
-    this.grupoService.eliminarUsuarioDeGrupo(uid, gid).subscribe(() => {
-      this.usuariosDelGrupo = this.usuariosDelGrupo.filter(u => u.uid_number !== uid);
+
+  eliminarUsuario(uid: number): void {
+    if (!this.grupoSeleccionado) return;
+    const gid = this.grupoSeleccionado.gid_number;
+    this.grupoService.eliminarUsuarioDeGrupo(gid, uid).subscribe({
+      next: () => {
+        this.usuariosDelGrupo = this.usuariosDelGrupo.filter(u => u.uid_number !== uid);
+      },
+      error: (error) => console.error('Error eliminando usuario del grupo', error)
     });
   }
-  
-  guardarGrupo() {
-    if (this.editando) {
-      this.grupoService.actualizarGrupo(this.grupoSeleccionado.gid_number, this.grupoForm.value).subscribe(() => {
-        alert("Grupo actualizado correctamente.");
-        this.mostrarForm = false;
-        this.cargarGrupos();
+
+  guardarGrupo(): void {
+    if (this.editando && this.grupoSeleccionado) {
+      this.grupoService.actualizarGrupo(this.grupoSeleccionado.gid_number, this.grupoForm.value).subscribe({
+        next: () => {
+          alert('Grupo actualizado correctamente');
+          this.mostrarForm = false;
+          this.cargarGrupos();
+        },
+        error: (error) => console.error('Error actualizando grupo', error)
       });
     } else {
-      this.grupoService.crearGrupo(this.grupoForm.value).subscribe(() => {
-        this.mostrarForm = false;
-        this.cargarGrupos();
+      this.grupoService.crearGrupo(this.grupoForm.value).subscribe({
+        next: () => {
+          this.mostrarForm = false;
+          this.cargarGrupos();
+        },
+        error: (error) => console.error('Error creando grupo', error)
       });
     }
+  }
+
+  mostrarDetalles(grupo: { gid_number: number; nombre: string }): void {
+    this.grupoSeleccionado = grupo;
+    this.mostrandoDetalles = true;
+    this.mostrarForm = false;
+    this.cargarUsuariosDelGrupo(grupo.gid_number);
+  }
+
+  cerrarDetalles(): void {
+    this.grupoSeleccionado = null;
+    this.mostrandoDetalles = false;
+  }
+
+  cerrarFormulario(): void {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.grupoSeleccionado = null;
+  }
+
+  get gruposFiltrados() {
+    return this.grupos.filter(g => g.gid_number.toString().includes(this.busqueda));
   }
 
   @HostListener('document:click', ['$event'])
@@ -121,30 +129,31 @@ export class GruposComponent implements OnInit {
     event.stopPropagation();
   }
 
-  get gruposFiltrados() {
-    return this.grupos.filter(grupo =>
-      grupo.gid_number.toString().includes(this.busqueda)
-    );
-  }
-
-  mostrarDetalles(grupo: any) {
-    this.grupoSeleccionado = grupo;
-    this.mostrandoDetalles = true;
-    this.mostrarForm = false; 
-    this.grupoService.obtenerUsuariosPorGrupo(grupo.gid_number).subscribe(usuarios => {
-      this.usuariosDelGrupo = usuarios;
+  private cargarUsuariosDelGrupo(gid: number): void {
+    this.grupoService.obtenerUsuariosDeGrupo(gid).subscribe({
+      next: (usuarios) => (this.usuariosDelGrupo = usuarios),
+      error: (error) => console.error('Error cargando usuarios del grupo', error)
     });
   }
 
-  cerrarDetalles() {
-    this.grupoSeleccionado = null;
-    this.mostrandoDetalles = false;
+  private prepararFormulario(grupo?: { gid_number: number; nombre: string }): void {
+    this.bloquearCierre = true;
+    this.mostrarForm = true;
+    this.editando = !!grupo;
+    this.grupoSeleccionado = grupo || null;
+    this.grupoForm.reset();
+    if (grupo) {
+      this.grupoForm.patchValue({ nombre: grupo.nombre });
+    }
+    setTimeout(() => (this.bloquearCierre = false), 100);
   }
 
-  cerrarFormulario() {
-    this.mostrarForm = false;
-    this.editando = false;
-    this.grupoSeleccionado = null;
+  private posicionarFormulario(event: MouseEvent): void {
+    const buttonElement = event.target as HTMLElement;
+    const rect = buttonElement.getBoundingClientRect();
+    this.posicionFormulario = {
+      top: `${rect.bottom + window.scrollY}px`,
+      left: `${rect.left}px`
+    };
   }
-
 }
