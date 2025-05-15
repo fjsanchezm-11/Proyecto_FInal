@@ -107,7 +107,6 @@ export class PublicacionesComponent implements OnInit {
   guardarPublicacion() {
     if (this.editando) {
       this.publicacionesService.actualizarPublicacion(this.publicacionSeleccionada.result_code, this.publicacionForm.value).subscribe(() => {
-        alert("Publicación actualizada correctamente.");
         this.mostrarForm = false;
         this.publicacionForm.reset();
         this.cargarPublicaciones();

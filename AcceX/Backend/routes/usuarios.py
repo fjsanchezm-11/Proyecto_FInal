@@ -54,7 +54,7 @@ def crear_usuario():
     try:
         nuevo_usuario = Usuario(
             nombre_usuario=data.get("nombre_usuario"),
-            contacto=data.get("correo"),
+            contacto=data.get("contacto"),
             activo=data.get("activo", True)
         )
         db.session.add(nuevo_usuario)
@@ -63,7 +63,7 @@ def crear_usuario():
         if data.get("nombre_investigador"):
             nuevo_investigador = Investigador(
                 nombre_investigador=data.get("nombre_investigador"),
-                correo=data.get("correo")
+                correo=data.get("contacto")
             )
             db.session.add(nuevo_investigador)
             db.session.flush()

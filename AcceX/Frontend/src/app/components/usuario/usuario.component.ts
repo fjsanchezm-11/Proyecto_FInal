@@ -35,12 +35,12 @@ export class UsuarioComponent implements OnInit {
 
   constructor(private router: Router,public authService: AuthService) {
     this.usuarioForm = this.fb.group({
-      gid_number: ['', Validators.required],
+      gid_number: ['', ],
       nombre_usuario: ['', Validators.required],
       fecha_alta: [''],
       fecha_baja: [''],
       activo: [false],
-      contacto: ['', [Validators.required, Validators.email]],
+      contacto: ['', [Validators.email]],
       telefono: [''],
       orcid: [''],
       scholar: [''],
@@ -163,16 +163,22 @@ export class UsuarioComponent implements OnInit {
   }
 
   guardarUsuario() {
+    if (this.usuarioForm.invalid) {
+      alert('Completa correctamente los campos requeridos.');
+      return;
+    }
+
     const usuarioData = { ...this.usuarioForm.value };
 
     usuarioData.grupos = this.gruposDelUsuario.map(g => g.gid_number);
     usuarioData.proyectos = this.proyectosDelUsuario;
 
+    console.log('Datos enviados:', usuarioData);
+
     if (this.editando) {
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
         .subscribe({
           next: () => {
-            alert("Usuario actualizado correctamente.");
             this.mostrarForm = false;
             this.usuarioForm.reset();
             this.cargarUsuarios();
@@ -185,7 +191,6 @@ export class UsuarioComponent implements OnInit {
     } else {
       this.usuarioService.crearUsuario(usuarioData).subscribe({
         next: () => {
-          alert("Usuario creado correctamente.");
           this.mostrarForm = false;
           this.usuarioForm.reset();
           if (usuarioData.grupoIdParaAsociar) {
@@ -206,6 +211,7 @@ export class UsuarioComponent implements OnInit {
       });
     }
   }
+
   
   cargarProyectosDeUsuario(usuarioId: number) {
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
@@ -244,7 +250,6 @@ export class UsuarioComponent implements OnInit {
     this.proyectoService.eliminarUsuarioDeProyecto(proyectoId, this.usuarioSeleccionado.uid_number)
       .subscribe({
         next: () => {
-          alert("Proyecto eliminado correctamente.");
           this.cargarProyectosDeUsuario(this.usuarioSeleccionado.uid_number);
         },
         error: (err) => {

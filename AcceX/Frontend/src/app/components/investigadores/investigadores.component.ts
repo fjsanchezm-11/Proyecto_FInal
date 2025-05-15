@@ -109,7 +109,6 @@ export class InvestigadoresComponent implements OnInit {
   
     if (this.editando) {
       this.investigadorService.actualizarInvestigador(this.investigadorSeleccionado.iid_number, formData).subscribe(() => {
-        alert("Investigador actualizado correctamente.");
         this.mostrarForm = false;
         this.cargarInvestigadores();
       });
