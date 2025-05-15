@@ -1,15 +1,11 @@
-/* styles.css o styles.scss */
-
-/* Variables de color */
 :root {
-    --color-primario: #2C3E50; /* Azul oscuro */
-    --color-secundario: #3498DB; /* Azul medio */
-    --color-fondo: #ECF0F1; /* Gris claro */
-    --color-texto: #2C3E50; /* Azul oscuro */
-    --color-blanco: #FFFFFF; /* Blanco */
+    --color-primario: #2C3E50; 
+    --color-secundario: #3498DB;
+    --color-fondo: #ECF0F1;
+    --color-texto: #2C3E50; 
+    --color-blanco: #FFFFFF; 
   }
   
-  /* Estilo general del cuerpo */
   body {
     background-color: var(--color-fondo);
     color: var(--color-texto);
@@ -18,12 +14,10 @@
     padding: 0;
   }
   
-  /* Encabezados */
   h1, h2, h3, h4, h5, h6 {
     color: var(--color-primario);
   }
   
-  /* Enlaces */
   a {
     color: var(--color-secundario);
     text-decoration: none;
@@ -33,7 +27,6 @@
     text-decoration: underline;
   }
   
-  /* Botones */
   button {
     background-color: var(--color-secundario);
     color: var(--color-blanco);
@@ -48,7 +41,6 @@
     background-color: darken(var(--color-secundario), 10%);
   }
   
-  /* Formularios */
   input, textarea {
     border: 1px solid var(--color-primario);
     padding: 10px;
@@ -63,7 +55,6 @@
     box-shadow: 0 0 5px var(--color-secundario);
   }
   
-  /* Tarjetas o contenedores */
   .card {
     background-color: var(--color-blanco);
     border-radius: 5px;
@@ -72,7 +63,6 @@
     margin: 20px 0;
   }
   
-  /* Navegación */
   nav {
     background-color: var(--color-primario);
     padding: 10px 0;
@@ -87,7 +77,6 @@
     color: var(--color-secundario);
   }
   
-  /* Pie de página */
   footer {
     background-color: var(--color-primario);
     color: var(--color-blanco);
