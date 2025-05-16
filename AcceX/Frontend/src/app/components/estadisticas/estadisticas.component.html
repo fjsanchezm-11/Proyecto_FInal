@@ -1,22 +1,22 @@
 <div class="estadisticas-container">
-  <button (click)="mostrarVista('proyectosPorCategoria')">Proyectos por categoría</button>
-  <button (click)="mostrarVista('usuariosPorInstitucion')">Usuarios por Grupo</button>
-  <button (click)="mostrarVista('proyectosPorUsuario')">Proyectos por Usuario</button>
-  <button (click)="mostrarVista('proyectosPorAño')">Proyectos por Año</button>
-  <button (click)="mostrarVista('publicacionesPorInvestigador')">Publicaciones por Investigador</button>
+    <button (click)="mostrarVista('usuariosPorGrupo')">Usuarios por Grupo</button>
+    <button (click)="mostrarVista('proyectosPorCategoria')">Proyectos por categoría</button>
+    <button (click)="mostrarVista('usuariosPorProyecto')">Usuarios por proyecto</button>
+    <button (click)="mostrarVista('proyectosPorAño')">Proyectos por Año</button>
+    <button (click)="mostrarVista('publicacionesPorInvestigador')">Publicaciones por Investigador</button>
+    <button (click)="mostrarVista('publicacionesPorAño')">Publicaciones por Año</button>
 </div>
 
-<!-- Secciones de gráficos -->
 <div *ngIf="vistaActual === 'proyectosPorCategoria'" class="detalles">
-  <canvas id="proyectosPorCategoria"></canvas>
+    <canvas id="proyectosPorCategoria"></canvas>
 </div>
 
-<div *ngIf="vistaActual === 'usuariosPorInstitucion'" class="detalles">
-  <canvas id="usuariosPorGrupo"></canvas>
+<div *ngIf="vistaActual === 'usuariosPorGrupo'" class="detalles">
+    <canvas id="usuariosPorGrupo"></canvas>
 </div>
 
-<div *ngIf="vistaActual === 'proyectosPorUsuario'" class="detalles">
-  <canvas id="proyectosPorUsuario"></canvas>
+<div *ngIf="vistaActual === 'usuariosPorProyecto'" class="detalles">
+    <canvas id="usuariosPorProyecto"></canvas>
 </div>
 
 <div *ngIf="vistaActual === 'proyectosPorAño'" class="detalles">
@@ -25,4 +25,8 @@
 
 <div *ngIf="vistaActual === 'publicacionesPorInvestigador'" class="detalles">
     <canvas id="publicacionesPorInvestigador"></canvas>
+</div>
+
+<div *ngIf="vistaActual === 'publicacionesPorAño'" class="detalles">
+    <canvas id="publicacionesPorAño"></canvas>
 </div>

@@ -1,0 +1,25 @@
+.detalles {
+    width: auto;
+    height: auto;
+    max-width: 95%;
+    max-height: 95%;
+    overflow: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.estadisticas-container button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.estadisticas-container button:hover {
+    background-color: #0056b3;
+}

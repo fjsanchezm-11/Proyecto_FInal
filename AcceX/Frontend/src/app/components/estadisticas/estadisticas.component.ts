@@ -16,7 +16,8 @@ import { CommonModule } from '@angular/common';
 export class EstadisticasComponent implements OnInit {
   datosProyectos: any[] = [];
   datosUsuarios: any[] = [];
-  vistaActual: string | null = null;
+  datosPublicaciones: any[] = [];
+  vistaActual: string = 'usuariosPorGrupo';
   chartInstance: Chart | null = null; 
 
   constructor(
@@ -35,6 +36,8 @@ export class EstadisticasComponent implements OnInit {
     this.usuarioService.obtenerUsuarios().subscribe((usuarios) => {
       this.datosUsuarios = usuarios;
     });
+
+    this.mostrarVista('usuariosPorGrupo');
   }
 
   mostrarVista(vista: string) {
@@ -43,14 +46,16 @@ export class EstadisticasComponent implements OnInit {
     setTimeout(() => {
       if (vista === 'proyectosPorCategoria') {
         this.generarGraficoProyectosPorCategoria();
-      } else if (vista === 'usuariosPorInstitucion') {
+      } else if (vista === 'usuariosPorGrupo') {
         this.generarGraficoUsuariosPorGrupo();
-      } else if (vista === 'proyectosPorUsuario') {
-        this.generarGraficoProyectosPorUsuario();
+      } else if (vista === 'usuariosPorProyecto') {
+        this.generarGraficoUsuariosPorProyecto();
       } else if (vista === 'proyectosPorAño') {
         this.generarGraficoProyectosPorAño();
       } else if (vista === 'publicacionesPorInvestigador') {
         this.generarGraficoPublicacionesPorInvestigador();
+      } else if (vista === 'publicacionesPorAño') {
+        this.generarGraficoPublicacionesPorAño();
       }
     }, 100);
   }
@@ -118,6 +123,8 @@ export class EstadisticasComponent implements OnInit {
     if (ctx) {
       if (this.chartInstance) {
         this.chartInstance.destroy();
+        this.chartInstance = null;
+        ctx.innerHTML = "";
       }
 
       this.chartInstance = new Chart(ctx, {
@@ -143,64 +150,54 @@ export class EstadisticasComponent implements OnInit {
     }
   }
 
-  generarGraficoProyectosPorUsuario() {
+  generarGraficoUsuariosPorProyecto() {
     this.proyectoService.obtenerProyectos().subscribe((proyectos) => {
-      if (!proyectos || proyectos.length === 0) {
-        console.warn("⚠️ No hay proyectos disponibles.");
-        return;
-      }
+      if (!proyectos || proyectos.length === 0) return;
 
-      const conteoProyectosPorUsuario: { [key: string]: number } = {};
-      let llamadasPendientes = proyectos.length; 
+      const conteoUsuariosPorProyecto: { [key: string]: number } = {};
+      let llamadasPendientes = proyectos.length;
 
       proyectos.forEach(proyecto => {
+        if (!proyecto.pid_number) return;
+
         this.proyectoService.obtenerUsuariosPorProyecto(proyecto.pid_number).subscribe((usuarios) => {
-          usuarios.forEach(usuario => {
-            conteoProyectosPorUsuario[usuario.nombre_usuario] = 
-              (conteoProyectosPorUsuario[usuario.nombre_usuario] || 0) + 1;
-          });
+          conteoUsuariosPorProyecto[proyecto.pid_number] = usuarios.length;
 
           llamadasPendientes--;
           if (llamadasPendientes === 0) {
-            this.crearGraficoBarrasUsuario(conteoProyectosPorUsuario);
+            this.crearGraficoBarrasProyecto(conteoUsuariosPorProyecto);
           }
         });
       });
     });
   }
 
-  crearGraficoBarrasUsuario(conteoProyectosPorUsuario: { [key: string]: number }) {
-    console.log("Proyectos por usuario:", conteoProyectosPorUsuario);
+  crearGraficoBarrasProyecto(conteoUsuariosPorProyecto: { [key: string]: number }) {
+    const ctx = document.getElementById("usuariosPorProyecto") as HTMLCanvasElement;
 
-    const ctx = document.getElementById("proyectosPorUsuario") as HTMLCanvasElement;
+    if (!ctx) return;
 
-    if (ctx) {
-      if (this.chartInstance) {
-        this.chartInstance.destroy();
-      }
+    if (this.chartInstance) this.chartInstance.destroy();
 
-      this.chartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: Object.keys(conteoProyectosPorUsuario), 
-          datasets: [{
-            label: "Proyectos por usuario",
-            data: Object.values(conteoProyectosPorUsuario),
-            backgroundColor: Object.keys(conteoProyectosPorUsuario).map(() => `#${Math.floor(Math.random()*16777215).toString(16)}`),
-            borderColor: "#000",
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: { beginAtZero: true, title: { display: true, text: "Cantidad de proyectos" } },
-            x: { title: { display: true, text: "Usuarios" } }
-          }
+    this.chartInstance = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Object.keys(conteoUsuariosPorProyecto),
+        datasets: [{
+          label: "Usuarios por proyecto",
+          data: Object.values(conteoUsuariosPorProyecto),
+          backgroundColor: Object.keys(conteoUsuariosPorProyecto).map(() => `#${Math.floor(Math.random()*16777215).toString(16)}`),
+          borderColor: "#000",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: "Cantidad de usuarios" } },
+          x: { title: { display: true, text: "Proyectos" }, ticks: {maxTicksLimit: 20 } }
         }
-      });
-    } else {
-      console.error("❌ Error: No se encontró el canvas 'proyectosPorUsuario'");
-    }
+      }
+    });
   }
 
   generarGraficoProyectosPorAño() {
@@ -310,6 +307,61 @@ export class EstadisticasComponent implements OnInit {
           legend: { position: "right" }
         }
       }
+    });
+  }
+
+  generarGraficoPublicacionesPorAño() {
+    this.publicacionesService.obtenerPublicaciones().subscribe((publicaciones) => {
+      if (!publicaciones || publicaciones.length === 0) {
+        console.warn("⚠️ No hay publicaciones disponibles.");
+        return;
+      }
+
+      const publicacionesValidas = publicaciones.filter(publicacion => publicacion.fecha_publicacion);
+
+      const conteoPublicacionesPorAño = publicacionesValidas.reduce((acc, publicacion) => {
+        const año = new Date(publicacion.fecha_publicacion).getFullYear();
+
+        acc[año] = (acc[año] || 0) + 1;
+        return acc;
+      }, {});
+
+      const ctx = document.getElementById("publicacionesPorAño") as HTMLCanvasElement;
+
+      if (!ctx) {
+        console.error("❌ Error: No se encontró el canvas 'publicacionesPorAño'");
+        return;
+      }
+
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
+
+      this.chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: Object.keys(conteoPublicacionesPorAño).sort(),
+          datasets: [{
+            label: "Cantidad de publicaciones por año",
+            data: Object.values(conteoPublicacionesPorAño),
+            borderColor: "#007bff",
+            backgroundColor: "rgba(0, 123, 255, 0.2)",
+            borderWidth: 2,
+            pointBackgroundColor: "#007bff",
+            pointBorderColor: "#000"
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, position: "top" }
+          },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Cantidad de publicaciones" } },
+            x: { title: { display: true, text: "Año" } }
+          }
+        }
+      });
     });
   }
 
