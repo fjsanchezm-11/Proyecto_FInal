@@ -70,4 +70,9 @@ export class MainComponent {
     this.router.navigate(['grupos'], { relativeTo: this.activatedRoute });
     if (this.isMobile) this.menuAbierto = false;
   }
+
+  goToEstadisticas() {
+    this.router.navigate(['estadisticas'], { relativeTo: this.activatedRoute });
+    if (this.isMobile) this.menuAbierto = false;
+  }
 }

@@ -8,6 +8,7 @@
             <li><button (click)="goToInvestigadores()">Ir a los investigadores</button></li>
             <li><button (click)="goToPublicaciones()">Ir a las publicaciones</button></li>
             <li><button (click)="goToGrupos()">Ir a los grupos</button></li>
+            <li><button (click)="goToEstadisticas()">Ir a las estadísticas</button></li>
         </ul>
         <div *ngIf="!authService.isLoggedIn()">
             <input type="password" [(ngModel)]="password" placeholder="Contraseña admin" (keydown.enter)="login()" class="password-input" />

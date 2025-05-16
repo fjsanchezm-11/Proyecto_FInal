@@ -1,4 +1,5 @@
 import os
+import re
 import pandas as pd
 import mysql.connector
 from datetime import datetime
@@ -349,7 +350,7 @@ def insert_investigadores_publicaciones(connection, publicaciones_data):
                     continue
                 
                 for nombre_inv, iid in investigador_map.items():
-                    if nombre_inv in desc_pub:
+                    if re.search(rf"\b{re.escape(nombre_inv)}\b", desc_pub):
                         cursor.execute("""
                             SELECT 1 FROM investigadores_publicaciones 
                             WHERE investigador_id = %s AND publicacion_id = %s

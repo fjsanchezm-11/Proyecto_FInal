@@ -6,8 +6,7 @@ import { MainComponent } from './components/main/main.component';
 import { InvestigadoresComponent } from './components/investigadores/investigadores.component';
 import { PublicacionesComponent } from './components/publicaciones/publicaciones.component';
 import { GruposComponent } from './components/grupos/grupos.component';
-import { LoginComponent } from './components/login/login.component';
-import { AuthGuard } from './guards/auth.guard';
+import { EstadisticasComponent } from './components/estadisticas/estadisticas.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/main/usuario', pathMatch: 'full' },
@@ -19,7 +18,8 @@ export const routes: Routes = [
       { path: 'proyectos', component: ProyectosComponent },
       { path: 'investigadores', component: InvestigadoresComponent },
       { path: 'publicaciones', component: PublicacionesComponent },
-      { path: 'grupos', component: GruposComponent }
+      { path: 'grupos', component: GruposComponent },
+      { path: 'estadisticas', component: EstadisticasComponent }
     ]
   },
   { path: '**', redirectTo: '/main/usuario' }
