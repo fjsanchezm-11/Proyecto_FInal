@@ -82,27 +82,34 @@ def insert_usuarios(connection, data):
             uid = clean_value(row['uidNumber'])
             nombre_usuario = clean_value(row['Nombre Usuario'])
 
-            cursor.execute("SELECT 1 FROM usuarios WHERE nombre_usuario = %s", (nombre_usuario,))
-            nombre_repetido = cursor.fetchone() is not None
+            cursor.execute("SELECT uid_number FROM usuarios WHERE nombre_usuario = %s", (nombre_usuario,))
+            usuario_existente = cursor.fetchone()
 
-            if str(uid).isdigit():
-                uid = int(uid)
-                cursor.execute("SELECT 1 FROM usuarios WHERE uid_number = %s", (uid,))
-                uid_repetido = cursor.fetchone() is not None
-                if uid_repetido or nombre_repetido:
-                    print(f"⚠️ Usuario o uid_number ya existe. Asignando nuevo uid_number a '{nombre_usuario}'")
+            if usuario_existente:
+                uid = usuario_existente[0] 
+                print(f"⚠️ Usuario '{nombre_usuario}' ya existe. Eliminando y recreando con uid_number: {uid}")
+
+                cursor.execute("DELETE FROM usuarios WHERE uid_number = %s", (uid,))
+                connection.commit()  
+            else:
+                if str(uid).isdigit():
+                    uid = int(uid)
+                    cursor.execute("SELECT 1 FROM usuarios WHERE uid_number = %s", (uid,))
+                    uid_repetido = cursor.fetchone() is not None
+                    if uid_repetido:
+                        print(f"⚠️ uid_number {uid} ya existe. Asignando nuevo uid_number.")
+                        uid = next_uid
+                        next_uid += 1
+                else:
                     uid = next_uid
                     next_uid += 1
-            else:
-                uid = next_uid
-                next_uid += 1
 
-            if gid is not None:
-                cursor.execute("SELECT 1 FROM grupos WHERE gid_number = %s", (gid,))
-                if not cursor.fetchone():
-                    print(f"⚠️ gid_number {gid} no existe. Se creará.")
-                    cursor.execute("INSERT INTO grupos (gid_number, nombre) VALUES (%s, NULL)", (gid,))
-                    connection.commit()
+                if gid is not None:
+                    cursor.execute("SELECT 1 FROM grupos WHERE gid_number = %s", (gid,))
+                    if not cursor.fetchone():
+                        print(f"⚠️ gid_number {gid} no existe. Se creará.")
+                        cursor.execute("INSERT INTO grupos (gid_number, nombre) VALUES (%s, NULL)", (gid,))
+                        connection.commit()
 
             sql = """
                 INSERT INTO usuarios (
@@ -133,6 +140,8 @@ def insert_usuarios(connection, data):
         except Exception as e:
             print(f"❌ Error en fila {index} ({nombre_usuario}): {e}")
             connection.rollback()
+
+    cursor.close()
 
 def insert_proyectos(connection, data):
     cursor = connection.cursor()
