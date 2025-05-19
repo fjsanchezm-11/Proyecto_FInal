@@ -26,6 +26,8 @@ export class ProyectosComponent implements OnInit {
   busqueda: string = '';
   usuariosDelProyecto: any[] = [];
   usuarioIdParaAgregar: number | null = null;
+  archivoPdf: File | null = null;
+
 
   private proyectoService = inject(ProyectoService);
   private fb = inject(FormBuilder);
@@ -49,6 +51,7 @@ export class ProyectosComponent implements OnInit {
 
   cargarProyectos() {
     this.proyectoService.obtenerProyectos().subscribe((proyectos) => {
+      console.log(proyectos);
       this.proyectos = proyectos;
     });
   }
@@ -81,6 +84,7 @@ export class ProyectosComponent implements OnInit {
     this.editando = true;
     this.proyectoSeleccionado = proyecto;
     this.mostrandoDetalles = false;
+    this.archivoPdf = null;
 
     this.proyectoForm.patchValue({
       titulo: proyecto.titulo || '',
@@ -111,16 +115,28 @@ export class ProyectosComponent implements OnInit {
 
   guardarProyecto() {
     const datos = this.proyectoForm.value;
-    
+
+    const formData = new FormData();
+    Object.entries(datos).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && typeof value === 'string' || value instanceof Blob) {
+        formData.append(key, value);
+      }
+    });
+
     if (!datos.categoria) {
-      datos.categoria = "Sin categoría"; 
+      formData.set("categoria", "Sin categoría");
     }
-    
-    if (this.editando) {
-      this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, datos).subscribe({
-        next: () => {
+
+    if (this.archivoPdf) {
+      formData.append('pdf', this.archivoPdf);
+    }
+
+    if (this.editando && this.proyectoSeleccionado) {
+      this.proyectoService.actualizarProyecto(this.proyectoSeleccionado.pid_number, formData).subscribe({
+        next: () => { 
           this.mostrarForm = false;
           this.cargarProyectos();
+          this.archivoPdf = null;
         },
         error: (error) => {
           console.error("Error al actualizar proyecto:", error);
@@ -128,10 +144,11 @@ export class ProyectosComponent implements OnInit {
         }
       });
     } else {
-      this.proyectoService.crearProyecto(datos).subscribe({
+      this.proyectoService.crearProyecto(formData).subscribe({
         next: () => {
           this.mostrarForm = false;
-          this.cargarProyectos(); 
+          this.cargarProyectos();
+          this.archivoPdf = null;
         },
         error: (error) => {
           console.error("Error al crear proyecto:", error);
@@ -139,7 +156,7 @@ export class ProyectosComponent implements OnInit {
         }
       });
     }
-  }  
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -153,6 +170,15 @@ export class ProyectosComponent implements OnInit {
   onFormClick(event: MouseEvent): void {
     event.stopPropagation();
   }
+
+  onFileSelected(event: any) {
+  const file: File = event.target.files[0];
+  if (file && file.type === 'application/pdf') {
+    this.archivoPdf = file;
+  } else {
+    alert("Solo se permiten archivos PDF.");
+  }
+}
 
   get proyectosFiltrados() {
     return this.proyectos.filter(proyecto =>
