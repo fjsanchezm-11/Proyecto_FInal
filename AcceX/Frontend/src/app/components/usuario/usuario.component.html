@@ -169,7 +169,7 @@
       <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
       <ul>
         <li *ngFor="let proyecto of proyectosDelUsuario">
-          {{ proyecto.titulo }} (ID: {{ proyecto.pid_number }})
+          <a [href]="proyecto.pdf_url" target="_blank">{{ proyecto.titulo }}</a> (ID: {{ proyecto.pid_number }})
           </li>
       </ul>
     </div>
