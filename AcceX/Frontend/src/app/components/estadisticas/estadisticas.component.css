@@ -1,3 +1,26 @@
+.estadisticas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2vh;
+}
+
+.estadisticas-container button {
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.estadisticas-container button:hover {
+    background-color: #0056b3;
+}
+
 .detalles {
     width: auto;
     height: auto;
@@ -8,18 +31,83 @@
     align-items: center;
 }
 
-.estadisticas-container button {
-    padding: 8px 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    background-color: #007bff;
-    color: white;
-    transition: background-color 0.3s;
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90vw;
+    max-width: 100%;
+    margin: 3vh auto;
 }
 
-.estadisticas-container button:hover {
-    background-color: #0056b3;
+canvas {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    border-radius: 8px;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
+.lista-proyectos, .lista-usuarios, .lista-usuarios-proyecto,
+.lista-proyectos-año, .lista-publicaciones-investigador, .lista-publicaciones-año {
+    width: 95%;
+    max-width: 80rem;
+    border-collapse: collapse;
+    margin-top: 2vh;
+}
+
+h3 {
+    color: #007bff;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+
+ul li:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+@media screen and (max-width: 768px) {
+    .estadisticas-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.9rem;
+    }
+
+    .chart-container {
+        width: 95vw;
+    }
+
+    .lista-proyectos, .lista-usuarios, .lista-usuarios-proyecto,
+    .lista-proyectos-año, .lista-publicaciones-investigador, .lista-publicaciones-año {
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    .lista-proyectos th,
+    .lista-usuarios th,
+    .lista-usuarios-proyecto th,
+    .lista-proyectos-año th,
+    .lista-publicaciones-investigador th,
+    .lista-publicaciones-año th {
+        padding: 0.5rem;
+    }
+
+    ul li {
+        padding: 0.8rem;
+    }
 }

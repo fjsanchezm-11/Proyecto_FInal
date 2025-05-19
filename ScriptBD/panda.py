@@ -325,7 +325,7 @@ def insert_investigadores_usuarios(connection, usuarios_data):
         connection.rollback()
     finally:
         cursor.close()
-        
+
 def insert_investigadores_publicaciones(connection, publicaciones_data):
     cursor = connection.cursor()
     
@@ -337,6 +337,7 @@ def insert_investigadores_publicaciones(connection, publicaciones_data):
         cursor.execute("SELECT result_code, result_description FROM publicaciones")
         publicacion_map = {str(desc).strip().lower(): code 
                           for code, desc in cursor if desc and pd.notna(desc)}
+
         for index, row in publicaciones_data.iterrows():
             try:
                 desc_pub = str(clean_value(row.get('Results - Description', ''))).lower().strip()
@@ -350,7 +351,7 @@ def insert_investigadores_publicaciones(connection, publicaciones_data):
                     continue
                 
                 for nombre_inv, iid in investigador_map.items():
-                    if re.search(rf"\b{re.escape(nombre_inv)}\b", desc_pub):
+                    if re.search(rf"\b{re.escape(nombre_inv)}\b(?!\s+\w)", desc_pub):
                         cursor.execute("""
                             SELECT 1 FROM investigadores_publicaciones 
                             WHERE investigador_id = %s AND publicacion_id = %s

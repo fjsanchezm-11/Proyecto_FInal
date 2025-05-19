@@ -2,31 +2,67 @@
     <button (click)="mostrarVista('usuariosPorGrupo')">Usuarios por Grupo</button>
     <button (click)="mostrarVista('proyectosPorCategoria')">Proyectos por categoría</button>
     <button (click)="mostrarVista('usuariosPorProyecto')">Usuarios por proyecto</button>
-    <button (click)="mostrarVista('proyectosPorAño')">Proyectos por Año</button>
+    <button (click)="mostrarVista('proyectosPorAnio')">Proyectos por Año</button>
     <button (click)="mostrarVista('publicacionesPorInvestigador')">Publicaciones por Investigador</button>
-    <button (click)="mostrarVista('publicacionesPorAño')">Publicaciones por Año</button>
+    <button (click)="mostrarVista('publicacionesPorAnio')">Publicaciones por Año</button>
 </div>
 
 <div *ngIf="vistaActual === 'proyectosPorCategoria'" class="detalles">
     <canvas id="proyectosPorCategoria"></canvas>
+        <div *ngIf="listaProyectos.length > 0" class="lista-proyectos">
+        <h3>Proyectos en la categoría seleccionada:</h3>
+        <ul>
+            <li *ngFor="let proyecto of listaProyectos">{{ proyecto.titulo }}</li>
+        </ul>
+    </div>
 </div>
 
 <div *ngIf="vistaActual === 'usuariosPorGrupo'" class="detalles">
     <canvas id="usuariosPorGrupo"></canvas>
+        <div *ngIf="listaUsuarios.length > 0" class="lista-usuarios">
+        <h3>Usuarios en el grupo seleccionado:</h3>
+        <ul>
+            <li *ngFor="let usuario of listaUsuarios">{{ usuario.nombre_usuario }}</li>
+        </ul>
+    </div>
 </div>
 
 <div *ngIf="vistaActual === 'usuariosPorProyecto'" class="detalles">
     <canvas id="usuariosPorProyecto"></canvas>
+    <div *ngIf="listaUsuariosPorProyecto.length > 0" class="lista-usuarios-proyecto">
+        <h3>Usuarios en el proyecto seleccionado:</h3>
+        <ul>
+            <li *ngFor="let usuario of listaUsuariosPorProyecto">{{ usuario.nombre_usuario }}</li>
+        </ul>
+    </div>
 </div>
 
-<div *ngIf="vistaActual === 'proyectosPorAño'" class="detalles">
-    <canvas id="proyectosPorAño"></canvas>
+<div *ngIf="vistaActual === 'proyectosPorAnio'" class="detalles">
+    <canvas id="proyectosPorAnio"></canvas>
+        <div *ngIf="listaProyectosPorAnio.length > 0" class="lista-proyectos-año">
+        <h3>Proyectos del año seleccionado:</h3>
+        <ul>
+            <li *ngFor="let proyecto of listaProyectosPorAnio">{{ proyecto.titulo }}</li>
+        </ul>
+    </div>
 </div>
 
 <div *ngIf="vistaActual === 'publicacionesPorInvestigador'" class="detalles">
     <canvas id="publicacionesPorInvestigador"></canvas>
+        <div *ngIf="listaPublicacionesPorInvestigador.length > 0" class="lista-publicaciones-investigador">
+        <h3>Publicaciones del investigador seleccionado:</h3>
+        <ul>
+            <li *ngFor="let publicacion of listaPublicacionesPorInvestigador">{{ publicacion.result_description }}</li>
+        </ul>
+    </div>
 </div>
 
-<div *ngIf="vistaActual === 'publicacionesPorAño'" class="detalles">
-    <canvas id="publicacionesPorAño"></canvas>
+<div *ngIf="vistaActual === 'publicacionesPorAnio'" class="detalles">
+    <canvas id="publicacionesPorAnio"></canvas>
+    <div *ngIf="listaPublicacionesPorAnio.length > 0" class="lista-publicaciones-año">
+        <h3>Publicaciones del año seleccionado:</h3>
+        <ul>
+            <li *ngFor="let publicacion of listaPublicacionesPorAnio">{{ publicacion.result_description }}</li>
+        </ul>
+    </div>
 </div>
