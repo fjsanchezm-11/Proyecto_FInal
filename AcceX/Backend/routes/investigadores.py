@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.investigador import Investigador
-from models.database import db, investigadores_publicaciones, investigadores_usuarios, usuarios_grupos
+from models.database import db, investigadores_publicaciones, investigadores_usuarios, usuarios_grupos, usuarios_proyectos
 from models.publicacion import Publicacion
 from models.grupo import Grupo
 from models.usuario import Usuario
@@ -103,17 +103,34 @@ def eliminar_investigador(id):
     if not investigador:
         return jsonify({'mensaje': 'Investigador no encontrado'}), 404
 
+    db.session.execute(
+        investigadores_publicaciones.delete().where(
+            investigadores_publicaciones.c.investigador_id == id
+        )
+    )
+
     relacion = db.session.execute(
-        investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id == id)
+        investigadores_usuarios.select().where(
+            investigadores_usuarios.c.investigador_id == id
+        )
     ).first()
 
     if relacion:
         db.session.execute(
-            investigadores_usuarios.delete().where(investigadores_usuarios.c.investigador_id == id)
+            investigadores_usuarios.delete().where(
+                investigadores_usuarios.c.investigador_id == id
+            )
         )
 
         usuario = Usuario.query.get(relacion.usuario_id)
+
         if usuario:
+            db.session.execute(
+                usuarios_proyectos.delete().where(
+                    usuarios_proyectos.c.usuario_id == usuario.uid_number
+                )
+            )
+
             db.session.delete(usuario)
 
     db.session.delete(investigador)
