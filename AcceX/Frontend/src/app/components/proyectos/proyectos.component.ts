@@ -54,7 +54,6 @@ export class ProyectosComponent implements OnInit {
 
   cargarProyectos() {
     this.proyectoService.obtenerProyectos().subscribe((proyectos) => {
-      console.log(proyectos);
       this.proyectos = proyectos;
     });
   }
