@@ -248,7 +248,7 @@ export class ProyectosComponent implements OnInit {
             ...this.proyectoSeleccionado,
             pdf_url: null
           };
-          this.cdr.detectChanges();  // <- fuerza Angular a reevaluar el DOM
+          this.cdr.detectChanges();
         }
       },
       error: (err) => {
