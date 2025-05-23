@@ -109,7 +109,8 @@
         <div class="form-group">
           <ng-container *ngIf="proyectoSeleccionado.pdf_url; else subirPdfSiNoTiene">
             <label>PDF actual:</label>
-            <a [href]="proyectoSeleccionado.pdf_url" target="_blank">Ver PDF</a><br>
+            <button (click)="abrirPDF()">Ver PDF</button>
+            <button (click)="eliminarPDF(proyectoSeleccionado.pid_number)" class="delete-pdf-btn">🗑️</button>
           </ng-container>
           <ng-template #subirPdfSiNoTiene>
             <label>Subir PDF:</label>
@@ -118,6 +119,7 @@
         </div>
 
 
+        
         <h3>Usuarios asociados:</h3>
         <ul>
           <li *ngFor="let usuario of usuariosDelProyecto">
@@ -149,7 +151,7 @@
       <p><strong>Email:</strong> {{ proyectoSeleccionado.email }}</p>
       <p><strong>Institución:</strong> {{ proyectoSeleccionado.institucion }}</p>
       <p><strong>Categoría:</strong> {{ proyectoSeleccionado.categoria }}</p>
-      <p *ngIf="proyectoSeleccionado.pdf_url">
+      <p *ngIf="proyectoSeleccionado?.pdf_url">
         <strong>PDF:</strong>
         <a [href]="proyectoSeleccionado.pdf_url" target="_blank">Ver PDF</a>
       </p>

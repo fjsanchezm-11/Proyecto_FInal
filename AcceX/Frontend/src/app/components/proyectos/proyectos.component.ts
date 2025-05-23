@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject } from '@angular/core';
+import { Component, OnInit, HostListener, inject, ChangeDetectorRef } from '@angular/core';
 import { ProyectoService } from '../../services/proyectos.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -6,6 +6,9 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
+
 
 @Component({
   selector: 'app-proyectos',
@@ -32,7 +35,7 @@ export class ProyectosComponent implements OnInit {
   private proyectoService = inject(ProyectoService);
   private fb = inject(FormBuilder);
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private http: HttpClient,private cdr: ChangeDetectorRef) {
     this.proyectoForm = this.fb.group({
       titulo: ['', Validators.required],
       fecha_inicio: [''],
@@ -233,5 +236,32 @@ export class ProyectosComponent implements OnInit {
     this.editando = false;
     this.proyectoSeleccionado = null;
   }
-  
+
+  eliminarPDF(pid: number) {
+  if (confirm('¿Estás seguro de que quieres eliminar este PDF?')) {
+    this.http.delete(`http://localhost:5000/api/proyectos/${pid}/delete-pdf`).subscribe({
+      next: () => {
+        alert('PDF eliminado correctamente');
+
+        if (this.proyectoSeleccionado && this.proyectoSeleccionado.pid_number === pid) {
+          this.proyectoSeleccionado = {
+            ...this.proyectoSeleccionado,
+            pdf_url: null
+          };
+          this.cdr.detectChanges();  // <- fuerza Angular a reevaluar el DOM
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al eliminar el PDF');
+      }
+    });
+  }
+}
+
+  abrirPDF() {
+  window.open(this.proyectoSeleccionado.pdf_url, '_blank');
+}
+
+
 }

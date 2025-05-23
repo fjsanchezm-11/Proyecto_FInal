@@ -193,3 +193,19 @@ def obtener_pdf(filename):
     from flask import send_from_directory
     UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
     return send_from_directory(UPLOAD_FOLDER, filename)
+
+@proyectos_bp.route('/proyectos/<int:pid>/delete-pdf', methods=['DELETE'])
+def eliminar_pdf(pid):
+    proyecto = Proyecto.query.get_or_404(pid)
+    filename = f"{proyecto.titulo}.pdf"
+    uploads_dir = os.path.join(os.getcwd(), 'uploads')
+    pdf_path = os.path.join(uploads_dir, filename)
+
+    try:
+        if os.path.exists(pdf_path):
+            os.remove(pdf_path)
+            return jsonify({"mensaje": "PDF eliminado correctamente"}), 200
+        else:
+            return jsonify({"error": "El archivo no existe"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

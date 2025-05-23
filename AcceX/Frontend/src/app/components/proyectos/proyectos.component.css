@@ -261,3 +261,12 @@
       overflow-y: auto;
     }
   }
+
+  .delete-pdf-btn {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
