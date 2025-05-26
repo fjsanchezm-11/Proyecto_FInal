@@ -55,7 +55,8 @@ def crear_proyecto():
         UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        filename= pdf_file.filename
+        nombre_proyecto = nuevo_proyecto.titulo
+        filename = f"{nombre_proyecto}.pdf"
         pdf_path = os.path.join(UPLOAD_FOLDER, filename)
         pdf_file.save(pdf_path)
         pdf_url = f'/uploads/{filename}'
@@ -105,7 +106,8 @@ def actualizar_proyecto(id):
         UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        filename = pdf_file.filename
+        nombre_proyecto = proyecto.titulo
+        filename = f"{nombre_proyecto}.pdf"
         pdf_path = os.path.join(UPLOAD_FOLDER, filename)
         pdf_file.save(pdf_path)
         pdf_url = f'/uploads/{filename}'
