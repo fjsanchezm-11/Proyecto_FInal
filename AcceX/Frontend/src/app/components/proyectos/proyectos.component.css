@@ -133,6 +133,19 @@
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+
+  .form-group button{
+    background-color: #28a745;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+
+  .form-group button[type="submit"]:hover {
+    background-color: #218838;
+  }
   
   /* Botón de guardar o actualizar */
   .popup-form button[type="submit"] {

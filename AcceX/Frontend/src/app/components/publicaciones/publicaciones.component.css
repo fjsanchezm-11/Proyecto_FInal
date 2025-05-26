@@ -147,7 +147,8 @@ button:hover {
 /* Botón de enviar, volver y asociar */
 .popup-form button[type="submit"],
 .back-button,
-.asociar {
+.asociar, 
+.eliminar {
   background-color: #28a745;
   color: white;
   width: 100%;
@@ -158,7 +159,8 @@ button:hover {
 
 .popup-form button[type="submit"]:hover,
 .back-button:hover,
-.asociar:hover {
+.asociar:hover,
+.eliminar:hover {
   background-color: #218838;
 }
 
