@@ -1,7 +1,7 @@
 import os
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@127.0.0.1:3306/practica'
+    DATABASE_URL = "mysql+pymysql://root:wsqXLiPzDRYBgZYfFhakpsRSBQyCIfDK@centerbeam.proxy.rlwy.net:13805/railway"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'clave-secreta-para-desarrollo'
