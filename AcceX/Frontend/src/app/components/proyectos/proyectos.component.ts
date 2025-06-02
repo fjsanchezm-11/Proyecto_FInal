@@ -243,13 +243,18 @@ export class ProyectosComponent implements OnInit {
       next: () => {
         alert('PDF eliminado correctamente');
 
-        if (this.proyectoSeleccionado && this.proyectoSeleccionado.pid_number === pid) {
-          this.proyectoSeleccionado = {
-            ...this.proyectoSeleccionado,
-            pdf_url: null
-          };
-          this.cdr.detectChanges();
+         if (this.proyectoSeleccionado && this.proyectoSeleccionado.pid_number === pid) {
+          this.proyectoSeleccionado.pdf_url = null;
         }
+
+        
+        const index = this.proyectos.findIndex(p => p.pid_number === pid);
+        if (index !== -1) {
+          this.proyectos[index].pdf_url = null;
+        }
+
+        
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
