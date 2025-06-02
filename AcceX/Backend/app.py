@@ -23,8 +23,8 @@ app.register_blueprint(investigadores_bp, url_prefix='/api')
 app.register_blueprint(publicaciones_bp, url_prefix='/api')
 app.register_blueprint(grupos_bp, url_prefix='/api')
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+    # db.create_all()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
