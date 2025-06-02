@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvestigadoresService {
-  private apiUrl = 'http://127.0.0.1:5000/api/investigadores';
+  private apiUrl = environment.apiUrl + '/investigadores';
   private http = inject(HttpClient);
 
   obtenerInvestigadores(): Observable<any[]> {

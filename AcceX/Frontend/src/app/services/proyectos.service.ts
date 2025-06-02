@@ -1,14 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProyectoService {
-  private apiUrl = 'http://127.0.0.1:5000/api/proyectos';
-  private usuariosApiUrl = 'http://127.0.0.1:5000/api/usuarios'; 
+  private apiUrl = environment.apiUrl + '/proyectos';
+  private usuariosApiUrl = environment.apiUrl + '/usuarios';
   private http = inject(HttpClient);
 
   obtenerProyectos(): Observable<any[]> {
