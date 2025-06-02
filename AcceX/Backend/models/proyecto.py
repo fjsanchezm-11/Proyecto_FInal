@@ -24,9 +24,9 @@ class Proyecto(db.Model):
         upload_folder = os.path.join(os.getcwd(), 'uploads')
         filename = f"{self.titulo}.pdf" 
         pdf_path = os.path.join(upload_folder, filename)
-        
-        pdf_url = f"http://localhost:5000/api/uploads/{(filename)}" if os.path.exists(pdf_path) else None
-   
+
+        pdf_url = f"https://proyecto-final-le3u.onrender.com/api/uploads/{filename}" if os.path.exists(pdf_path) else None
+
         return {
             "pid_number": self.pid_number,
             "titulo": self.titulo,

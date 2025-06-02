@@ -7,6 +7,7 @@ import { catchError, map } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 
 
@@ -238,7 +239,7 @@ export class ProyectosComponent implements OnInit {
 
   eliminarPDF(pid: number) {
   if (confirm('¿Estás seguro de que quieres eliminar este PDF?')) {
-    this.http.delete(`http://localhost:5000/api/proyectos/${pid}/delete-pdf`).subscribe({
+    this.http.delete(environment.apiUrl + `/proyectos/${pid}/delete-pdf`).subscribe({
       next: () => {
         alert('PDF eliminado correctamente');
 
