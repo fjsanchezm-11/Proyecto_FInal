@@ -7,7 +7,7 @@ investigadores_publicaciones = db.Table("investigadores_publicaciones",
     db.Column("publicacion_id", db.Integer, db.ForeignKey("publicaciones.result_code", ondelete="RESTRICT"), primary_key=True)
 )
 
-investigadores_usuarios = db.Table("Investigadores_Usuarios",
+investigadores_usuarios = db.Table("investigadores_usuarios",
     db.Column("usuario_id", db.Integer, db.ForeignKey("usuarios.uid_number", ondelete="CASCADE"), primary_key=True),
     db.Column("investigador_id", db.Integer, db.ForeignKey("investigadores.iid_number", ondelete="CASCADE"), primary_key=True)
 )
