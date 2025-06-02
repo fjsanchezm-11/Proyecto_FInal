@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class GrupoService {
-  private apiUrl = environment.apiUrl + '/api/grupos';
+  private apiUrl = environment.apiUrl + '/grupos';
   private http = inject(HttpClient);
 
   obtenerGrupos(): Observable<any[]> {
