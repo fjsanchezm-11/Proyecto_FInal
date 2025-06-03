@@ -9,25 +9,33 @@ investigadores_bp = Blueprint('investigadores', __name__)
 
 @investigadores_bp.route('/investigadores', methods=['GET'])
 def obtener_investigadores():
-    investigadores = Investigador.query.all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    investigadores_pag = Investigador.query.paginate(page=page, per_page=per_page)
     resultado = []
 
-    for investigador in investigadores:
-        relacion = db.session.execute(
-            investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id == investigador.iid_number)
-        ).first()
+    investigador_ids = [i.iid_number for i in investigadores_pag.items]
+    relaciones = db.session.execute(
+        investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id.in_(investigador_ids))
+    ).fetchall()
+    relaciones_dict = {r.investigador_id: r.usuario_id for r in relaciones}
 
-        nombre_usuario = None
-        if relacion:
-            usuario = Usuario.query.get(relacion.usuario_id)
-            if usuario:
-                nombre_usuario = usuario.nombre_usuario
+    usuarios = Usuario.query.filter(
+        Usuario.uid_number.in_(relaciones_dict.values())
+    ).all()
+    usuarios_dict = {u.uid_number: u.nombre_usuario for u in usuarios}
 
-        datos_investigador = investigador.to_dict() 
-        datos_investigador['nombre_usuario'] = nombre_usuario
-        resultado.append(datos_investigador)
+    for i in investigadores_pag.items:
+        datos = i.to_dict()
+        datos['nombre_usuario'] = usuarios_dict.get(relaciones_dict.get(i.iid_number))
+        resultado.append(datos)
 
-    return jsonify(resultado)
+    return jsonify({
+        'investigadores': resultado,
+        'total': investigadores_pag.total,
+        'page': investigadores_pag.page,
+        'pages': investigadores_pag.pages
+    })
 
 @investigadores_bp.route('/investigadores', methods=['POST'])
 def crear_investigador():

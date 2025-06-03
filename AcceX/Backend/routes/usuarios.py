@@ -10,25 +10,30 @@ usuarios_bp = Blueprint('usuarios', __name__)
 
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
-    usuarios = Usuario.query.all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 20, type=int)
+    usuarios_pag = Usuario.query.paginate(page=page, per_page=per_page)
     resultado = []
 
-    for u in usuarios:
-        relacion = db.session.execute(
-            investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id == u.uid_number)
-        ).first()
+    usuario_ids = [u.uid_number for u in usuarios_pag.items]
+    relaciones = db.session.execute(
+        investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id.in_(usuario_ids))
+    ).fetchall()
+    relaciones_dict = {r.usuario_id: r.investigador_id for r in relaciones}
 
-        nombre_investigador = None
-        if relacion:
-            investigador = Investigador.query.get(relacion.investigador_id)
-            if investigador:
-                nombre_investigador = investigador.nombre_investigador
+    investigadores = Investigador.query.filter(
+        Investigador.iid_number.in_(relaciones_dict.values())
+    ).all()
+    investigadores_dict = {i.iid_number: i.nombre_investigador for i in investigadores}
 
-        grupos = db.session.execute(
-            usuarios_grupos.select().where(usuarios_grupos.c.usuario_id == u.uid_number)
-        ).fetchall()
-        grupos_ids = [g.grupo_id for g in grupos]
+    grupos_raw = db.session.execute(
+        usuarios_grupos.select().where(usuarios_grupos.c.usuario_id.in_(usuario_ids))
+    ).fetchall()
+    grupos_dict = {}
+    for g in grupos_raw:
+        grupos_dict.setdefault(g.usuario_id, []).append(g.grupo_id)
 
+    for u in usuarios_pag.items:
         resultado.append({
             'uid_number': u.uid_number,
             'nombre_usuario': u.nombre_usuario,
@@ -42,11 +47,16 @@ def obtener_usuarios():
             'wos': u.wos,
             'scopus': u.scopus,
             'res': u.res,
-            'nombre_investigador': nombre_investigador,
-            'grupos': grupos_ids
+            'nombre_investigador': investigadores_dict.get(relaciones_dict.get(u.uid_number)),
+            'grupos': grupos_dict.get(u.uid_number, [])
         })
 
-    return jsonify(resultado)
+    return jsonify({
+        'usuarios': resultado,
+        'total': usuarios_pag.total,
+        'page': usuarios_pag.page,
+        'pages': usuarios_pag.pages
+    })
 
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
