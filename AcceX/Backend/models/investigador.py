@@ -1,5 +1,4 @@
 from models.database import db, investigadores_publicaciones, investigadores_usuarios
-from models.usuario import Usuario
 
 class Investigador(db.Model):
     __tablename__ = 'investigadores'
@@ -11,7 +10,7 @@ class Investigador(db.Model):
     publicaciones = db.relationship('Publicacion', secondary=investigadores_publicaciones, backref='investigadores')
 
     usuarios = db.relationship(
-        'Usuario',
+        'Usuario', 
         secondary=investigadores_usuarios,
         backref='investigadores',
         lazy='joined'

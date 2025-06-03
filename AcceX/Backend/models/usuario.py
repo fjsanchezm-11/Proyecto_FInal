@@ -1,5 +1,4 @@
 from models.database import db, investigadores_usuarios
-from models.investigador import Investigador
 
 class Usuario(db.Model):
     __tablename__ = "usuarios"
@@ -19,7 +18,7 @@ class Usuario(db.Model):
     res = db.Column(db.String(255), nullable=True)
 
     investigadores = db.relationship(
-        "Investigador",
+        "Investigador", 
         secondary=investigadores_usuarios,
         backref="usuarios",
         lazy="joined"
