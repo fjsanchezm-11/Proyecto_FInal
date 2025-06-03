@@ -18,11 +18,12 @@ class Usuario(db.Model):
     res = db.Column(db.String(255), nullable=True)
 
     investigadores = db.relationship(
-        "Investigador", 
+        "Investigador",
         secondary=investigadores_usuarios,
-        backref="usuarios",
+        back_populates="usuarios",
         lazy="joined"
     )
+
 
     def to_dict(self):
         return {

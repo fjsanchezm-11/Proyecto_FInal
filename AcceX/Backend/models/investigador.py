@@ -7,7 +7,13 @@ class Investigador(db.Model):
     nombre_investigador = db.Column(db.String(255), nullable=False)
     correo = db.Column(db.String(255), nullable=True)
 
-    publicaciones = db.relationship('Publicacion', secondary=investigadores_publicaciones, backref='investigadores')
+    usuarios = db.relationship(
+        "Usuario",
+        secondary=investigadores_usuarios,
+        back_populates="investigadores",
+        lazy="joined"
+    )
+
 
     usuarios = db.relationship(
         'Usuario', 
