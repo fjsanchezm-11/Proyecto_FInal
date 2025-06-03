@@ -1,4 +1,5 @@
-from models.database import db
+from models.database import db, investigadores_usuarios
+from models.investigador import Investigador
 
 class Usuario(db.Model):
     __tablename__ = "usuarios"
@@ -16,6 +17,13 @@ class Usuario(db.Model):
     wos = db.Column(db.String(255), nullable=True)
     scopus = db.Column(db.String(255), nullable=True)
     res = db.Column(db.String(255), nullable=True)
+
+    investigadores = db.relationship(
+        "Investigador",
+        secondary=investigadores_usuarios,
+        backref="usuarios",
+        lazy="joined"
+    )
 
     def to_dict(self):
         return {

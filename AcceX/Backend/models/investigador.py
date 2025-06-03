@@ -1,4 +1,5 @@
-from models.database import db, investigadores_publicaciones
+from models.database import db, investigadores_publicaciones, investigadores_usuarios
+from models.usuario import Usuario
 
 class Investigador(db.Model):
     __tablename__ = 'investigadores'
@@ -8,6 +9,13 @@ class Investigador(db.Model):
     correo = db.Column(db.String(255), nullable=True)
 
     publicaciones = db.relationship('Publicacion', secondary=investigadores_publicaciones, backref='investigadores')
+
+    usuarios = db.relationship(
+        'Usuario',
+        secondary=investigadores_usuarios,
+        backref='investigadores',
+        lazy='joined'
+    )
 
     def to_dict(self):
         return {
