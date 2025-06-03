@@ -1,4 +1,4 @@
-from sqlalchemy.orm import joinedload
+from sqlalchemy import text
 from flask import Blueprint, request, jsonify
 from models.usuario import Usuario
 from models.grupo import Grupo
@@ -10,17 +10,25 @@ usuarios_bp = Blueprint('usuarios', __name__)
 
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
-    usuarios = db.session.query(Usuario).options(
-        joinedload(Usuario.investigadores),
-        joinedload(Usuario.grupo)
-    ).all()
-
+    usuarios = Usuario.query.all()
     resultado = []
+
     for u in usuarios:
-        investigador = u.investigadores[0] if u.investigadores else None
-        grupos_ids = [rel.grupo_id for rel in db.session.execute(
+        relacion = db.session.execute(
+            investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id == u.uid_number)
+        ).first()
+
+        nombre_investigador = None
+        if relacion:
+            investigador = Investigador.query.get(relacion.investigador_id)
+            if investigador:
+                nombre_investigador = investigador.nombre_investigador
+
+        grupos = db.session.execute(
             usuarios_grupos.select().where(usuarios_grupos.c.usuario_id == u.uid_number)
-        ).fetchall()]
+        ).fetchall()
+        grupos_ids = [g.grupo_id for g in grupos]
+
         resultado.append({
             'uid_number': u.uid_number,
             'nombre_usuario': u.nombre_usuario,
@@ -34,9 +42,10 @@ def obtener_usuarios():
             'wos': u.wos,
             'scopus': u.scopus,
             'res': u.res,
-            'nombre_investigador': investigador.nombre_investigador if investigador else None,
+            'nombre_investigador': nombre_investigador,
             'grupos': grupos_ids
         })
+
     return jsonify(resultado)
 
 @usuarios_bp.route('/usuarios', methods=['POST'])
@@ -49,7 +58,7 @@ def crear_usuario():
             activo=data.get("activo", True)
         )
         db.session.add(nuevo_usuario)
-        db.session.flush()
+        db.session.flush()  
 
         if data.get("nombre_investigador"):
             nuevo_investigador = Investigador(
@@ -89,6 +98,7 @@ def crear_usuario():
 def actualizar_usuario(id):
     try:
         data = request.json
+
         usuario = Usuario.query.get(id)
         if not usuario:
             return jsonify({'error': 'Usuario no encontrado'}), 404
@@ -143,6 +153,10 @@ def eliminar_usuario(id):
         return jsonify({'mensaje': 'Usuario no encontrado'}), 404
 
     db.session.execute(
+        text("DELETE FROM usuarios_proyectos WHERE usuario_id = :id")
+        .bindparams(id=id)
+    )
+    db.session.execute(
         usuarios_grupos.delete().where(usuarios_grupos.c.usuario_id == id)
     )
 
@@ -159,6 +173,7 @@ def eliminar_usuario(id):
 
     db.session.delete(usuario)
     db.session.commit()
+
     return jsonify({'mensaje': 'Usuario y relaciones asociadas eliminadas'}), 200
 
 @usuarios_bp.route('/usuarios/<int:uid>/grupos', methods=['GET'])
