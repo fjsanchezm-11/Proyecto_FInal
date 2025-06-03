@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from sqlalchemy.orm import joinedload
 from models.investigador import Investigador
 from models.database import db, investigadores_publicaciones, investigadores_usuarios, usuarios_grupos, usuarios_proyectos
 from models.publicacion import Publicacion
@@ -9,24 +10,12 @@ investigadores_bp = Blueprint('investigadores', __name__)
 
 @investigadores_bp.route('/investigadores', methods=['GET'])
 def obtener_investigadores():
-    investigadores = Investigador.query.all()
+    investigadores = db.session.query(Investigador).options(joinedload(Investigador.usuarios)).all()
     resultado = []
-
     for investigador in investigadores:
-        relacion = db.session.execute(
-            investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id == investigador.iid_number)
-        ).first()
-
-        nombre_usuario = None
-        if relacion:
-            usuario = Usuario.query.get(relacion.usuario_id)
-            if usuario:
-                nombre_usuario = usuario.nombre_usuario
-
-        datos_investigador = investigador.to_dict() 
-        datos_investigador['nombre_usuario'] = nombre_usuario
-        resultado.append(datos_investigador)
-
+        datos = investigador.to_dict()
+        datos['nombre_usuario'] = investigador.usuarios[0].nombre_usuario if investigador.usuarios else None
+        resultado.append(datos)
     return jsonify(resultado)
 
 @investigadores_bp.route('/investigadores', methods=['POST'])
@@ -52,7 +41,7 @@ def crear_investigador():
                 fecha_alta=data.get('fecha_alta'),
                 fecha_baja=data.get('fecha_baja'),
                 activo=data.get('activo', True),
-                contacto=data.get('correo'), 
+                contacto=data.get('correo'),
                 telefono=data.get('telefono'),
                 orcid=data.get('orcid'),
                 scholar=data.get('scholar'),
@@ -61,7 +50,6 @@ def crear_investigador():
                 res=data.get('res')
             )
             db.session.add(nuevo_usuario)
-
             db.session.flush()
 
             db.session.execute(investigadores_usuarios.insert().values(
@@ -90,7 +78,7 @@ def actualizar_investigador(id):
     investigador = Investigador.query.get(id)
     if not investigador:
         return jsonify({'mensaje': 'Investigador no encontrado'}), 404
-    
+
     investigador.nombre_investigador = data.get('nombre_investigador', investigador.nombre_investigador)
     investigador.correo = data.get('correo', investigador.correo)
 
@@ -130,7 +118,6 @@ def eliminar_investigador(id):
                     usuarios_proyectos.c.usuario_id == usuario.uid_number
                 )
             )
-
             db.session.delete(usuario)
 
     db.session.delete(investigador)
