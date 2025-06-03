@@ -15,7 +15,7 @@ import { Validators } from '@angular/forms';
   styleUrls: ['./usuario.component.css']
 })
 export class UsuarioComponent implements OnInit {
-  usuarios: any[] = [];
+  usuarios: any = [];
   usuarioForm: FormGroup;
   mostrarForm = false;
   editando = false;
@@ -322,6 +322,7 @@ export class UsuarioComponent implements OnInit {
   }
 
   get usuariosFiltrados() {
+    if (!this.usuarios || !Array.isArray(this.usuarios)) return [];
     return this.usuarios.filter(usuario =>
       (usuario.nombre_usuario || '').toLowerCase().includes(this.busqueda.toLowerCase())
     );

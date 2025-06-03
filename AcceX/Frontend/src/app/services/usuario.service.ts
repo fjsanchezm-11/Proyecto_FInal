@@ -10,7 +10,7 @@ export class UsuarioService {
   private apiUrl = environment.apiUrl + '/usuarios';
   private http = inject(HttpClient);
 
-  obtenerUsuarios(): Observable<any[]> {
+  obtenerUsuarios(page = 1, perPage = 40): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
 
