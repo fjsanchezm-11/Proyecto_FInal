@@ -1,5 +1,4 @@
-from models.database import db, investigadores_usuarios, usuarios_grupos, usuarios_proyectos
-from sqlalchemy.orm import relationship
+from models.database import db
 
 class Usuario(db.Model):
     __tablename__ = "usuarios"
@@ -17,26 +16,6 @@ class Usuario(db.Model):
     wos = db.Column(db.String(255), nullable=True)
     scopus = db.Column(db.String(255), nullable=True)
     res = db.Column(db.String(255), nullable=True)
-
-    grupo = relationship("Grupo", backref="usuarios")
-
-    investigadores = relationship(
-        "Investigador",
-        secondary=investigadores_usuarios,
-        backref="usuarios"
-    )
-
-    grupos = relationship(
-        "Grupo",
-        secondary=usuarios_grupos,
-        backref="miembros"
-    )
-
-    proyectos = relationship(
-        "Proyecto",
-        secondary=usuarios_proyectos,
-        backref="usuarios"
-    )
 
     def to_dict(self):
         return {

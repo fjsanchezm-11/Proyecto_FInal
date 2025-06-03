@@ -10,39 +10,34 @@ usuarios_bp = Blueprint('usuarios', __name__)
 
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
-    try:
-        usuarios = db.session.query(Usuario).options(
-            joinedload(Usuario.investigadores),
-            joinedload(Usuario.grupo)
-        ).all()
+    usuarios = db.session.query(Usuario).options(
+        joinedload(Usuario.investigadores),
+        joinedload(Usuario.grupo)
+    ).all()
 
-        resultado = []
-        for u in usuarios:
-            investigador = u.investigadores[0] if u.investigadores else None
-            grupos_ids = [rel.grupo_id for rel in db.session.execute(
-                usuarios_grupos.select().where(usuarios_grupos.c.usuario_id == u.uid_number)
-            ).fetchall()]
-            resultado.append({
-                'uid_number': u.uid_number,
-                'nombre_usuario': u.nombre_usuario,
-                'fecha_alta': u.fecha_alta.isoformat() if u.fecha_alta else None,
-                'fecha_baja': u.fecha_baja.isoformat() if u.fecha_baja else None,
-                'activo': u.activo,
-                'contacto': u.contacto,
-                'telefono': u.telefono,
-                'orcid': u.orcid,
-                'scholar': u.scholar,
-                'wos': u.wos,
-                'scopus': u.scopus,
-                'res': u.res,
-                'nombre_investigador': investigador.nombre_investigador if investigador else None,
-                'grupos': grupos_ids
-            })
-        return jsonify(resultado)
-    except Exception as e:
-        print("❌ ERROR GET /usuarios:", str(e))
-        return jsonify({"error": "Error interno", "detalle": str(e)}), 500
-
+    resultado = []
+    for u in usuarios:
+        investigador = u.investigadores[0] if u.investigadores else None
+        grupos_ids = [rel.grupo_id for rel in db.session.execute(
+            usuarios_grupos.select().where(usuarios_grupos.c.usuario_id == u.uid_number)
+        ).fetchall()]
+        resultado.append({
+            'uid_number': u.uid_number,
+            'nombre_usuario': u.nombre_usuario,
+            'fecha_alta': u.fecha_alta.isoformat() if u.fecha_alta else None,
+            'fecha_baja': u.fecha_baja.isoformat() if u.fecha_baja else None,
+            'activo': u.activo,
+            'contacto': u.contacto,
+            'telefono': u.telefono,
+            'orcid': u.orcid,
+            'scholar': u.scholar,
+            'wos': u.wos,
+            'scopus': u.scopus,
+            'res': u.res,
+            'nombre_investigador': investigador.nombre_investigador if investigador else None,
+            'grupos': grupos_ids
+        })
+    return jsonify(resultado)
 
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():

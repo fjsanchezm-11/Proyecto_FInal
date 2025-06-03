@@ -1,5 +1,4 @@
-from models.database import db, investigadores_publicaciones, investigadores_usuarios
-from sqlalchemy.orm import relationship
+from models.database import db, investigadores_publicaciones
 
 class Investigador(db.Model):
     __tablename__ = 'investigadores'
@@ -8,17 +7,7 @@ class Investigador(db.Model):
     nombre_investigador = db.Column(db.String(255), nullable=False)
     correo = db.Column(db.String(255), nullable=True)
 
-    publicaciones = relationship(
-        'Publicacion',
-        secondary=investigadores_publicaciones,
-        backref='investigadores'
-    )
-
-    usuarios = relationship(
-        'Usuario',
-        secondary=investigadores_usuarios,
-        backref='investigadores'
-    )
+    publicaciones = db.relationship('Publicacion', secondary=investigadores_publicaciones, backref='investigadores')
 
     def to_dict(self):
         return {
