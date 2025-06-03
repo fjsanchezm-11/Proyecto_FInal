@@ -9,33 +9,28 @@ investigadores_bp = Blueprint('investigadores', __name__)
 
 @investigadores_bp.route('/investigadores', methods=['GET'])
 def obtener_investigadores():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 20, type=int)
-    investigadores_pag = Investigador.query.paginate(page=page, per_page=per_page)
+    investigadores = Investigador.query.all()
     resultado = []
 
-    investigador_ids = [i.iid_number for i in investigadores_pag.items]
+    ids = [i.iid_number for i in investigadores]
     relaciones = db.session.execute(
-        investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id.in_(investigador_ids))
+        investigadores_usuarios.select().where(investigadores_usuarios.c.investigador_id.in_(ids))
     ).fetchall()
     relaciones_dict = {r.investigador_id: r.usuario_id for r in relaciones}
 
-    usuarios = Usuario.query.filter(
-        Usuario.uid_number.in_(relaciones_dict.values())
-    ).all()
+    usuarios = Usuario.query.filter(Usuario.uid_number.in_(relaciones_dict.values())).all()
     usuarios_dict = {u.uid_number: u.nombre_usuario for u in usuarios}
 
-    for i in investigadores_pag.items:
-        datos = i.to_dict()
-        datos['nombre_usuario'] = usuarios_dict.get(relaciones_dict.get(i.iid_number))
+    for i in investigadores:
+        datos = {
+            'iid_number': i.iid_number,
+            'nombre_investigador': i.nombre_investigador,
+            'correo': i.correo,
+            'nombre_usuario': usuarios_dict.get(relaciones_dict.get(i.iid_number))
+        }
         resultado.append(datos)
 
-    return jsonify({
-        'investigadores': resultado,
-        'total': investigadores_pag.total,
-        'page': investigadores_pag.page,
-        'pages': investigadores_pag.pages
-    })
+    return jsonify(resultado)
 
 @investigadores_bp.route('/investigadores', methods=['POST'])
 def crear_investigador():
@@ -60,7 +55,7 @@ def crear_investigador():
                 fecha_alta=data.get('fecha_alta'),
                 fecha_baja=data.get('fecha_baja'),
                 activo=data.get('activo', True),
-                contacto=data.get('correo'), 
+                contacto=data.get('correo'),
                 telefono=data.get('telefono'),
                 orcid=data.get('orcid'),
                 scholar=data.get('scholar'),
@@ -69,7 +64,6 @@ def crear_investigador():
                 res=data.get('res')
             )
             db.session.add(nuevo_usuario)
-
             db.session.flush()
 
             db.session.execute(investigadores_usuarios.insert().values(
@@ -89,7 +83,6 @@ def crear_investigador():
 
     except Exception as e:
         db.session.rollback()
-        print("❌ Error al crear investigador y usuario:", str(e))
         return jsonify({'error': 'Error al crear investigador', 'detalle': str(e)}), 500
 
 @investigadores_bp.route('/investigadores/<int:id>', methods=['PUT'])
@@ -98,7 +91,7 @@ def actualizar_investigador(id):
     investigador = Investigador.query.get(id)
     if not investigador:
         return jsonify({'mensaje': 'Investigador no encontrado'}), 404
-    
+
     investigador.nombre_investigador = data.get('nombre_investigador', investigador.nombre_investigador)
     investigador.correo = data.get('correo', investigador.correo)
 
