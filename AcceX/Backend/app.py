@@ -13,7 +13,7 @@ from routes.grupos import grupos_bp
 app = Flask(__name__)
 app.config.from_object(Config)
 
-CORS(app, supports_credentials=True)
+CORS(app, resources={r"/api/*": {"origins": "https://accex.netlify.app"}}, supports_credentials=True)
 
 db.init_app(app)
 
