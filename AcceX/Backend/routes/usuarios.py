@@ -10,53 +10,65 @@ usuarios_bp = Blueprint('usuarios', __name__)
 
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 20, type=int)
-    usuarios_pag = Usuario.query.paginate(page=page, per_page=per_page)
+    usuarios = Usuario.query.all()
     resultado = []
-
-    usuario_ids = [u.uid_number for u in usuarios_pag.items]
-    relaciones = db.session.execute(
-        investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id.in_(usuario_ids))
-    ).fetchall()
-    relaciones_dict = {r.usuario_id: r.investigador_id for r in relaciones}
-
-    investigadores = Investigador.query.filter(
-        Investigador.iid_number.in_(relaciones_dict.values())
-    ).all()
-    investigadores_dict = {i.iid_number: i.nombre_investigador for i in investigadores}
-
-    grupos_raw = db.session.execute(
-        usuarios_grupos.select().where(usuarios_grupos.c.usuario_id.in_(usuario_ids))
-    ).fetchall()
-    grupos_dict = {}
-    for g in grupos_raw:
-        grupos_dict.setdefault(g.usuario_id, []).append(g.grupo_id)
-
-    for u in usuarios_pag.items:
+    for u in usuarios:
         resultado.append({
             'uid_number': u.uid_number,
             'nombre_usuario': u.nombre_usuario,
-            'fecha_alta': u.fecha_alta.isoformat() if u.fecha_alta else None,
-            'fecha_baja': u.fecha_baja.isoformat() if u.fecha_baja else None,
-            'activo': u.activo,
             'contacto': u.contacto,
-            'telefono': u.telefono,
-            'orcid': u.orcid,
-            'scholar': u.scholar,
-            'wos': u.wos,
-            'scopus': u.scopus,
-            'res': u.res,
-            'nombre_investigador': investigadores_dict.get(relaciones_dict.get(u.uid_number)),
-            'grupos': grupos_dict.get(u.uid_number, [])
+            'activo': u.activo
         })
+    return jsonify(resultado)
 
-    return jsonify({
-        'usuarios': resultado,
-        'total': usuarios_pag.total,
-        'page': usuarios_pag.page,
-        'pages': usuarios_pag.pages
-    })
+@usuarios_bp.route('/usuarios/<int:uid>/grupos', methods=['GET'])
+def obtener_grupos_por_usuario(uid):
+    usuario = Usuario.query.get(uid)
+    if not usuario:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    grupos = db.session.query(Grupo).join(usuarios_grupos).filter(usuarios_grupos.c.usuario_id == uid).all()
+    return jsonify([
+        {
+            'gid_number': g.gid_number,
+            'nombre': g.nombre
+        } for g in grupos
+    ])
+
+@usuarios_bp.route('/usuarios/<int:uid>/proyectos', methods=['GET'])
+def obtener_proyectos_por_usuario(uid):
+    proyectos = db.session.execute(
+        text("""
+            SELECT p.pid_number, p.titulo, p.pdf_url
+            FROM proyectos p
+            JOIN usuarios_proyectos up ON p.pid_number = up.proyecto_id
+            WHERE up.usuario_id = :uid
+        """),
+        {'uid': uid}
+    ).fetchall()
+
+    return jsonify([
+        {
+            'pid_number': p.pid_number,
+            'titulo': p.titulo,
+            'pdf_url': p.pdf_url
+        } for p in proyectos
+    ])
+
+@usuarios_bp.route('/usuarios/<int:uid>/investigador', methods=['GET'])
+def obtener_investigador_por_usuario(uid):
+    relacion = db.session.execute(
+        investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id == uid)
+    ).first()
+    if relacion:
+        investigador = Investigador.query.get(relacion.investigador_id)
+        if investigador:
+            return jsonify({
+                'iid_number': investigador.iid_number,
+                'nombre_investigador': investigador.nombre_investigador,
+                'correo': investigador.correo
+            })
+    return jsonify(None)
 
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
@@ -68,7 +80,7 @@ def crear_usuario():
             activo=data.get("activo", True)
         )
         db.session.add(nuevo_usuario)
-        db.session.flush()  
+        db.session.flush()
 
         if data.get("nombre_investigador"):
             nuevo_investigador = Investigador(
@@ -101,14 +113,12 @@ def crear_usuario():
 
     except Exception as e:
         db.session.rollback()
-        print("❌ Error:", str(e))
         return jsonify({'error': 'Error al crear usuario', 'detalle': str(e)}), 500
 
 @usuarios_bp.route('/usuarios/<int:id>', methods=['PUT'])
 def actualizar_usuario(id):
     try:
         data = request.json
-
         usuario = Usuario.query.get(id)
         if not usuario:
             return jsonify({'error': 'Usuario no encontrado'}), 404
@@ -153,7 +163,6 @@ def actualizar_usuario(id):
 
     except Exception as e:
         db.session.rollback()
-        print("❌ Error en el servidor:", str(e))
         return jsonify({'error': 'Error interno del servidor', 'detalle': str(e)}), 500
 
 @usuarios_bp.route('/usuarios/<int:id>', methods=['DELETE'])
@@ -185,20 +194,6 @@ def eliminar_usuario(id):
     db.session.commit()
 
     return jsonify({'mensaje': 'Usuario y relaciones asociadas eliminadas'}), 200
-
-@usuarios_bp.route('/usuarios/<int:uid>/grupos', methods=['GET'])
-def obtener_grupos_por_usuario(uid):
-    usuario = Usuario.query.get(uid)
-    if not usuario:
-        return jsonify({'error': 'Usuario no encontrado'}), 404
-
-    grupos = db.session.query(Grupo).join(usuarios_grupos).filter(usuarios_grupos.c.usuario_id == uid).all()
-    return jsonify([
-        {
-            'gid_number': g.gid_number,
-            'nombre': g.nombre
-        } for g in grupos
-    ])
 
 @usuarios_bp.route('/usuarios/<int:uid>/grupos', methods=['POST'])
 def asociar_grupo_a_usuario(uid):
@@ -233,7 +228,6 @@ def asociar_grupo_a_usuario(uid):
 
     except Exception as e:
         db.session.rollback()
-        print("❌ Error al asociar grupo:", str(e))
         return jsonify({"error": "Error al asociar grupo", "detalle": str(e)}), 500
 
 @usuarios_bp.route('/usuarios/<int:uid>/grupos/<int:gid>', methods=['DELETE'])
