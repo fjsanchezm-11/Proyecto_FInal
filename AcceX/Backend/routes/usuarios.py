@@ -74,20 +74,22 @@ def obtener_investigador_por_usuario(uid):
 def crear_usuario():
     data = request.json
     try:
-        nuevo_usuario = Usuario(
-            nombre_usuario=data.get("nombre_usuario"),
-            contacto=data.get("contacto"),
-            activo=data.get("activo", True),
-            fecha_alta=data.get("fecha_alta"),
-            fecha_baja=data.get("fecha_baja"),
-            telefono=data.get("telefono"),
-            orcid=data.get("orcid"),
-            scholar=data.get("scholar"),
-            wos=data.get("wos"),
-            scopus=data.get("scopus"),
-            res=data.get("res"),
-            gid_number=data.get("gid_number")
-        )
+        usuario_data = {
+            "nombre_usuario": data.get("nombre_usuario"),
+            "contacto": data.get("contacto"),
+            "activo": data.get("activo", True),
+            "fecha_alta": data.get("fecha_alta"),
+            "fecha_baja": data.get("fecha_baja"),
+            "telefono": data.get("telefono"),
+            "orcid": data.get("orcid"),
+            "scholar": data.get("scholar"),
+            "wos": data.get("wos"),
+            "scopus": data.get("scopus"),
+            "res": data.get("res")
+        }
+
+        nuevo_usuario = Usuario(**usuario_data)
+
         db.session.add(nuevo_usuario)
         db.session.flush()
 
