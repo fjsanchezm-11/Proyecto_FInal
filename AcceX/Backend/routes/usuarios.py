@@ -11,15 +11,7 @@ usuarios_bp = Blueprint('usuarios', __name__)
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
     usuarios = Usuario.query.all()
-    resultado = []
-    for u in usuarios:
-        resultado.append({
-            'uid_number': u.uid_number,
-            'nombre_usuario': u.nombre_usuario,
-            'contacto': u.contacto,
-            'activo': u.activo
-        })
-    return jsonify(resultado)
+    return jsonify([u.to_dict() for u in usuarios])
 
 @usuarios_bp.route('/usuarios/<int:uid>/grupos', methods=['GET'])
 def obtener_grupos_por_usuario(uid):
@@ -82,6 +74,10 @@ def crear_usuario():
                 return datetime.strptime(fecha_str, "%Y-%m-%d").date()
             except ValueError:
                 return None
+            
+        activo = data.get("activo")
+        if activo is None:
+            activo = True
 
         nuevo_usuario = Usuario(
             nombre_usuario=data.get("nombre_usuario"),
