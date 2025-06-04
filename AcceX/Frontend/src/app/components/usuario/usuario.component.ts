@@ -61,6 +61,14 @@ export class UsuarioComponent implements OnInit {
 
     this.cargarProyectosDeUsuario(usuario.uid_number);
     this.cargarGruposDeUsuario(usuario.uid_number);
+
+    this.usuarioService.obtenerInvestigadorDeUsuario(usuario.uid_number).subscribe(investigador => {
+      if (investigador) {
+        this.usuarioSeleccionado.nombre_investigador = investigador.nombre_investigador;
+      } else {
+        this.usuarioSeleccionado.nombre_investigador = 'Sin investigador';
+      }
+    });
   }
 
   cerrarDetalles() {
@@ -115,6 +123,15 @@ export class UsuarioComponent implements OnInit {
       this.cargarProyectosDeUsuario(usuario.uid_number);
       this.cargarGruposDeUsuario(usuario.uid_number);
 
+      this.usuarioService.obtenerInvestigadorDeUsuario(usuario.uid_number).subscribe(investigador => {
+        if (investigador) {
+          this.usuarioSeleccionado.nombre_investigador = investigador.nombre_investigador;
+          this.usuarioForm.patchValue({ nombre_investigador: investigador.nombre_investigador });
+        } else {
+          this.usuarioForm.patchValue({ nombre_investigador: '' });
+        }
+      });
+
       const fechaFormateada1 = usuario.fecha_alta
         ? new Date(usuario.fecha_alta).toISOString().split('T')[0]
         : '';
@@ -136,8 +153,7 @@ export class UsuarioComponent implements OnInit {
         scopus: usuario.scopus ?? '',
         res: usuario.res ?? '',
         proyectoIdParaAsociar: null,
-        grupoIdParaAsociar: null,
-        nombre_investigador: usuario.nombre_investigador ?? ''
+        grupoIdParaAsociar: null
       });
     } else {
       this.editando = false;

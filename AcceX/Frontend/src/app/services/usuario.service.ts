@@ -18,6 +18,9 @@ export class UsuarioService {
     return this.http.post<any>(this.apiUrl, usuario);
   }
 
+  obtenerInvestigadorDeUsuario(uid: number) {
+    return this.http.get<any>(`${this.apiUrl}/usuarios/${uid}/investigador`);
+  } 
 
   actualizarUsuario(id: number, usuario: any): Observable<any>{
     return this.http.put<any>(`${this.apiUrl}/${id}`, usuario);
