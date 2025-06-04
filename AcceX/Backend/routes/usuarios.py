@@ -76,30 +76,28 @@ def crear_usuario():
     try:
         nuevo_usuario = Usuario(
             nombre_usuario=data.get("nombre_usuario"),
+            contacto=data.get("contacto"),
+            activo=data.get("activo", True),
             fecha_alta=data.get("fecha_alta"),
             fecha_baja=data.get("fecha_baja"),
-            activo=data.get("activo", True),
-            contacto=data.get("contacto"),
             telefono=data.get("telefono"),
             orcid=data.get("orcid"),
             scholar=data.get("scholar"),
             wos=data.get("wos"),
             scopus=data.get("scopus"),
             res=data.get("res"),
-            gid_number=data.get("gid_number")  # <- se mantiene para lazy loading de grupos
+            gid_number=data.get("gid_number")
         )
         db.session.add(nuevo_usuario)
         db.session.flush()
 
-        nombre_investigador = data.get("nombre_investigador")
-        if nombre_investigador:
+        if data.get("nombre_investigador"):
             nuevo_investigador = Investigador(
-                nombre_investigador=nombre_investigador,
+                nombre_investigador=data.get("nombre_investigador"),
                 correo=data.get("contacto")
             )
             db.session.add(nuevo_investigador)
             db.session.flush()
-
             db.session.execute(
                 investigadores_usuarios.insert().values(
                     usuario_id=nuevo_usuario.uid_number,
@@ -120,7 +118,7 @@ def crear_usuario():
             )
 
         db.session.commit()
-        return jsonify({'mensaje': 'Usuario (y relaciones) creado correctamente'}), 201
+        return jsonify({'mensaje': 'Usuario creado correctamente'}), 201
 
     except Exception as e:
         db.session.rollback()
