@@ -74,8 +74,8 @@ export class UsuarioComponent implements OnInit {
   }
 
   cargarUsuarios() {
-    this.usuarioService.obtenerUsuarios().subscribe(data => {
-      this.usuarios = data;
+    this.usuarioService.obtenerUsuarios().subscribe((data: any) => {
+      this.usuarios = data.usuarios;
     });
   }
 
