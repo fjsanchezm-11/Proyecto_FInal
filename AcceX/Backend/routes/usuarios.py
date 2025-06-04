@@ -74,37 +74,32 @@ def obtener_investigador_por_usuario(uid):
 def crear_usuario():
     data = request.json
     try:
-        def parse_fecha(fecha_str):
-            if fecha_str in [None, '', 'null']:
-                return None
-            try:
-                return datetime.strptime(fecha_str, "%Y-%m-%d").date()
-            except ValueError:
-                return None
-
         nuevo_usuario = Usuario(
             nombre_usuario=data.get("nombre_usuario"),
-            contacto=data.get("contacto"),
+            fecha_alta=data.get("fecha_alta"),
+            fecha_baja=data.get("fecha_baja"),
             activo=data.get("activo", True),
-            fecha_alta=parse_fecha(data.get("fecha_alta")),
-            fecha_baja=parse_fecha(data.get("fecha_baja")),
+            contacto=data.get("contacto"),
             telefono=data.get("telefono"),
             orcid=data.get("orcid"),
             scholar=data.get("scholar"),
             wos=data.get("wos"),
             scopus=data.get("scopus"),
-            res=data.get("res")
+            res=data.get("res"),
+            gid_number=data.get("gid_number")  # <- se mantiene para lazy loading de grupos
         )
         db.session.add(nuevo_usuario)
         db.session.flush()
 
-        if data.get("nombre_investigador"):
+        nombre_investigador = data.get("nombre_investigador")
+        if nombre_investigador:
             nuevo_investigador = Investigador(
-                nombre_investigador=data.get("nombre_investigador"),
+                nombre_investigador=nombre_investigador,
                 correo=data.get("contacto")
             )
             db.session.add(nuevo_investigador)
             db.session.flush()
+
             db.session.execute(
                 investigadores_usuarios.insert().values(
                     usuario_id=nuevo_usuario.uid_number,
@@ -125,7 +120,7 @@ def crear_usuario():
             )
 
         db.session.commit()
-        return jsonify({'mensaje': 'Usuario creado correctamente'}), 201
+        return jsonify({'mensaje': 'Usuario (y relaciones) creado correctamente'}), 201
 
     except Exception as e:
         db.session.rollback()
