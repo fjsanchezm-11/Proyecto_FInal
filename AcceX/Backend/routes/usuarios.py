@@ -73,11 +73,28 @@ def obtener_investigador_por_usuario(uid):
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
     data = request.json
+    print("Datos recibidos en el backend:", data)
     try:
+        def parse_fecha(fecha_str):
+            if fecha_str in [None, '', 'null']:
+                return None
+            try:
+                return datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            except ValueError:
+                return None
+
         nuevo_usuario = Usuario(
             nombre_usuario=data.get("nombre_usuario"),
             contacto=data.get("contacto"),
-            activo=data.get("activo", True)
+            activo=data.get("activo", True),
+            fecha_alta=parse_fecha(data.get("fecha_alta")),
+            fecha_baja=parse_fecha(data.get("fecha_baja")),
+            telefono=data.get("telefono"),
+            orcid=data.get("orcid"),
+            scholar=data.get("scholar"),
+            wos=data.get("wos"),
+            scopus=data.get("scopus"),
+            res=data.get("res")
         )
         db.session.add(nuevo_usuario)
         db.session.flush()
