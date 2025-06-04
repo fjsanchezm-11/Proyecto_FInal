@@ -80,30 +80,30 @@ def obtener_investigador_por_usuario(uid):
 
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
-    data = request.json
+    if request.content_type.startswith('multipart/form-data'):
+        data = request.form
+    else:
+        return jsonify({'error': 'Debe usar FormData para enviar el usuario'}), 400
+
     try:
-        usuario_data = {
-            "nombre_usuario": data.get("nombre_usuario"),
-            "contacto": data.get("contacto"),
-            "activo": data.get("activo", True),
-            "fecha_alta": parse_fecha(data.get("fecha_alta")),
-            "fecha_baja": parse_fecha(data.get("fecha_baja")),
-            "telefono": data.get("telefono"),
-            "orcid": data.get("orcid"),
-            "scholar": data.get("scholar"),
-            "wos": data.get("wos"),
-            "scopus": data.get("scopus"),
-            "res": data.get("res")
-        }
-        if data.get("gid_number") is not None:
-            usuario_data["gid_number"] = data.get("gid_number")
+        fecha_alta = data.get("fecha_alta") or None
+        fecha_baja = data.get("fecha_baja") or None
 
-        nuevo_usuario = Usuario(**usuario_data)
-
+        nuevo_usuario = Usuario(
+            nombre_usuario=data.get("nombre_usuario"),
+            contacto=data.get("contacto"),
+            activo=data.get("activo", "true").lower() == "true",
+            fecha_alta=fecha_alta,
+            fecha_baja=fecha_baja,
+            telefono=data.get("telefono"),
+            orcid=data.get("orcid"),
+            scholar=data.get("scholar"),
+            wos=data.get("wos"),
+            scopus=data.get("scopus"),
+            res=data.get("res")
+        )
         db.session.add(nuevo_usuario)
         db.session.flush()
-
-        print("Nuevo usuario:", nuevo_usuario.__dict__)
 
         if data.get("nombre_investigador"):
             nuevo_investigador = Investigador(
@@ -119,15 +119,12 @@ def crear_usuario():
                 )
             )
 
-        grupos = data.get("grupos", [])
+        grupos = request.form.getlist("grupos")
         for gid in grupos:
-            grupo = Grupo.query.get(gid)
-            if not grupo:
-                return jsonify({'error': f'El grupo con gid_number {gid} no existe'}), 400
             db.session.execute(
                 usuarios_grupos.insert().values(
                     usuario_id=nuevo_usuario.uid_number,
-                    grupo_id=gid
+                    grupo_id=int(gid)
                 )
             )
 
