@@ -173,8 +173,6 @@ export class UsuarioComponent implements OnInit {
     usuarioData.grupos = this.gruposDelUsuario.map(g => g.gid_number);
     usuarioData.proyectos = this.proyectosDelUsuario;
 
-    console.log('Datos enviados:', usuarioData);
-
     if (this.editando) {
       this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
         .subscribe({

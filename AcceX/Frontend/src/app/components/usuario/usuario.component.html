@@ -121,6 +121,26 @@
         <label>Teléfono:</label>
         <input formControlName="telefono">
       </div>
+      <div class="form-group">
+        <label>ORCID:</label>
+        <input formControlName="orcid">
+      </div>
+      <div class="form-group">
+        <label>Scholar:</label>
+        <input formControlName="scholar">
+      </div>
+      <div class="form-group">
+        <label>WOS:</label>
+        <input formControlName="wos">
+      </div>
+      <div class="form-group">
+        <label>Scopus:</label>
+        <input formControlName="scopus">
+      </div>
+      <div class="form-group">
+        <label>RES:</label>
+        <input formControlName="res">
+      </div>
       <button type="submit">Actualizar</button>
       <button type="button" class="back-button" (click)="cerrarFormulario()">Volver</button>
 
@@ -165,6 +185,12 @@
     <p><strong>Teléfono:</strong> {{ usuarioSeleccionado.telefono }}</p>
     <p><strong>Activo:</strong> {{ usuarioSeleccionado.activo ? '✅ Sí' : '❌ No' }}</p>
     <p><strong>Investigador:</strong> {{ usuarioSeleccionado.nombre_investigador}}</p>
+    <p><strong>ORCID:</strong> {{ usuarioSeleccionado.orcid }}</p>
+    <p><strong>Scholar:</strong> {{ usuarioSeleccionado.scholar }}</p>
+    <p><strong>WOS:</strong> {{ usuarioSeleccionado.wos }}</p>
+    <p><strong>Scopus:</strong> {{ usuarioSeleccionado.scopus }}</p>
+    <p><strong>RES:</strong> {{ usuarioSeleccionado.res }}</p>
+
     <div *ngIf="usuarioSeleccionado" class="proyectos-asociados">
       <h2>Proyectos de {{ usuarioSeleccionado.nombre_usuario }}</h2>
       <ul>

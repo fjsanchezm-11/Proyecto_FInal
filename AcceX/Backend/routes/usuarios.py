@@ -11,7 +11,37 @@ usuarios_bp = Blueprint('usuarios', __name__)
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
     usuarios = Usuario.query.all()
-    return jsonify([u.to_dict() for u in usuarios])
+    resultado = []
+
+    for u in usuarios:
+        relacion = db.session.execute(
+            investigadores_usuarios.select().where(investigadores_usuarios.c.usuario_id == u.uid_number)
+        ).first()
+
+        nombre_investigador = None
+        if relacion:
+            investigador = Investigador.query.get(relacion.investigador_id)
+            if investigador:
+                nombre_investigador = investigador.nombre_investigador
+
+        resultado.append({
+            'uid_number': u.uid_number,
+            'gid_number': u.gid_number,
+            'nombre_usuario': u.nombre_usuario,
+            'fecha_alta': u.fecha_alta.isoformat() if u.fecha_alta else None,
+            'fecha_baja': u.fecha_baja.isoformat() if u.fecha_baja else None,
+            'activo': u.activo,
+            'contacto': u.contacto,
+            'telefono': u.telefono,
+            'orcid': u.orcid,
+            'scholar': u.scholar,
+            'wos': u.wos,
+            'scopus': u.scopus,
+            'res': u.res,
+            'nombre_investigador': nombre_investigador 
+        })
+
+    return jsonify(resultado)
 
 @usuarios_bp.route('/usuarios/<int:uid>/grupos', methods=['GET'])
 def obtener_grupos_por_usuario(uid):
@@ -65,7 +95,6 @@ def obtener_investigador_por_usuario(uid):
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
     data = request.json
-    print("Datos recibidos en el backend:", data)
     try:
         def parse_fecha(fecha_str):
             if fecha_str in [None, '', 'null']:
