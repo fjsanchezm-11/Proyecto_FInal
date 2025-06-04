@@ -78,6 +78,11 @@ def obtener_investigador_por_usuario(uid):
             })
     return jsonify(None)
 
+def limpiar_valor(valor):
+    if valor in [None, '', 'null', 'undefined']:
+        return None
+    return valor
+
 @usuarios_bp.route('/usuarios', methods=['POST'])
 def crear_usuario():
     if request.content_type.startswith('multipart/form-data'):
@@ -86,22 +91,20 @@ def crear_usuario():
         return jsonify({'error': 'Debe usar FormData para enviar el usuario'}), 400
 
     try:
-        fecha_alta = data.get("fecha_alta") or None
-        fecha_baja = data.get("fecha_baja") or None
-
         nuevo_usuario = Usuario(
-            nombre_usuario=data.get("nombre_usuario"),
-            contacto=data.get("contacto"),
+            nombre_usuario=limpiar_valor(data.get("nombre_usuario")),
+            contacto=limpiar_valor(data.get("contacto")),
             activo=data.get("activo", "true").lower() == "true",
-            fecha_alta=fecha_alta,
-            fecha_baja=fecha_baja,
-            telefono=data.get("telefono"),
-            orcid=data.get("orcid"),
-            scholar=data.get("scholar"),
-            wos=data.get("wos"),
-            scopus=data.get("scopus"),
-            res=data.get("res")
+            fecha_alta=parse_fecha(data.get("fecha_alta")),
+            fecha_baja=parse_fecha(data.get("fecha_baja")),
+            telefono=limpiar_valor(data.get("telefono")),
+            orcid=limpiar_valor(data.get("orcid")),
+            scholar=limpiar_valor(data.get("scholar")),
+            wos=limpiar_valor(data.get("wos")),
+            scopus=limpiar_valor(data.get("scopus")),
+            res=limpiar_valor(data.get("res"))
         )
+
         db.session.add(nuevo_usuario)
         db.session.flush()
 
@@ -121,12 +124,13 @@ def crear_usuario():
 
         grupos = request.form.getlist("grupos")
         for gid in grupos:
-            db.session.execute(
-                usuarios_grupos.insert().values(
-                    usuario_id=nuevo_usuario.uid_number,
-                    grupo_id=int(gid)
+            if gid.isdigit():
+                db.session.execute(
+                    usuarios_grupos.insert().values(
+                        usuario_id=nuevo_usuario.uid_number,
+                        grupo_id=int(gid)
+                    )
                 )
-            )
 
         db.session.commit()
         return jsonify({'mensaje': 'Usuario creado correctamente'}), 201
@@ -134,6 +138,7 @@ def crear_usuario():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Error al crear usuario', 'detalle': str(e)}), 500
+
 
 @usuarios_bp.route('/usuarios/<int:id>', methods=['PUT'])
 def actualizar_usuario(id):
