@@ -4,7 +4,7 @@ class Usuario(db.Model):
     __tablename__ = "usuarios"
 
     uid_number = db.Column(db.Integer, primary_key=True)
-    gid_number = db.Column(db.Integer, db.ForeignKey("grupos.gid_number", ondelete="RESTRICT"), nullable=False)
+    gid_number = db.Column(db.Integer, db.ForeignKey("grupos.gid_number", ondelete="RESTRICT"), nullable=True)
     nombre_usuario = db.Column(db.String(255), nullable=False, unique=True)
     fecha_alta = db.Column(db.Date)
     fecha_baja = db.Column(db.Date, nullable=True)

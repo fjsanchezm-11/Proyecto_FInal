@@ -8,6 +8,14 @@ from datetime import datetime
 
 usuarios_bp = Blueprint('usuarios', __name__)
 
+def parse_fecha(fecha_str):
+    if fecha_str in [None, '', 'null']:
+        return None
+    try:
+        return datetime.strptime(fecha_str, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
 @usuarios_bp.route('/usuarios', methods=['GET'])
 def obtener_usuarios():
     usuarios = Usuario.query.all()
@@ -78,8 +86,8 @@ def crear_usuario():
             "nombre_usuario": data.get("nombre_usuario"),
             "contacto": data.get("contacto"),
             "activo": data.get("activo", True),
-            "fecha_alta": data.get("fecha_alta"),
-            "fecha_baja": data.get("fecha_baja"),
+            "fecha_alta": parse_fecha(data.get("fecha_alta")),
+            "fecha_baja": parse_fecha(data.get("fecha_baja")),
             "telefono": data.get("telefono"),
             "orcid": data.get("orcid"),
             "scholar": data.get("scholar"),
@@ -87,11 +95,15 @@ def crear_usuario():
             "scopus": data.get("scopus"),
             "res": data.get("res")
         }
+        if data.get("gid_number") is not None:
+            usuario_data["gid_number"] = data.get("gid_number")
 
         nuevo_usuario = Usuario(**usuario_data)
 
         db.session.add(nuevo_usuario)
         db.session.flush()
+
+        print("Nuevo usuario:", nuevo_usuario.__dict__)
 
         if data.get("nombre_investigador"):
             nuevo_investigador = Investigador(
@@ -133,14 +145,6 @@ def actualizar_usuario(id):
         usuario = Usuario.query.get(id)
         if not usuario:
             return jsonify({'error': 'Usuario no encontrado'}), 404
-
-        def parse_fecha(fecha_str):
-            if fecha_str in [None, '', 'null']:
-                return None
-            try:
-                return datetime.strptime(fecha_str, "%Y-%m-%d").date()
-            except ValueError:
-                return None
 
         usuario.nombre_usuario = data.get('nombre_usuario', usuario.nombre_usuario)
         usuario.fecha_alta = parse_fecha(data.get('fecha_alta')) or usuario.fecha_alta
