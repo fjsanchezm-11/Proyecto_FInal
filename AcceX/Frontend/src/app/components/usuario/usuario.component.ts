@@ -74,8 +74,8 @@ export class UsuarioComponent implements OnInit {
   }
 
   cargarUsuarios() {
-    this.usuarioService.obtenerUsuarios().subscribe((data: any) => {
-      this.usuarios = data.usuarios;
+    this.usuarioService.obtenerUsuarios().subscribe(data => {
+      this.usuarios = Array.isArray(data) ? data : [];
     });
   }
 
@@ -211,7 +211,6 @@ export class UsuarioComponent implements OnInit {
       });
     }
   }
-
   
   cargarProyectosDeUsuario(usuarioId: number) {
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
@@ -322,6 +321,7 @@ export class UsuarioComponent implements OnInit {
   }
 
   get usuariosFiltrados() {
+    if (!Array.isArray(this.usuarios)) return [];
     return this.usuarios.filter(usuario =>
       (usuario.nombre_usuario || '').toLowerCase().includes(this.busqueda.toLowerCase())
     );
