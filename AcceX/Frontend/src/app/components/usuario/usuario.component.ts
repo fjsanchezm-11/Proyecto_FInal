@@ -75,7 +75,7 @@ export class UsuarioComponent implements OnInit {
 
   cargarUsuarios() {
     this.usuarioService.obtenerUsuarios().subscribe(data => {
-      this.usuarios = Array.isArray(data) ? data : [];
+      this.usuarios = data;
     });
   }
 
@@ -168,51 +168,50 @@ export class UsuarioComponent implements OnInit {
       return;
     }
 
-    const datos = this.usuarioForm.value;
+    const usuarioData = { ...this.usuarioForm.value };
 
-    const formData = new FormData();
-    formData.append("nombre_usuario", datos.nombre_usuario || '');
-    formData.append("contacto", datos.contacto || '');
-    formData.append("telefono", datos.telefono || '');
-    formData.append("orcid", datos.orcid || '');
-    formData.append("scholar", datos.scholar || '');
-    formData.append("wos", datos.wos || '');
-    formData.append("scopus", datos.scopus || '');
-    formData.append("res", datos.res || '');
-    formData.append("activo", datos.activo ? "true" : "false");
+    usuarioData.grupos = this.gruposDelUsuario.map(g => g.gid_number);
+    usuarioData.proyectos = this.proyectosDelUsuario;
 
-    if (datos.fecha_alta) formData.append("fecha_alta", datos.fecha_alta);
-    if (datos.fecha_baja) formData.append("fecha_baja", datos.fecha_baja);
-    if (datos.nombre_investigador) formData.append("nombre_investigador", datos.nombre_investigador);
+    console.log('Datos enviados:', usuarioData);
 
-    this.gruposDelUsuario.forEach((g) => {
-      formData.append("grupos", g.gid_number.toString());
-    });
-
-    this.proyectosDelUsuario.forEach((p) => {
-      formData.append("proyectos", p.pid_number.toString());
-    });
-
-    this.usuarioService.crearUsuario(formData).subscribe({
-      next: () => {
-        this.mostrarForm = false;
-        this.usuarioForm.reset();
-        if (datos.grupoIdParaAsociar) {
-          this.asociarGrupo();
+    if (this.editando) {
+      this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.uid_number, usuarioData)
+        .subscribe({
+          next: () => {
+            this.mostrarForm = false;
+            this.usuarioForm.reset();
+            this.cargarUsuarios();
+          },
+          error: (err) => {
+            console.error("Error al actualizar:", err);
+            alert("Error al actualizar el usuario.");
+          }
+        });
+    } else {
+      this.usuarioService.crearUsuario(usuarioData).subscribe({
+        next: () => {
+          this.mostrarForm = false;
+          this.usuarioForm.reset();
+          if (usuarioData.grupoIdParaAsociar) {
+            this.asociarGrupo();
+          }
+          this.cargarUsuarios();
+        },
+        error: (err) => {
+          console.error("Error al crear:", err);
+          const errorMsg = err.error?.error;
+          if (errorMsg && errorMsg.includes("El grupo con gid_number")) {
+            alert("Error: El grupo especificado no existe. Introduce un gid_number válido.");
+          } else {
+            console.error("Detalles del error:", errorMsg);
+            alert("Error al crear el usuario.");
+          }
         }
-        this.cargarUsuarios();
-      },
-      error: (err) => {
-        console.error("Error al crear:", err);
-        const errorMsg = err.error?.error;
-        if (errorMsg?.includes("El grupo con gid_number")) {
-          alert("Error: El grupo especificado no existe. Introduce un gid_number válido.");
-        } else {
-          alert("Error al crear el usuario.");
-        }
-      }
-    });
+      });
+    }
   }
+
   
   cargarProyectosDeUsuario(usuarioId: number) {
     this.proyectoService.obtenerProyectosPorUsuario(usuarioId).subscribe(proyectos => {
@@ -323,7 +322,6 @@ export class UsuarioComponent implements OnInit {
   }
 
   get usuariosFiltrados() {
-    if (!Array.isArray(this.usuarios)) return [];
     return this.usuarios.filter(usuario =>
       (usuario.nombre_usuario || '').toLowerCase().includes(this.busqueda.toLowerCase())
     );
