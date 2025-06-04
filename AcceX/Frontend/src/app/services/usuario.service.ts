@@ -14,9 +14,10 @@ export class UsuarioService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  crearUsuario(usuario: any): Observable<any> {
+  crearUsuario(usuario: FormData): Observable<any> {
     return this.http.post<any>(this.apiUrl, usuario);
   }
+
 
   actualizarUsuario(id: number, usuario: any): Observable<any>{
     return this.http.put<any>(`${this.apiUrl}/${id}`, usuario);
