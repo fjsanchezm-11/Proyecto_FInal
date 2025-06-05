@@ -143,9 +143,11 @@
     margin-top: 10px;
   }
 
-  .form-group button[type="submit"]:hover {
-    background-color: #218838;
-  }
+  .popup-form .form-group button:hover,
+  .popup-form .back-button:hover,
+  .popup-form ul button:hover {
+      background-color: #218838;
+    }
   
   /* Botón de guardar o actualizar */
   .popup-form button[type="submit"] {
