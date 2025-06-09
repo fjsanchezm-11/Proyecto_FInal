@@ -81,7 +81,7 @@ def crear_usuario():
         nuevo_usuario = Usuario(
             nombre_usuario=data.get("nombre_usuario"),
             contacto=data.get("contacto"),
-            activo=data.get("activo", True),
+            activo=data.get("activo"),
             fecha_alta=parse_fecha(data.get("fecha_alta")),
             fecha_baja=parse_fecha(data.get("fecha_baja")),
             telefono=data.get("telefono"),
